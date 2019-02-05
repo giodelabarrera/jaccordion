@@ -181,7 +181,7 @@ Si se quiere subacordeones se deberá agregar la opción `data-accordion` en el 
 ```
 
 ```js
-initJaccordion(document.querySelector('dl'), { multiExpand: true });
+initAccordion(document.querySelector('dl'), { multiExpand: true });
 ```
 
 - `allowAllClosed`
@@ -193,7 +193,7 @@ initJaccordion(document.querySelector('dl'), { multiExpand: true });
 ```
 
 ```js
-initJaccordion(document.querySelector('dl'), { allowAllClosed: true });
+initAccordion(document.querySelector('dl'), { allowAllClosed: true });
 ```
 
 - `items`
@@ -228,19 +228,17 @@ const items = [
     content: {
       ajax: {
         url: 'http://www.randomtext.me/api/',
-        success: function(data) {
-          return data.text_out;
-        }
-      },
+        proccessResult: (data) => text_out,
+      }
     }
   },
 ];
 
 // dt and dd from items
-initJaccordion(document.getElementById('empty-accordion'), { items });
+initAccordion(document.getElementById('empty-accordion'), { items });
 
 // append dt and dd from items
-initJaccordion(document.getElementById('accordion-markup'), { items });
+initAccordion(document.getElementById('accordion-markup'), { items });
 ```
 
 - `ajax`
@@ -250,7 +248,7 @@ initJaccordion(document.getElementById('accordion-markup'), { items });
 ```
 
 ```js
-initJaccordion(document.querySelector('dl'), { 
+initAccordion(document.querySelector('dl'), { 
   ajax: {
     url: '',
 
