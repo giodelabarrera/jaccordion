@@ -3,29 +3,13 @@ import createItem from "./createItem";
 
 const isDTElement = makeIsTagElementName('dt');
 
-/**
- *
- *
- * @export
- * @param {*} element
- * @returns
- */
 export default function createAccordion(element) {
   let currentItems = [];
 
-  /**
-   *
-   *
-   * @returns
-   */
   function getItems() {
     return currentItems;
   }
 
-  /**
-   *
-   *
-   */
   function init() {
     const children = Array.from(element.children);
 
