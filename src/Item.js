@@ -1,43 +1,39 @@
 
+function render(item) {
+  if (item.isOpened) {
+    item.header.classList.add('is-opened');
+  } else {
+    item.header.classList.remove('is-opened');
+  }
+}
+
 export default class Item {
   constructor({
     header,
     content,
     isOpened = false
   }) {
-    this._header = header;
-    this._content = content;
-    this._isOpened = isOpened;
+    this.header = header;
+    this.content = content;
+    this.isOpened = isOpened;
 
     this.init();
   }
 
   toggle() {
-    this._isOpened ? this.close() : this.open();
+    this.isOpened ? this.close() : this.open();
   }
 
   open() {
-    this._isOpened = true;
-    this._header.classList.add('is-opened');
+    this.isOpened = true;
+    render(this);
     return this;
   }
 
   close() {
-    this._isOpened = false;
-    this._header.classList.remove('is-opened');
+    this.isOpened = false;
+    render(this);
     return this;
-  }
-
-  get header() {
-    return this._header;
-  }
-
-  get content() {
-    return this._content;
-  }
-
-  get isOpened() {
-    return this._isOpened;
   }
 
   handleClick(event) {
@@ -45,6 +41,6 @@ export default class Item {
   }
 
   init() {
-    this._header.addEventListener('click', this.handleClick.bind(this))
+    this.header.addEventListener('click', this.handleClick.bind(this))
   }
 }

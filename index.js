@@ -1,4 +1,3 @@
-import createAccordion from "./src/createAccordion";
 import Accordion from "./src/Accordion";
 
 // const element = document.querySelector('dl');

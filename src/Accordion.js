@@ -5,20 +5,16 @@ const isDTElement = makeIsTagElementName('dt');
 
 export default class Accordion {
   constructor(element) {
-    this._element = element;
-    this._items = [];
+    this.element = element;
+    this.items = [];
 
     this.init();
   }
 
-  get items() {
-    return this._items;
-  }
-
   init() {
-    const children = Array.from(this._element.children);
+    const children = Array.from(this.element.children);
 
-    this._items = children
+    this.items = children
       .filter(isDTElement)
       .map(header => {
         const content = header.nextElementSibling;
