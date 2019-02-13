@@ -1,41 +1,43 @@
 
-export default class Item {  
+export default class Item {
   constructor({
     header,
     content,
     isOpened = false
   }) {
-    this.currentHeader = header;
-    this.currentContent = content;
-    this.currentIsOpened = isOpened; 
+    this._header = header;
+    this._content = content;
+    this._isOpened = isOpened;
 
     this.init();
   }
 
   toggle() {
-    this.currentHeader.classList.contains('is-opened') ? this.close() : this.open();
+    this._isOpened ? this.close() : this.open();
   }
 
   open() {
-    this.currentIsOpened = true;
-    this.currentHeader.classList.add('is-opened');
+    this._isOpened = true;
+    this._header.classList.add('is-opened');
+    return this;
   }
 
   close() {
-    this.currentIsOpened = false;
-    this.currentHeader.classList.remove('is-opened');
+    this._isOpened = false;
+    this._header.classList.remove('is-opened');
+    return this;
   }
 
-  getHeader() {
-    return this.currentHeader;
+  get header() {
+    return this._header;
   }
 
-  getContent() {
-    return this.currentContent;
+  get content() {
+    return this._content;
   }
 
-  getIsOpened() {
-    return this.currentIsOpened;
+  get isOpened() {
+    return this._isOpened;
   }
 
   handleClick(event) {
@@ -43,6 +45,6 @@ export default class Item {
   }
 
   init() {
-    this.currentHeader.addEventListener('click', this.handleClick.bind(this))
+    this._header.addEventListener('click', this.handleClick.bind(this))
   }
 }
