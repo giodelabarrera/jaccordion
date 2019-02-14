@@ -1,10 +1,7 @@
-function render(item) {
-  if (item.isOpened) {
-    item.header.classList.add('is-opened')
-  } else {
-    item.header.classList.remove('is-opened')
-  }
-}
+import {addClassName, removeClassName} from './utils/dom'
+
+const addClassNameIsOpened = addClassName('is-opened')
+const removeClassNameIsOpened = removeClassName('is-opened')
 
 export default class Item {
   constructor({header, content, isOpened = false}) {
@@ -21,13 +18,13 @@ export default class Item {
 
   open() {
     this.isOpened = true
-    render(this)
+    addClassNameIsOpened(this.header)
     return this
   }
 
   close() {
     this.isOpened = false
-    render(this)
+    removeClassNameIsOpened(this.header)
     return this
   }
 
