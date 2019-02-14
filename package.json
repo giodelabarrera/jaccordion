@@ -9,6 +9,13 @@
     "parcel-bundler": "^1.11.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.2"
-  }
+    "@babel/core": "^7.2.2",
+    "@s-ui/lint": "^2.20.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "./node_modules/@s-ui/lint/eslintrc.js"
+    ]
+  },
+  "sasslintConfig": "./node_modules/@s-ui/lint/sass-lint.yml"
 }

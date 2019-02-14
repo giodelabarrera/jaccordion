@@ -1,43 +1,38 @@
-
 function render(item) {
   if (item.isOpened) {
-    item.header.classList.add('is-opened');
+    item.header.classList.add('is-opened')
   } else {
-    item.header.classList.remove('is-opened');
+    item.header.classList.remove('is-opened')
   }
 }
 
 export default class Item {
-  constructor({
-    header,
-    content,
-    isOpened = false
-  }) {
-    this.header = header;
-    this.content = content;
-    this.isOpened = isOpened;
+  constructor({header, content, isOpened = false}) {
+    this.header = header
+    this.content = content
+    this.isOpened = isOpened
 
-    this.init();
+    this.init()
   }
 
   toggle() {
-    this.isOpened ? this.close() : this.open();
+    this.isOpened ? this.close() : this.open()
   }
 
   open() {
-    this.isOpened = true;
-    render(this);
-    return this;
+    this.isOpened = true
+    render(this)
+    return this
   }
 
   close() {
-    this.isOpened = false;
-    render(this);
-    return this;
+    this.isOpened = false
+    render(this)
+    return this
   }
 
   handleClick(event) {
-    this.toggle();
+    this.toggle()
   }
 
   init() {

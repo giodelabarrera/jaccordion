@@ -1,2 +1,2 @@
-
-export const makeIsTagElementName = tagName => element => element.tagName === tagName.toUpperCase();
+export const makeIsTagName = tagName => element =>
+  element.tagName === tagName.toUpperCase()
