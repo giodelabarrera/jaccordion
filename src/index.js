@@ -17,15 +17,27 @@ export default class Jaccordion {
       const content = header.nextElementSibling
       return new Item({header, content})
     })
+
+    return this
   }
 
-  update(settings) {}
+  update(settings) {
+    return this
+  }
 
-  destroy() {}
+  destroy() {
+    return this
+  }
 
-  disable() {}
+  disable() {
+    return this
+  }
 
-  enable() {}
+  enable() {
+    return this
+  }
 
-  on(event, handler) {}
+  on(event, handler) {
+    return this
+  }
 }
