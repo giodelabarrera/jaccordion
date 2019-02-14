@@ -1,12 +1,13 @@
 import {makeIsTagName} from './utils/dom'
-import Item from './Item'
+import Item from './item'
+import defaults from './defaults'
 
 const isDTTagName = makeIsTagName('dt')
 
 export default class Jaccordion {
-  constructor(element) {
+  constructor(element, options) {
     this.element = element
-
+    this.settings = {...defaults, ...options}
     this.items = []
   }
 

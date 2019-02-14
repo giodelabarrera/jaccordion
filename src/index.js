@@ -1,1 +1,1 @@
-export {default} from './Jaccordion'
+export {default} from './jaccordion'
