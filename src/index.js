@@ -1,23 +1,33 @@
 import {makeIsTagName} from './utils/dom'
-import Item from './item'
 import defaults from './defaults'
+import Items from './components/items'
 
 const isDTTagName = makeIsTagName('dt')
 
 export default class Jaccordion {
-  constructor(element, options) {
-    this.element = element
+  constructor(selector, options) {
+    this.selector = selector
     this.settings = {...defaults, ...options}
+    this.components = []
+
     this.items = []
   }
 
   mount() {
-    const children = Array.from(this.element.children)
+    const componentsToMount = [Items]
 
-    this.items = children.filter(isDTTagName).map(header => {
-      const content = header.nextElementSibling
-      return new Item({header, content})
-    })
+    this.components = componentsToMount.map(componentToMount =>
+      componentToMount(this)
+    )
+
+    this.components.forEach(component => component.mount())
+
+    // const children = Array.from(this.element.children)
+
+    // this.items = children.filter(isDTTagName).map(header => {
+    //   const content = header.nextElementSibling
+    //   return new Item({header, content})
+    // })
 
     return this
   }
