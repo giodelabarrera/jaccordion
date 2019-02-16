@@ -1,28 +1,32 @@
 import defaults from './defaults'
 import Html from './components/html'
+import Build from './components/build'
+import Action from './components/action'
 
 export default class Jaccordion {
   constructor(selector, options) {
     this.selector = selector
     this.settings = {...defaults, ...options}
-    this.components = []
-
-    this.items = []
+    this.components = {}
   }
 
   mount() {
-    const componentsToMount = [Html]
+    const componentsToMount = {
+      Html: Html,
+      Build: Build,
+      Action: Action
+    }
 
-    this.components = componentsToMount.map(component => component(this))
+    const components = {}
+    for (let name in componentsToMount) {
+      components[name] = componentsToMount[name](this, components)
+    }
 
-    this.components.forEach(component => component.mount())
+    for (let name in components) {
+      components[name].mount()
+    }
 
-    // const children = Array.from(this.element.children)
-
-    // this.items = children.filter(isDTTagName).map(header => {
-    //   const content = header.nextElementSibling
-    //   return new Item({header, content})
-    // })
+    this.components = components
 
     return this
   }
@@ -41,6 +45,18 @@ export default class Jaccordion {
 
   enable() {
     return this
+  }
+
+  open(index) {
+    this.components.Action.open(index)
+  }
+
+  close(index) {
+    this.components.Action.close(index)
+  }
+
+  toggle(index) {
+    this.components.Action.toggle(index)
   }
 
   on(event, handler) {

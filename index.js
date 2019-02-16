@@ -2,7 +2,7 @@ import Jaccordion from './src'
 
 // const button = document.getElementById('mount')
 
-const jaccordion = new Jaccordion(document.getElementById('first'))
+const jaccordion = new Jaccordion('dl')
 jaccordion.mount()
 
 // button.addEventListener('click', function() {

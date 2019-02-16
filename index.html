@@ -24,46 +24,38 @@
       border: 1px solid gray;
     }
 
-    dt:not(.is-opened) + dd {
+    dt:not(.jaccordion__header--isOpened) + dd {
       display: none;
     }
 
     p {
       margin: 0;
     }
+
+    img {
+      width: 100%;
+    }
   </style>
 </head>
 
 <body>
-  <dl id="first" class="pepe">
-    <dt>Section 1</dt>
+  <dl>
+    <dt>Panda</dt>
     <dd>
       <p>Section 1 Content...</p>
+      <img src="https://goo.gl/oNbtoq">
     </dd>
-    <dt>Section 2</dt>
+    <dt>Cat</dt>
     <dd>
       <p>Section 2 Content...</p>
+      <img src="https://goo.gl/PoQQXb">
     </dd>
-    <dt>Section 3</dt>
+    <dt>Dolphin</dt>
     <dd>
       <p>Section 3 Content...</p>
+      <img src="https://goo.gl/BbiKCd">
     </dd>
   </dl>
-  <button id="mount">Mount</button>
-  <!-- <dl id="second">
-    <dt>Section 1</dt>
-    <dd>
-      <p>Section 1 Content...</p>
-    </dd>
-    <dt>Section 2</dt>
-    <dd>
-      <p>Section 2 Content...</p>
-    </dd>
-    <dt>Section 3</dt>
-    <dd>
-      <p>Section 3 Content...</p>
-    </dd>
-  </dl> -->
   <script src="./index.js"></script>
 </body>
 
