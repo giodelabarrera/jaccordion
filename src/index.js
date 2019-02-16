@@ -1,8 +1,5 @@
-import {makeIsTagName} from './utils/dom'
 import defaults from './defaults'
-import Items from './components/items'
-
-const isDTTagName = makeIsTagName('dt')
+import Html from './components/html'
 
 export default class Jaccordion {
   constructor(selector, options) {
@@ -14,11 +11,9 @@ export default class Jaccordion {
   }
 
   mount() {
-    const componentsToMount = [Items]
+    const componentsToMount = [Html]
 
-    this.components = componentsToMount.map(componentToMount =>
-      componentToMount(this)
-    )
+    this.components = componentsToMount.map(component => component(this))
 
     this.components.forEach(component => component.mount())
 
