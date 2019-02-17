@@ -1,34 +1,27 @@
 import defaults from './defaults'
-import Html from './components/html'
-import Build from './components/build'
-import Action from './components/action'
+import {
+  htmlElements,
+  createItems,
+  openItem,
+  closeItem
+} from './helper'
 
 export default class Jaccordion {
   constructor(selector, options) {
     this.selector = selector
     this.settings = {...defaults, ...options}
-    this.components = {}
   }
 
   mount() {
-    const componentsToMount = {
-      Html: Html,
-      Build: Build,
-      Action: Action
-    }
+    this.html = htmlElements(this.selector)
 
-    const components = {}
-    for (let name in componentsToMount) {
-      components[name] = componentsToMount[name](this, components)
-    }
+    this.items = createItems(this.html)
 
-    for (let name in components) {
-      components[name].mount()
-    }
-
-    this.components = components
-
-    return this
+    this.items.forEach(({header}, currentIndex) => {
+      header.addEventListener('click', event => {
+        this.toggle(currentIndex)
+      })
+    })
   }
 
   update(settings) {
@@ -47,16 +40,21 @@ export default class Jaccordion {
     return this
   }
 
+  toggle(index) {
+    this.items[index].isOpened ? this.close(index) : this.open(index)
+    return this
+  }
+
   open(index) {
-    this.components.Action.open(index)
+    this.items = openItem(index, this.items)
+    this.items[index].header.classList.add(this.settings.classes.isOpened)
+    return this
   }
 
   close(index) {
-    this.components.Action.close(index)
-  }
-
-  toggle(index) {
-    this.components.Action.toggle(index)
+    this.items = closeItem(index, this.items)
+    this.items[index].header.classList.remove(this.settings.classes.isOpened)
+    return this
   }
 
   on(event, handler) {
