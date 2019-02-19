@@ -7,24 +7,24 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <style>
-    dl {
+    dl.jaccordion {
       border: 1px solid black;
     }
 
-    dt {
+    dt.jaccordion__header {
       padding: 20px;
       background-color: darkslategray;
       color: white;
       font-weight: bold;
     }
 
-    dd {
+    dd.jaccordion__content {
       padding: 20px;
       margin: 0;
       border: 1px solid gray;
     }
 
-    dt:not(.jaccordion__header--isOpened) + dd {
+    dt.jaccordion__header:not(.jaccordion__header--opened) + dd.jaccordion__content {
       display: none;
     }
 
@@ -39,21 +39,32 @@
 </head>
 
 <body>
-  <dl class="accordion">
-    <dt>Panda</dt>
+  <dl id="first-accordion">
+    <!-- <dt>Panda</dt>
     <dd>
       <p>Section 1 Content...</p>
-      <img src="https://goo.gl/oNbtoq">
     </dd>
     <dt>Cat</dt>
     <dd>
       <p>Section 2 Content...</p>
-      <img src="https://goo.gl/PoQQXb">
     </dd>
-    <dt data-jaccordion-open="true">Dolphin</dt>
+    <dt>Dolphin</dt>
     <dd>
       <p>Section 3 Content...</p>
-      <img src="https://goo.gl/BbiKCd">
+    </dd> -->
+  </dl>
+  <dl id="second-accordion">
+    <dt>Panda</dt>
+    <dd>
+      <p>Section 1 Content...</p>
+    </dd>
+    <dt>Cat</dt>
+    <dd>
+      <p>Section 2 Content...</p>
+    </dd>
+    <dt>Dolphin</dt>
+    <dd>
+      <p>Section 3 Content...</p>
     </dd>
   </dl>
   <script src="./index.js"></script>

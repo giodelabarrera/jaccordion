@@ -1,10 +1,10 @@
 export default {
-  multiOpen: false,
-  allowAllClosed: false,
+  openAt: 0,
+  entries: [],
   classes: {
     root: 'jaccordion',
     header: 'jaccordion__header',
-    isOpened: 'jaccordion__header--isOpened',
+    opened: 'jaccordion__header--opened',
     content: 'jaccordion__content'
   }
 }
