@@ -1,154 +1,136 @@
 import defaults from './defaults'
 import {
-  openItem,
-  closeItem,
-  mergeOptions,
   getElementBySelector,
-  getItemsByRoot,
+  mergeOptions,
   getItemsByEntries,
-  closeItems
-} from './helpers'
+  getItemsByRoot
+} from './core'
+import EventsBinder from './core/events-binder'
+import {removeChildren} from './utils/dom'
 
 export default class Jaccordion {
   constructor(selector, options) {
-    this.selector = selector
-    this.root = getElementBySelector(this.selector)
+    this.root = getElementBySelector(selector)
     this.settings = mergeOptions(defaults, options)
-    this._items = []
-    this._listeners = []
-    this._enabled = false
+    this.enabled = false
+    this.items = []
+    this.event = new EventsBinder()
   }
 
   mount() {
-    let items = []
+    const {entries} = this.settings
 
-    if (this.settings.entries && this.settings.entries.length > 0) {
-      items = getItemsByEntries(this.settings.entries, this.settings)
-      while (this.root.firstChild) this.root.removeChild(this.root.firstChild)
+    let items = []
+    if (entries && entries.length > 0) {
+      items = getItemsByEntries(entries)
+      removeChildren(this.root)
       items.forEach(item => {
         this.root.appendChild(item.header)
         this.root.appendChild(item.content)
       })
     } else {
-      items = getItemsByRoot(this.root, this.settings)
+      items = getItemsByRoot(this.root)
     }
+    this.items = items
 
-    this._items = items
+    this._addClasses()
+    this._bind()
 
-    // add class
-    this.root.classList.add(this.settings.classes.root)
-    // add class
-    const {openAt} = this.settings
-    this._items.forEach((item, currentIndex) => {
-      item.header.classList.add(this.settings.classes.header)
-      item.content.classList.add(this.settings.classes.content)
-      if (openAt === currentIndex) {
-        item.header.classList.add(this.settings.classes.opened)
-      }
-    })
-
-    this._listeners = this._items.map((item, currentIndex) => {
-      return () => this.toggle(currentIndex)
-    })
-    this.bind()
-
-    this._enabled = true
+    this.enabled = true
   }
 
   update(options) {
-    // remove class
-    this.root.classList.remove(this.settings.classes.root)
-    // remove class
-    this._items.forEach(item => {
-      item.header.classList.remove(
-        this.settings.classes.header,
-        this.settings.classes.opened
-      )
-      item.content.classList.remove(this.settings.classes.content)
-    })
-    this.unbind()
+    this._removeClasses()
+    this._unbind()
 
     this.settings = mergeOptions(this.settings, options)
     this.mount()
-    return this
   }
 
   destroy() {
-    // remove class
-    this.root.classList.remove(this.settings.classes.root)
-    // remove class
-    this._items.forEach(item => {
-      item.header.classList.remove(
-        this.settings.classes.header,
-        this.settings.classes.opened
-      )
-      item.content.classList.remove(this.settings.classes.content)
-    })
-    this.unbind()
+    this._removeClasses()
+    this._unbind()
 
-    this.selector = ''
-    this.root = undefined
-    this.settings = defaults
-    this._items = []
-    this._listeners = []
-    this._enabled = false
-
-    return this
+    delete this.root
+    delete this.settings
+    delete this.enabled
+    delete this.items
+    delete this.event
   }
 
   disable() {
-    this._enabled = false
+    this.enabled = false
     return this
   }
 
   enable() {
-    this._enabled = true
+    this.enabled = true
     return this
   }
 
   toggle(index) {
-    if (this._enabled) {
-      this._items[index].opened ? this.close(index) : this.open(index)
+    if (this.enabled) {
+      this.isOpen(index) ? this.close(index) : this.open(index)
     }
     return this
   }
 
-  open(index) {
-    if (this._enabled) {
-      this._items = closeItems(this._items)
-      this._items.forEach(item =>
-        item.header.classList.remove(this.settings.classes.opened)
-      )
+  isOpen(index) {
+    const {classes} = this.settings
+    return this.items[index].header.classList.contains(classes.opened)
+  }
 
-      this._items = openItem(index, this._items)
-      this._items[index].header.classList.add(this.settings.classes.opened)
+  open(index) {
+    if (this.enabled) {
+      const {classes} = this.settings
+      this.items.forEach(({header}) => header.classList.remove(classes.opened))
+      this.items[index].header.classList.add(classes.opened)
     }
 
     return this
   }
 
   close(index) {
-    if (this._enabled) {
-      this._items = closeItem(index, this._items)
-      this._items[index].header.classList.remove(this.settings.classes.opened)
+    if (this.enabled) {
+      const {classes} = this.settings
+      this.items[index].header.classList.remove(classes.opened)
     }
 
     return this
   }
 
-  bind() {
-    this._items.forEach(({header}, currentIndex) => {
-      header.addEventListener('click', this._listeners[currentIndex])
+  on(event, handler) {}
+
+  _bind() {
+    this.items.forEach(({header}, currentIndex) => {
+      this.event.on('click', header, () => this.toggle(currentIndex))
     })
   }
 
-  unbind() {
-    this._items.forEach(({header}, currentIndex) => {
-      header.removeEventListener('click', this._listeners[currentIndex])
+  _unbind() {
+    this.items.forEach(({header}) => this.event.off('click', header))
+  }
+
+  _addClasses() {
+    const {classes, openAt} = this.settings
+
+    this.root.classList.add(classes.root)
+    this.items.forEach(({header, content}, currentIndex) => {
+      header.classList.add(classes.header)
+      if (openAt === currentIndex) {
+        header.classList.add(classes.opened)
+      }
+      content.classList.add(classes.content)
     })
   }
 
-  on(event, handler) {
-    return this
+  _removeClasses() {
+    const {classes} = this.settings
+
+    this.root.classList.remove(classes.root)
+    this.items.forEach(({header, content}) => {
+      header.classList.remove(classes.header, classes.opened)
+      content.classList.remove(classes.content)
+    })
   }
 }
