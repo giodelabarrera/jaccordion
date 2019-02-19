@@ -1,4 +1,4 @@
-export default class EventsBinder {
+export default class EventBinder {
   constructor() {
     this.listeners = {}
   }

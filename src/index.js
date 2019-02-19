@@ -1,12 +1,11 @@
 import defaults from './defaults'
-import {
-  getElementBySelector,
-  mergeOptions,
-  getItemsByEntries,
-  getItemsByRoot
-} from './core'
-import EventsBinder from './core/events-binder'
+import {getElementBySelector} from './core/dom'
+import {mergeOptions} from './core/object'
+import {getItemsByEntries, getItemsByRoot, addItems} from './core/item'
+import EventBinder from './event/binder'
 import {removeChildren} from './utils/dom'
+import * as itemView from './view/item'
+import * as buildView from './view/build'
 
 export default class Jaccordion {
   constructor(selector, options) {
@@ -14,7 +13,7 @@ export default class Jaccordion {
     this.settings = mergeOptions(defaults, options)
     this.enabled = false
     this.items = []
-    this.event = new EventsBinder()
+    this.event = new EventBinder()
   }
 
   mount() {
@@ -24,10 +23,7 @@ export default class Jaccordion {
     if (entries && entries.length > 0) {
       items = getItemsByEntries(entries)
       removeChildren(this.root)
-      items.forEach(item => {
-        this.root.appendChild(item.header)
-        this.root.appendChild(item.content)
-      })
+      addItems(this.root, items)
     } else {
       items = getItemsByRoot(this.root)
     }
@@ -77,14 +73,13 @@ export default class Jaccordion {
 
   isOpen(index) {
     const {classes} = this.settings
-    return this.items[index].header.classList.contains(classes.opened)
+    return itemView.isOpen(index, this.items, classes.opened)
   }
 
   open(index) {
     if (this.enabled) {
       const {classes} = this.settings
-      this.items.forEach(({header}) => header.classList.remove(classes.opened))
-      this.items[index].header.classList.add(classes.opened)
+      itemView.openItem(index, this.items, classes.opened)
     }
 
     return this
@@ -93,7 +88,7 @@ export default class Jaccordion {
   close(index) {
     if (this.enabled) {
       const {classes} = this.settings
-      this.items[index].header.classList.remove(classes.opened)
+      itemView.closeItem(index, this.items, classes.opened)
     }
 
     return this
@@ -113,24 +108,15 @@ export default class Jaccordion {
 
   _addClasses() {
     const {classes, openAt} = this.settings
+    const {root, items} = this
 
-    this.root.classList.add(classes.root)
-    this.items.forEach(({header, content}, currentIndex) => {
-      header.classList.add(classes.header)
-      if (openAt === currentIndex) {
-        header.classList.add(classes.opened)
-      }
-      content.classList.add(classes.content)
-    })
+    buildView.addClasses({root, items, openAt, classes})
   }
 
   _removeClasses() {
     const {classes} = this.settings
+    const {root, items} = this
 
-    this.root.classList.remove(classes.root)
-    this.items.forEach(({header, content}) => {
-      header.classList.remove(classes.header, classes.opened)
-      content.classList.remove(classes.content)
-    })
+    buildView.removeClasses({root, items, classes})
   }
 }

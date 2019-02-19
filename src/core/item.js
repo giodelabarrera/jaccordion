@@ -2,17 +2,6 @@ import {makeIsTagName} from '../utils/dom'
 
 const isDTTagName = makeIsTagName('dt')
 
-export function mergeOptions(defaults, settings) {
-  // @TODO: protect and validate options
-  const options = {...defaults, ...settings}
-  return options
-}
-
-export function getElementBySelector(selector) {
-  // @TODO: validate only one element
-  return document.querySelector(selector)
-}
-
 export function getItemsByRoot(dlElem) {
   const children = Array.from(dlElem.children)
   const headers = children.filter(isDTTagName)
@@ -29,5 +18,12 @@ export function getItemsByEntries(entries) {
     const content = document.createElement('dd')
     content.innerText = entry.content
     return {header, content}
+  })
+}
+
+export function addItems(root, items) {
+  items.forEach(item => {
+    root.appendChild(item.header)
+    root.appendChild(item.content)
   })
 }
