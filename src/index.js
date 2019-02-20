@@ -17,26 +17,28 @@ export default class Jaccordion {
   }
 
   mount() {
-    const {entries} = this.settings
+    const {openAt, entries, classes} = this.settings
 
-    let items = []
+    let currentItems = []
     if (entries && entries.length > 0) {
-      items = getItemsByEntries(entries)
+      currentItems = getItemsByEntries(entries)
       removeChildren(this.root)
-      addItems(this.root, items)
+      addItems(this.root, currentItems)
     } else {
-      items = getItemsByRoot(this.root)
+      currentItems = getItemsByRoot(this.root)
     }
-    this.items = items
+    this.items = currentItems
 
-    this._addClasses()
+    buildView.addClasses({root: this.root, items: this.items, openAt, classes})
     this._bind()
 
     this.enabled = true
   }
 
   update(options) {
-    this._removeClasses()
+    const {classes} = this.settings
+
+    buildView.removeClasses({root: this.root, items: this.items, classes})
     this._unbind()
 
     this.settings = mergeOptions(this.settings, options)
@@ -44,7 +46,9 @@ export default class Jaccordion {
   }
 
   destroy() {
-    this._removeClasses()
+    const {classes} = this.settings
+
+    buildView.removeClasses({root: this.root, items: this.items, classes})
     this._unbind()
 
     delete this.root
@@ -104,19 +108,5 @@ export default class Jaccordion {
 
   _unbind() {
     this.items.forEach(({header}) => this.event.off('click', header))
-  }
-
-  _addClasses() {
-    const {classes, openAt} = this.settings
-    const {root, items} = this
-
-    buildView.addClasses({root, items, openAt, classes})
-  }
-
-  _removeClasses() {
-    const {classes} = this.settings
-    const {root, items} = this
-
-    buildView.removeClasses({root, items, classes})
   }
 }
