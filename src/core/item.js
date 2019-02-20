@@ -20,10 +20,3 @@ export function getItemsByEntries(entries) {
     return {header, content}
   })
 }
-
-export function addItems(root, items) {
-  items.forEach(item => {
-    root.appendChild(item.header)
-    root.appendChild(item.content)
-  })
-}

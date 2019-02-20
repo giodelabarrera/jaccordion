@@ -1,3 +1,16 @@
+import {removeChildren} from '../utils/dom'
+
+export function addItems(root, items) {
+  items.forEach(item => {
+    root.appendChild(item.header)
+    root.appendChild(item.content)
+  })
+}
+
+export function removeItems(root) {
+  removeChildren(root)
+}
+
 export function isOpen(index, items, className) {
   return items[index].header.classList.contains(className)
 }

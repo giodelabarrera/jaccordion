@@ -1,9 +1,8 @@
 import defaults from './defaults'
 import {getElementBySelector} from './core/dom'
 import {mergeOptions} from './core/object'
-import {getItemsByEntries, getItemsByRoot, addItems} from './core/item'
+import {getItemsByEntries, getItemsByRoot} from './core/item'
 import EventBinder from './event/binder'
-import {removeChildren} from './utils/dom'
 import * as itemView from './view/item'
 import * as buildView from './view/build'
 
@@ -22,8 +21,8 @@ export default class Jaccordion {
     let currentItems = []
     if (entries && entries.length > 0) {
       currentItems = getItemsByEntries(entries)
-      removeChildren(this.root)
-      addItems(this.root, currentItems)
+      itemView.removeItems(this.root)
+      itemView.addItems(this.root, currentItems)
     } else {
       currentItems = getItemsByRoot(this.root)
     }
