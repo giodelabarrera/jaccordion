@@ -7,7 +7,7 @@ import * as itemView from './view/item'
 import * as buildView from './view/build'
 
 export default class Jaccordion {
-  constructor(selector, options) {
+  constructor(selector, options = {}) {
     this.root = getElementBySelector(selector)
     this.settings = mergeOptions(defaults, options)
     this.enabled = false
@@ -34,7 +34,7 @@ export default class Jaccordion {
     this.enabled = true
   }
 
-  update(options) {
+  update(options = {}) {
     const {classes} = this.settings
 
     buildView.removeClasses({root: this.root, items: this.items, classes})
