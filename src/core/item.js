@@ -2,7 +2,7 @@ import {makeIsTagName} from '../utils/dom'
 
 const isDTTagName = makeIsTagName('dt')
 
-function createItem(header, content) {
+export function createItem(header, content) {
   return {header, content}
 }
 

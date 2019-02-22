@@ -11,19 +11,22 @@ export function removeItems(root) {
   removeChildren(root)
 }
 
-export function isOpen(index, items, className) {
-  return items[index].header.classList.contains(className)
+export function closeItems(items, classes) {
+  const {opened} = classes
+  items.forEach(({header}) => header.classList.remove(opened))
 }
 
-export function closeItems(items, className) {
-  items.forEach(({header}) => header.classList.remove(className))
+export function isOpen(item, classes) {
+  const {opened} = classes
+  return item.header.classList.contains(opened)
 }
 
-export function openItem(index, items, className) {
-  closeItems(items, className)
-  items[index].header.classList.add(className)
+export function openItem(item, classes) {
+  const {opened} = classes
+  item.header.classList.add(opened)
 }
 
-export function closeItem(index, items, className) {
-  items[index].header.classList.remove(className)
+export function closeItem(item, classes) {
+  const {opened} = classes
+  item.header.classList.remove(opened)
 }
