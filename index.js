@@ -14,7 +14,11 @@ const firstAccordion = new Jaccordion('#first-accordion', {
     }
   ]
 })
-firstAccordion.mount()
+firstAccordion
+  .on('open.after', item => {
+    item.content.innerText = 'Header after'
+  })
+  .mount()
 
 const secondAccordion = new Jaccordion('#second-accordion', {
   openAt: 1

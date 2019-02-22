@@ -2,7 +2,8 @@ import defaults from './defaults'
 import {getElementBySelector} from './core/dom'
 import {mergeOptions} from './core/object'
 import {getItemsByEntries, getItemsByRoot} from './core/item'
-import EventBinder from './event/binder'
+import EventBinder from './event/event-binder'
+import EventBus from './event/event-bus'
 import * as itemView from './view/item'
 import * as buildView from './view/build'
 
@@ -12,10 +13,13 @@ export default class Jaccordion {
     this.settings = mergeOptions(defaults, options)
     this.enabled = false
     this.items = []
-    this.event = new EventBinder()
+    this.eventBinder = new EventBinder()
+    this.eventBus = new EventBus()
   }
 
   mount() {
+    this.eventBus.emit('mount.before')
+
     const {openAt, entries, classes} = this.settings
 
     let currentItems = []
@@ -32,6 +36,10 @@ export default class Jaccordion {
     this._bind()
 
     this.enabled = true
+
+    this.eventBus.emit('mount.after')
+
+    return this
   }
 
   update(options = {}) {
@@ -42,6 +50,10 @@ export default class Jaccordion {
 
     this.settings = mergeOptions(this.settings, options)
     this.mount()
+
+    this.eventBus.emit('update')
+
+    return this
   }
 
   destroy() {
@@ -54,7 +66,9 @@ export default class Jaccordion {
     delete this.settings
     delete this.enabled
     delete this.items
-    delete this.event
+    delete this.eventBinder
+
+    this.eventBus.emit('destroy')
   }
 
   disable() {
@@ -81,8 +95,12 @@ export default class Jaccordion {
 
   open(index) {
     if (this.enabled) {
+      this.eventBus.emit('open.before', this.items[index])
+
       const {classes} = this.settings
       itemView.openItem(index, this.items, classes.opened)
+
+      this.eventBus.emit('open.after', this.items[index])
     }
 
     return this
@@ -90,22 +108,30 @@ export default class Jaccordion {
 
   close(index) {
     if (this.enabled) {
+      this.eventBus.emit('close.before', this.items[index])
+
       const {classes} = this.settings
       itemView.closeItem(index, this.items, classes.opened)
+
+      this.eventBus.emit('close.after', this.items[index])
     }
 
     return this
   }
 
-  on(event, handler) {}
+  on(event, handler) {
+    this.eventBus.on(event, handler)
+
+    return this
+  }
 
   _bind() {
     this.items.forEach(({header}, currentIndex) => {
-      this.event.on('click', header, () => this.toggle(currentIndex))
+      this.eventBinder.on('click', header, () => this.toggle(currentIndex))
     })
   }
 
   _unbind() {
-    this.items.forEach(({header}) => this.event.off('click', header))
+    this.items.forEach(({header}) => this.eventBinder.off('click', header))
   }
 }
