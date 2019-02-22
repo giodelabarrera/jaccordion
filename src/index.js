@@ -95,13 +95,15 @@ export default class Jaccordion {
 
   open(index) {
     if (this.enabled) {
-      this.eventBus.emit('open.before', this.items[index])
+      const item = this.items[index]
+
+      this.eventBus.emit('open.before', {index, item})
 
       const {classes} = this.settings
       itemView.closeItems(this.items, classes)
-      itemView.openItem(this.items[index], classes)
+      itemView.openItem(item, classes)
 
-      this.eventBus.emit('open.after', this.items[index])
+      this.eventBus.emit('open.after', {index, item})
     }
 
     return this
@@ -109,12 +111,14 @@ export default class Jaccordion {
 
   close(index) {
     if (this.enabled) {
-      this.eventBus.emit('close.before', this.items[index])
+      const item = this.items[index]
+
+      this.eventBus.emit('close.before', {index, item})
 
       const {classes} = this.settings
-      itemView.closeItem(this.items[index], classes)
+      itemView.closeItem(item, classes)
 
-      this.eventBus.emit('close.after', this.items[index])
+      this.eventBus.emit('close.after', {index, item})
     }
 
     return this

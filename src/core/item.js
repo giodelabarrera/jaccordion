@@ -2,25 +2,25 @@ import {makeIsTagName} from '../utils/dom'
 
 const isDTTagName = makeIsTagName('dt')
 
-export function createItem(header, content) {
-  return {header, content}
+export function createItem({id, header, content}) {
+  return {id, header, content}
 }
 
 export function getItemsByRoot(dlElem) {
   const children = Array.from(dlElem.children)
   const headers = children.filter(isDTTagName)
-  return headers.map(header => {
+  return headers.map((header, currentIndex) => {
     const content = header.nextElementSibling
-    return createItem(header, content)
+    return createItem({id: currentIndex, header, content})
   })
 }
 
 export function getItemsByEntries(entries) {
   return entries.map(entry => {
     const header = document.createElement('dt')
-    header.innerText = entry.header
+    header.innerHTML = entry.header
     const content = document.createElement('dd')
-    content.innerText = entry.content
-    return createItem(header, content)
+    content.innerHTML = entry.content
+    return createItem({id: entry.id, header, content})
   })
 }

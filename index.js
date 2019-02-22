@@ -16,7 +16,7 @@ const firstAccordion = new Jaccordion('#first-accordion', {
 })
 firstAccordion
   .on('open.after', item => {
-    item.content.innerText = 'Header after'
+    if (item.id === 4) item.content.innerHTML = '<h1>Section with id 4</h1>'
   })
   .mount()
 
