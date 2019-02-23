@@ -9,12 +9,13 @@
     "precommit": "sui-precommit run"
   },
   "dependencies": {
-    "@babel/preset-env": "^7.3.1",
-    "parcel-bundler": "^1.11.0"
+    "@babel/polyfill": "^7.2.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.2",
-    "@s-ui/lint": "^2.20.0"
+    "@babel/core": "^7.0.0-0",
+    "@babel/preset-env": "^7.3.1",
+    "@s-ui/lint": "^2.20.0",
+    "parcel-bundler": "^1.11.0"
   },
   "eslintConfig": {
     "extends": [

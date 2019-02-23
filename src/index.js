@@ -1,7 +1,7 @@
 import defaults from './defaults'
 import {getElementBySelector} from './core/dom'
 import {mergeOptions} from './core/object'
-import {getItemsByEntries, getItemsByRoot} from './core/item'
+import {getItemsByEntries, getItemsByRoot, getItemsByAjax} from './core/item'
 import EventBinder from './event/event-binder'
 import EventBus from './event/event-bus'
 import * as itemView from './view/item'
@@ -17,12 +17,16 @@ export default class Jaccordion {
     this.eventBus = new EventBus()
   }
 
-  mount() {
+  async mount() {
     this.eventBus.emit('mount.before')
 
-    const {openAt, entries, classes} = this.settings
+    const {openAt, ajax, classes} = this.settings
 
+    let entries = this.settings
     let currentItems = []
+    if (ajax.url) {
+      entries = await getItemsByAjax(ajax)
+    }
     if (entries && entries.length > 0) {
       currentItems = getItemsByEntries(entries)
       itemView.removeItems(this.root)

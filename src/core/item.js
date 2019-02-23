@@ -24,3 +24,9 @@ export function getItemsByEntries(entries) {
     return createItem({id: entry.id, header, content})
   })
 }
+
+export async function getItemsByAjax({url, processResults}) {
+  const response = await fetch(url)
+  const data = await response.json()
+  return processResults(data)
+}
