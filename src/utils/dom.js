@@ -1,6 +1,6 @@
 export const makeIsTagName = tagName => element =>
   element.tagName === tagName.toUpperCase()
 
-export function removeChildren(elem) {
-  while (elem.firstChild) elem.removeChild(elem.firstChild)
+export const removeChildren = element => {
+  while (element.firstChild) element.removeChild(element.firstChild)
 }

@@ -1,5 +1,6 @@
 import '@babel/polyfill'
 import Jaccordion from './src'
+import {createItemByEntry} from './src/core/item'
 
 // const accordion = new Jaccordion('#second-accordion', {
 //   openAt: 3,
@@ -20,12 +21,10 @@ import Jaccordion from './src'
 const accordion = new Jaccordion('#accordion', {
   entries: [
     {
-      id: 4,
       header: 'Section 4',
       content: 'Description 4'
     },
     {
-      id: 5,
       header: 'Section 5',
       content: 'Description 5'
     }
@@ -35,7 +34,7 @@ const accordion = new Jaccordion('#accordion', {
     processResults({items}) {
       return items
         .map(item => ({
-          id: item.id,
+          // id: item.id,
           header: item.full_name,
           content: item.description
         }))
@@ -45,6 +44,15 @@ const accordion = new Jaccordion('#accordion', {
 })
 accordion.mount()
 window.accordion = accordion
+
+window.entry = createItemByEntry({
+  header: 'New section 1',
+  content: 'With new description 1'
+})
+window.entryTwo = createItemByEntry({
+  header: 'New section 2',
+  content: 'With new description 2'
+})
 
 // const secondAccordion = new Jaccordion('#second-accordion', {
 //   openAt: 1

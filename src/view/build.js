@@ -1,11 +1,18 @@
-export function addClasses({root, items, openAt, classes}) {
+export function addClassRoot(root, classes) {
   root.classList.add(classes.root)
-  items.forEach(({header, content}, currentIndex) => {
-    header.classList.add(classes.header)
-    if (openAt === currentIndex) {
-      header.classList.add(classes.opened)
-    }
-    content.classList.add(classes.content)
+}
+
+export function addClassItem(item, classes) {
+  const {header, content} = item
+  header.classList.add(classes.header)
+  content.classList.add(classes.content)
+}
+
+export function addClasses({root, items, openAt, classes}) {
+  addClassRoot(root, classes)
+  items.forEach(({id, header, content}) => {
+    addClassItem({header, content}, classes)
+    if (openAt === id) header.classList.add(classes.opened)
   })
 }
 
