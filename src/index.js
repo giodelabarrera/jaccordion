@@ -10,8 +10,8 @@ import {
   createItem,
   addItem
 } from './core/item'
-import EventBinder from './event/event-binder'
 import EventBus from './event/event-bus'
+import {bindHandlerClickItem} from './view/event'
 import * as itemView from './view/item'
 import * as buildView from './view/build'
 
@@ -127,12 +127,11 @@ export default class Jaccordion {
     const newItem = createItem(item)
     this.items = addItem(newItem, this.items)
 
-    const {id, header} = newItem
     itemView.addItem(newItem, this.root)
     const {classes} = this.settings
     buildView.addClassItem(newItem, classes)
-    this.eventBinders[id] = new EventBinder()
-    this.eventBinders[id].on('click', header, () => this.toggle(id))
+    const {id} = newItem
+    this.eventBinders[id] = bindHandlerClickItem(newItem, () => this.toggle(id))
 
     this.eventBus.emit('append', newItem)
 
@@ -143,12 +142,11 @@ export default class Jaccordion {
     const newItem = createItem(item)
     this.items = addItem(newItem, this.items)
 
-    const {id, header} = newItem
     itemView.prependItem(newItem, this.root)
     const {classes} = this.settings
     buildView.addClassItem(newItem, classes)
-    this.eventBinders[id] = new EventBinder()
-    this.eventBinders[id].on('click', header, () => this.toggle(id))
+    const {id} = newItem
+    this.eventBinders[id] = bindHandlerClickItem(newItem, () => this.toggle(id))
 
     this.eventBus.emit('prepend', newItem)
 
@@ -175,9 +173,9 @@ export default class Jaccordion {
   }
 
   _bind() {
-    this.items.forEach(({id, header}) => {
-      this.eventBinders[id] = new EventBinder()
-      this.eventBinders[id].on('click', header, () => this.toggle(id))
+    this.items.forEach(item => {
+      const {id} = item
+      this.eventBinders[id] = bindHandlerClickItem(item, () => this.toggle(id))
     })
   }
 
