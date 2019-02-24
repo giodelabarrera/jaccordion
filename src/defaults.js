@@ -3,7 +3,7 @@ export default {
   entries: [],
   ajax: {
     url: '',
-    processResults() {}
+    processResults: data => data
   },
   classes: {
     root: 'jaccordion',

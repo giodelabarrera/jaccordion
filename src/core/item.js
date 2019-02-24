@@ -25,7 +25,7 @@ export function getItemsByEntries(entries) {
   })
 }
 
-export async function getItemsByAjax({url, processResults}) {
+export async function getEntriesByAjax({url, processResults}) {
   const response = await fetch(url)
   const data = await response.json()
   return processResults(data)

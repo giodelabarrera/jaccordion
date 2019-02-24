@@ -1,7 +1,7 @@
 import defaults from './defaults'
 import {getElementBySelector} from './core/dom'
 import {mergeOptions} from './core/object'
-import {getItemsByEntries, getItemsByRoot, getItemsByAjax} from './core/item'
+import {getItemsByEntries, getItemsByRoot, getEntriesByAjax} from './core/item'
 import EventBinder from './event/event-binder'
 import EventBus from './event/event-bus'
 import * as itemView from './view/item'
@@ -13,7 +13,7 @@ export default class Jaccordion {
     this.settings = mergeOptions(defaults, options)
     this.enabled = false
     this.items = []
-    this.eventBinder = new EventBinder()
+    this.eventBinders = []
     this.eventBus = new EventBus()
   }
 
@@ -21,18 +21,17 @@ export default class Jaccordion {
     this.eventBus.emit('mount.before')
 
     const {openAt, ajax, classes} = this.settings
+    let entries = this.settings.entries
 
-    let entries = this.settings
-    let currentItems = []
+    let currentItems = getItemsByRoot(this.root)
     if (ajax.url) {
-      entries = await getItemsByAjax(ajax)
+      const entriesByAjax = await getEntriesByAjax(ajax)
+      entries = [...entries, ...entriesByAjax]
     }
     if (entries && entries.length > 0) {
-      currentItems = getItemsByEntries(entries)
-      itemView.removeItems(this.root)
-      itemView.addItems(this.root, currentItems)
-    } else {
-      currentItems = getItemsByRoot(this.root)
+      const itemsByEntries = getItemsByEntries(entries)
+      itemView.addItems(this.root, itemsByEntries)
+      currentItems = [...currentItems, ...itemsByEntries]
     }
     this.items = currentItems
 
@@ -42,20 +41,6 @@ export default class Jaccordion {
     this.enabled = true
 
     this.eventBus.emit('mount.after')
-
-    return this
-  }
-
-  update(options = {}) {
-    const {classes} = this.settings
-
-    buildView.removeClasses({root: this.root, items: this.items, classes})
-    this._unbind()
-
-    this.settings = mergeOptions(this.settings, options)
-    this.mount()
-
-    this.eventBus.emit('update')
 
     return this
   }
@@ -73,6 +58,7 @@ export default class Jaccordion {
     delete this.eventBinder
 
     this.eventBus.emit('destroy')
+    delete this.eventBus
   }
 
   disable() {
@@ -136,11 +122,17 @@ export default class Jaccordion {
 
   _bind() {
     this.items.forEach(({header}, currentIndex) => {
-      this.eventBinder.on('click', header, () => this.toggle(currentIndex))
+      this.eventBinders[currentIndex] = new EventBinder()
+      this.eventBinders[currentIndex].on('click', header, () =>
+        this.toggle(currentIndex)
+      )
     })
   }
 
   _unbind() {
-    this.items.forEach(({header}) => this.eventBinder.off('click', header))
+    this.eventBinders = []
+    this.items.forEach(({header}, currentIndex) =>
+      this.eventBinders[currentIndex].off('click', header)
+    )
   }
 }
