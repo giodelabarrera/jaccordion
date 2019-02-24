@@ -121,18 +121,16 @@ export default class Jaccordion {
   }
 
   _bind() {
-    this.items.forEach(({header}, currentIndex) => {
-      this.eventBinders[currentIndex] = new EventBinder()
-      this.eventBinders[currentIndex].on('click', header, () =>
-        this.toggle(currentIndex)
-      )
+    this.items.forEach(({header}, index) => {
+      this.eventBinders[index] = new EventBinder()
+      this.eventBinders[index].on('click', header, () => this.toggle(index))
     })
   }
 
   _unbind() {
-    this.eventBinders = []
-    this.items.forEach(({header}, currentIndex) =>
-      this.eventBinders[currentIndex].off('click', header)
+    this.items.forEach(({header}, index) =>
+      this.eventBinders[index].off('click', header)
     )
+    this.eventBinders = []
   }
 }
