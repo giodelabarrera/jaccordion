@@ -8,8 +8,10 @@ import {
   findItemById,
   removeItem,
   createItem,
-  addItem,
-  appendBeforeItem
+  appendBeforeItem,
+  appendAfterItem,
+  appendItem,
+  prependItem
 } from './core/item'
 import EventBus from './event/event-bus'
 import {bindHandlerClickItem} from './view/event'
@@ -126,9 +128,9 @@ export default class Jaccordion {
 
   append(header, content) {
     const newItem = createItem({header, content})
-    this.items = addItem(newItem, this.items)
+    this.items = appendItem(newItem, this.items)
 
-    itemView.addItem(newItem, this.root)
+    itemView.appendItem(newItem, this.root)
     const {classes} = this.settings
     buildView.addClassItem(newItem, classes)
     const {id} = newItem
@@ -141,7 +143,7 @@ export default class Jaccordion {
 
   prepend(header, content) {
     const newItem = createItem({header, content})
-    this.items = addItem(newItem, this.items)
+    this.items = prependItem(newItem, this.items)
 
     itemView.prependItem(newItem, this.root)
     const {classes} = this.settings
@@ -172,6 +174,19 @@ export default class Jaccordion {
   }
 
   appendAfter(header, content, referenceId) {
+    const referenceItem = findItemById(referenceId, this.items)
+
+    const newItem = createItem({header, content})
+    this.items = appendAfterItem(newItem, referenceItem.id, this.items)
+
+    itemView.appendAfterItem(newItem, referenceItem, this.root)
+    const {classes} = this.settings
+    buildView.addClassItem(newItem, classes)
+    const {id} = newItem
+    this.eventBinders[id] = bindHandlerClickItem(newItem, () => this.toggle(id))
+
+    this.eventBus.emit('appendAfter', newItem)
+
     return this
   }
 

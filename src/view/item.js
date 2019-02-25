@@ -33,6 +33,10 @@ export function closeItem(item, classes) {
   item.header.classList.remove(opened)
 }
 
+export function appendItem(item, root) {
+  addItem(item, root)
+}
+
 export function prependItem(item, root) {
   const firstHeader = root.children[0]
   if (firstHeader) {
@@ -52,4 +56,14 @@ export function removeItem(item) {
 export function appendBeforeItem(item, referenceItem, root) {
   root.insertBefore(item.header, referenceItem.header)
   root.insertBefore(item.content, referenceItem.header)
+}
+
+export function appendAfterItem(item, referenceItem, root) {
+  const nextHeader = referenceItem.content.nextElementSibling
+  if (nextHeader) {
+    root.insertBefore(item.header, nextHeader)
+    root.insertBefore(item.content, nextHeader)
+  } else {
+    appendItem(item, root)
+  }
 }

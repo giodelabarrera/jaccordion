@@ -22,9 +22,22 @@ export function addItem(item, items) {
   return [...items, item]
 }
 
+export function appendItem(item, items) {
+  return addItem(item, items)
+}
+
+export function prependItem(item, items) {
+  return [item, ...items]
+}
+
 export function appendBeforeItem(item, referenceId, items) {
   const index = items.findIndex(item => item.id === referenceId)
   return [...items.slice(0, index), item, ...items.slice(index)]
+}
+
+export function appendAfterItem(item, referenceId, items) {
+  const index = items.findIndex(item => item.id === referenceId)
+  return [...items.slice(0, index + 1), item, ...items.slice(index + 1)]
 }
 
 export function getItemsByRoot(dlElem) {
