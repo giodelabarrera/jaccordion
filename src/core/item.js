@@ -22,6 +22,11 @@ export function addItem(item, items) {
   return [...items, item]
 }
 
+export function appendBeforeItem(item, referenceId, items) {
+  const index = items.findIndex(item => item.id === referenceId)
+  return [...items.slice(0, index), item, ...items.slice(index)]
+}
+
 export function getItemsByRoot(dlElem) {
   const children = Array.from(dlElem.children)
   const headers = children.filter(isDTTagName)

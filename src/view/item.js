@@ -48,3 +48,8 @@ export function removeItem(item) {
   header.remove()
   content.remove()
 }
+
+export function appendBeforeItem(item, referenceItem, root) {
+  root.insertBefore(item.header, referenceItem.header)
+  root.insertBefore(item.content, referenceItem.header)
+}
