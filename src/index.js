@@ -13,10 +13,11 @@ import {
   appendItem,
   prependItem
 } from './core/item'
+import EventBinder from './event/event-binder'
 import EventBus from './event/event-bus'
-import {bindHandlerClickItem} from './view/event'
 import * as itemView from './view/item'
 import * as buildView from './view/build'
+import * as eventView from './view/event'
 
 export default class Jaccordion {
   constructor(selector, options = {}) {
@@ -54,22 +55,6 @@ export default class Jaccordion {
     this.eventBus.emit('mount.after')
 
     return this
-  }
-
-  destroy() {
-    const {classes} = this.settings
-
-    buildView.removeClasses({root: this.root, items: this.items, classes})
-    this._unbind()
-
-    delete this.root
-    delete this.settings
-    delete this.enabled
-    delete this.items
-    delete this.eventBinders
-
-    this.eventBus.emit('destroy')
-    delete this.eventBus
   }
 
   disable() {
@@ -127,65 +112,89 @@ export default class Jaccordion {
   }
 
   append(header, content) {
+    this.eventBus.emit('append.before', {header, content})
+
     const newItem = createItem({header, content})
     this.items = appendItem(newItem, this.items)
-
     itemView.appendItem(newItem, this.root)
+
     const {classes} = this.settings
     buildView.addClassItem(newItem, classes)
-    const {id} = newItem
-    this.eventBinders[id] = bindHandlerClickItem(newItem, () => this.toggle(id))
 
-    this.eventBus.emit('append', newItem)
+    const {id} = newItem
+    this.eventBinders[id] = new EventBinder()
+    eventView.bindClickItem(newItem, this.eventBinders[id], () =>
+      this.toggle(id)
+    )
+
+    this.eventBus.emit('append.after', newItem)
 
     return this
   }
 
   prepend(header, content) {
+    this.eventBus.emit('prepend.before', {header, content})
+
     const newItem = createItem({header, content})
     this.items = prependItem(newItem, this.items)
-
     itemView.prependItem(newItem, this.root)
+
     const {classes} = this.settings
     buildView.addClassItem(newItem, classes)
-    const {id} = newItem
-    this.eventBinders[id] = bindHandlerClickItem(newItem, () => this.toggle(id))
 
-    this.eventBus.emit('prepend', newItem)
+    const {id} = newItem
+    this.eventBinders[id] = new EventBinder()
+    eventView.bindClickItem(newItem, this.eventBinders[id], () =>
+      this.toggle(id)
+    )
+
+    this.eventBus.emit('prepend.after', newItem)
 
     return this
   }
 
   appendBefore(header, content, referenceId) {
+    this.eventBus.emit('appendBefore.before', {header, content, referenceId})
+
     const referenceItem = findItemById(referenceId, this.items)
 
     const newItem = createItem({header, content})
     this.items = appendBeforeItem(newItem, referenceItem.id, this.items)
-
     itemView.appendBeforeItem(newItem, referenceItem, this.root)
+
     const {classes} = this.settings
     buildView.addClassItem(newItem, classes)
-    const {id} = newItem
-    this.eventBinders[id] = bindHandlerClickItem(newItem, () => this.toggle(id))
 
-    this.eventBus.emit('appendBefore', newItem)
+    const {id} = newItem
+    this.eventBinders[id] = new EventBinder()
+    eventView.bindClickItem(newItem, this.eventBinders[id], () =>
+      this.toggle(id)
+    )
+
+    this.eventBus.emit('appendBefore.after', newItem)
 
     return this
   }
 
   appendAfter(header, content, referenceId) {
+    this.eventBus.emit('appendAfter.before', {header, content, referenceId})
+
     const referenceItem = findItemById(referenceId, this.items)
 
     const newItem = createItem({header, content})
     this.items = appendAfterItem(newItem, referenceItem.id, this.items)
-
     itemView.appendAfterItem(newItem, referenceItem, this.root)
+
     const {classes} = this.settings
     buildView.addClassItem(newItem, classes)
-    const {id} = newItem
-    this.eventBinders[id] = bindHandlerClickItem(newItem, () => this.toggle(id))
 
-    this.eventBus.emit('appendAfter', newItem)
+    const {id} = newItem
+    this.eventBinders[id] = new EventBinder()
+    eventView.bindClickItem(newItem, this.eventBinders[id], () =>
+      this.toggle(id)
+    )
+
+    this.eventBus.emit('appendAfter.after', newItem)
 
     return this
   }
@@ -209,17 +218,37 @@ export default class Jaccordion {
     return this
   }
 
+  destroy() {
+    const {classes} = this.settings
+
+    buildView.removeClasses({root: this.root, items: this.items, classes})
+    this._unbind()
+
+    delete this.root
+    delete this.settings
+    delete this.enabled
+    delete this.items
+    delete this.eventBinders
+
+    this.eventBus.emit('destroy')
+    delete this.eventBus
+  }
+
   _bind() {
     this.items.forEach(item => {
       const {id} = item
-      this.eventBinders[id] = bindHandlerClickItem(item, () => this.toggle(id))
+      this.eventBinders[id] = new EventBinder()
+      eventView.bindClickItem(item, this.eventBinders[id], () =>
+        this.toggle(id)
+      )
     })
   }
 
   _unbind() {
-    this.items.forEach(({id, header}) =>
-      this.eventBinders[id].off('click', header)
-    )
+    this.items.forEach(item => {
+      const {id} = item
+      eventView.unbindClickItem(item, this.eventBinders[id])
+    })
     this.eventBinders = []
   }
 }

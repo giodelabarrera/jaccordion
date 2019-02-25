@@ -1,8 +1,9 @@
-import EventBinder from '../event/event-binder'
-
-export function bindHandlerClickItem(item, handler) {
+export function bindClickItem(item, eventBinder, handler) {
   const {header} = item
-  const eventBinder = new EventBinder()
   eventBinder.on('click', header, handler)
-  return eventBinder
+}
+
+export function unbindClickItem(item, eventBinder) {
+  const {header} = item
+  eventBinder.off('click', header)
 }
