@@ -5,7 +5,7 @@
   "author": "Giorgio de la Barrera <giodelabarrera@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "lint:js": "eslint src/**/*.js"
+    "lint:js": "eslint {src,test}/**/*.js"
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5"
