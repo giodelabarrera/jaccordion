@@ -1,4 +1,4 @@
-export function warning(msg) {
+return function warning(msg) {
   // eslint-disable-next-line no-console
-  console.error(`[Jaccordion warn]: ${msg}`)
+  console.error(`${msg}`)
 }

@@ -1,6 +1,4 @@
-import {makeIsTagName} from '../utils/dom'
-
-const isDTTagName = makeIsTagName('dt')
+import {isTagName} from '../utils/dom'
 
 let currentId = 0
 
@@ -42,7 +40,7 @@ export function appendAfterItem(item, referenceId, items) {
 
 export function getItemsByRoot(dlElem) {
   const children = Array.from(dlElem.children)
-  const headers = children.filter(isDTTagName)
+  const headers = children.filter(isTagName('dl'))
   return headers.map(header => {
     const content = header.nextElementSibling
     return createItem({header, content})

@@ -15,9 +15,8 @@ import {
 } from './core/item'
 import EventBinder from './event/event-binder'
 import EventBus from './event/event-bus'
-import * as itemView from './view/item'
 import * as buildView from './view/build'
-import * as eventView from './view/event'
+import * as itemView from './view/item'
 
 export default class Jaccordion {
   constructor(selector, options = {}) {
@@ -59,7 +58,7 @@ export default class Jaccordion {
           buildView.addClassItem(item, classes)
 
           this.eventBinders[id] = new EventBinder()
-          eventView.bindClickItem(item, this.eventBinders[id], () =>
+          itemView.bindClickItem(item, this.eventBinders[id], () =>
             this.toggle(id)
           )
         })
@@ -141,7 +140,7 @@ export default class Jaccordion {
 
     const {id} = newItem
     this.eventBinders[id] = new EventBinder()
-    eventView.bindClickItem(newItem, this.eventBinders[id], () =>
+    itemView.bindClickItem(newItem, this.eventBinders[id], () =>
       this.toggle(id)
     )
 
@@ -162,7 +161,7 @@ export default class Jaccordion {
 
     const {id} = newItem
     this.eventBinders[id] = new EventBinder()
-    eventView.bindClickItem(newItem, this.eventBinders[id], () =>
+    itemView.bindClickItem(newItem, this.eventBinders[id], () =>
       this.toggle(id)
     )
 
@@ -185,7 +184,7 @@ export default class Jaccordion {
 
     const {id} = newItem
     this.eventBinders[id] = new EventBinder()
-    eventView.bindClickItem(newItem, this.eventBinders[id], () =>
+    itemView.bindClickItem(newItem, this.eventBinders[id], () =>
       this.toggle(id)
     )
 
@@ -208,7 +207,7 @@ export default class Jaccordion {
 
     const {id} = newItem
     this.eventBinders[id] = new EventBinder()
-    eventView.bindClickItem(newItem, this.eventBinders[id], () =>
+    itemView.bindClickItem(newItem, this.eventBinders[id], () =>
       this.toggle(id)
     )
 
@@ -256,16 +255,14 @@ export default class Jaccordion {
     this.items.forEach(item => {
       const {id} = item
       this.eventBinders[id] = new EventBinder()
-      eventView.bindClickItem(item, this.eventBinders[id], () =>
-        this.toggle(id)
-      )
+      itemView.bindClickItem(item, this.eventBinders[id], () => this.toggle(id))
     })
   }
 
   _unbind() {
     this.items.forEach(item => {
       const {id} = item
-      eventView.unbindClickItem(item, this.eventBinders[id])
+      itemView.unbindClickItem(item, this.eventBinders[id])
     })
     this.eventBinders = []
   }

@@ -1,4 +1,4 @@
-export const makeIsTagName = tagName => element =>
+export const isTagName = tagName => element =>
   element.tagName === tagName.toUpperCase()
 
 export const removeChildren = element => {
