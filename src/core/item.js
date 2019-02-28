@@ -40,7 +40,7 @@ export function appendAfterItem(item, referenceId, items) {
 
 export function getItemsByRoot(dlElem) {
   const children = Array.from(dlElem.children)
-  const headers = children.filter(isTagName('dl'))
+  const headers = children.filter(isTagName('dt'))
   return headers.map(header => {
     const content = header.nextElementSibling
     return createItem({header, content})

@@ -103,8 +103,8 @@ export default class Jaccordion {
 
       this._eventBus.emit('open.before', item)
 
-      const {classes} = this._settings
-      itemView.closeItems(this.items, classes)
+      const {multiple, classes} = this._settings
+      if (multiple === false) itemView.closeItems(this.items, classes)
       itemView.openItem(item, classes)
 
       this._eventBus.emit('open.after', item)

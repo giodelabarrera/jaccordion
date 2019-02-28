@@ -1,5 +1,6 @@
 export default {
   openAt: 0,
+  multiple: false,
   entries: [],
   ajax: {
     url: '',
