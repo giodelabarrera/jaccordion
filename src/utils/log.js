@@ -1,4 +1,4 @@
-return function warning(msg) {
-  // eslint-disable-next-line no-console
-  console.error(`${msg}`)
+/* eslint-disable no-console */
+export function warning(message) {
+  console.error(message)
 }

@@ -7,6 +7,7 @@
   "scripts": {
     "lint:js": "eslint {src,test}/**/*.js",
     "test": "jest",
+    "debug:test": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "coverage": "jest --coverage"
   },
   "dependencies": {
