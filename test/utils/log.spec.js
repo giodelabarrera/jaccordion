@@ -9,7 +9,7 @@ describe('log', () => {
       preSpy = console.error
     })
 
-    it('should have the same message', () => {
+    test('should have the same message', () => {
       const spy = jest.fn()
       console.error = spy
       try {

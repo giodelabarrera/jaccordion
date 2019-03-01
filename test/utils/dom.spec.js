@@ -3,7 +3,7 @@ import {isTagName, removeChildren} from '../../src/utils/dom'
 describe('dom', () => {
   describe('isTagName', () => {
     describe('with tag name parameter', () => {
-      it('should return an instance of Function', () => {
+      test('should return an instance of Function', () => {
         const isDLTagName = isTagName('dl')
         expect(isDLTagName).toBeDefined()
         expect(isDLTagName).toBeInstanceOf(Function)
@@ -11,13 +11,13 @@ describe('dom', () => {
     })
 
     describe('with tag name and element parameters', () => {
-      it('should not have the same tag name', () => {
+      test('should not have the same tag name', () => {
         const isULTagName = isTagName('ul')
         const dlElem = document.createElement('dl')
         expect(isULTagName(dlElem)).toBeFalsy()
       })
 
-      it('should have the same tag name', () => {
+      test('should have the same tag name', () => {
         const isDLTagName = isTagName('dl')
         const dlElem = document.createElement('dl')
         expect(isDLTagName(dlElem)).toBeTruthy()
@@ -26,7 +26,7 @@ describe('dom', () => {
   })
 
   describe('removeChildren', () => {
-    it('should remove correctly the children', () => {
+    test('should remove correctly the children', () => {
       const dlElem = document.createElement('dl')
       dlElem.innerHTML = `
         <dt>Header 1</dt>

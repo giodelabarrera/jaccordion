@@ -1,4 +1,7 @@
 export function getElementBySelector(selector) {
-  // @TODO: validate only one element
+  if (typeof selector === 'undefined') throw new Error('selector is required')
+  if (typeof selector !== 'string')
+    throw new Error('selector must be of type string')
+
   return document.querySelector(selector)
 }
