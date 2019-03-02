@@ -36,6 +36,7 @@ export default class Jaccordion {
     this.items = getItemsByRoot(this.root)
 
     if (entries && entries.length > 0) {
+      // @TODO: validateEntriesId(entries, items)
       const itemsByEntries = getItemsByEntries(entries)
       itemView.addItems(itemsByEntries, this.root)
       this.items = [...this.items, ...itemsByEntries]
@@ -48,6 +49,7 @@ export default class Jaccordion {
       this._eventBus.emit('mountAjax.before')
 
       getEntriesByAjax(ajax).then(entriesByAjax => {
+        // @TODO: validateEntriesId(entriesByAjax)
         const itemsByEntries = getItemsByEntries(entriesByAjax)
         itemView.addItems(itemsByEntries, this.root)
         this.items = [...this.items, ...itemsByEntries]

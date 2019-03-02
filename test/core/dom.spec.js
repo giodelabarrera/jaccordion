@@ -66,7 +66,7 @@ describe('dom', () => {
         expect(element.classList.contains('first')).toBeTruthy()
       })
 
-      test('should correctly return the element', () => {
+      test('should return correctly the element', () => {
         const selector = 'dl.first'
         const element = getElementBySelector(selector)
 

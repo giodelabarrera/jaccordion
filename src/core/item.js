@@ -4,7 +4,28 @@ let currentId = 0
 
 export function createItem(item) {
   const {header, content} = item
-  let id = item.id ? item.id : currentId++
+
+  if (typeof header === 'undefined') throw new Error('header is required')
+  if (typeof content === 'undefined') throw new Error('content is required')
+
+  if (item.id && typeof item.id !== 'number') {
+    throw new Error('id must be of type number')
+  }
+
+  if (!(header instanceof HTMLElement)) {
+    throw new Error('header must be a HTMLElement')
+  } else if (header.tagName !== 'DT') {
+    throw new Error('header must be a HTMLElement with tag name DT')
+  }
+
+  if (!(content instanceof HTMLElement)) {
+    throw new Error('content must be a HTMLElement')
+  } else if (content.tagName !== 'DD') {
+    throw new Error('content must be a HTMLElement with tag name DD')
+  }
+
+  const id = item.id ? item.id : currentId++
+
   return {id, header, content}
 }
 
@@ -48,8 +69,7 @@ export function getItemsByRoot(dlElem) {
 }
 
 export function createItemByEntry(entry) {
-  let id
-  if (entry.id) id = entry.id
+  const {id} = entry
   const header = document.createElement('dt')
   header.innerHTML = entry.header
   const content = document.createElement('dd')
