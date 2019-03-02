@@ -2,7 +2,11 @@ import {
   createItem,
   removeItem,
   findItemById,
-  addItem
+  addItem,
+  appendItem,
+  prependItem,
+  appendBeforeItem,
+  appendAfterItem
 } from '../../src/core/item'
 
 describe('item', () => {
@@ -31,7 +35,7 @@ describe('item', () => {
       })
 
       test('should fail on trying to pass incorrect type in property id of item', () => {
-        const id = '1404'
+        const id = '123'
         expect(() => createItem({id, header, content})).toThrowError(
           'id must be a number'
         )
@@ -339,6 +343,516 @@ describe('item', () => {
       test('should not have side effects in items', () => {
         const clonedItems = [...items]
         addItem(itemToAdd, items)
+        expect(clonedItems).toEqual(items)
+      })
+    })
+  })
+
+  describe('appendItem', () => {
+    let ids
+    let items
+    let itemToAppend
+
+    beforeEach(() => {
+      ids = [0, 1, 2]
+
+      items = ids.map(id => {
+        const header = document.createElement('dt')
+        header.innerText = `Header ${id}`
+        const content = document.createElement('dd')
+        content.innerText = `Description ${id}`
+        return {id, header, content}
+      })
+
+      const id = ids.length
+      const header = document.createElement('dt')
+      header.innerText = `Header ${id}`
+      const content = document.createElement('dd')
+      content.innerText = `Description ${id}`
+      itemToAppend = {id, header, content}
+    })
+
+    describe('entries', () => {
+      test('should fail on trying to pass a undefined item', () => {
+        expect(() => appendItem()).toThrowError('item is required')
+      })
+
+      test('should fail on trying to pass a undefined items', () => {
+        expect(() => appendItem(itemToAppend)).toThrowError('items is required')
+      })
+
+      test('should fail on trying to pass a undefined in property id of item', () => {
+        const incorrectItem = {...itemToAppend, id: undefined}
+        expect(() => appendItem(incorrectItem, items)).toThrowError(
+          'id is required'
+        )
+      })
+
+      test('should fail on trying to pass a undefined in property header of item', () => {
+        const incorrectItem = {...itemToAppend, header: undefined}
+        expect(() => appendItem(incorrectItem, items)).toThrowError(
+          'header is required'
+        )
+      })
+
+      test('should fail on trying to pass a undefined in property content of item', () => {
+        const incorrectItem = {...itemToAppend, content: undefined}
+        expect(() => appendItem(incorrectItem, items)).toThrowError(
+          'content is required'
+        )
+      })
+
+      test('should fail on trying to pass incorrect type in property id of item', () => {
+        const incorrectItem = {...itemToAppend, id: '123'}
+        expect(() => appendItem(incorrectItem, items)).toThrowError(
+          'id must be a number'
+        )
+      })
+
+      test('should fail on trying to pass incorrect type in property header of item', () => {
+        const incorrectItem = {...itemToAppend, header: 'Lorem ipsum'}
+        expect(() => appendItem(incorrectItem, items)).toThrowError(
+          'header must be a HTMLElement'
+        )
+      })
+
+      test('should fail on trying to pass incorrect HTMLElement tag name in property header of item', () => {
+        const header = document.createElement('li')
+        header.innerText = 'Header'
+        const incorrectItem = {...itemToAppend, header}
+        expect(() => appendItem(incorrectItem, items)).toThrowError(
+          'header must have a tag name equal to DT'
+        )
+      })
+
+      test('should fail on trying to pass incorrect type in property content of item', () => {
+        const incorrectItem = {...itemToAppend, content: 'Lorem ipsum'}
+        expect(() => appendItem(incorrectItem, items)).toThrowError(
+          'content must be a HTMLElement'
+        )
+      })
+
+      test('should fail on trying to pass incorrect HTMLElement tag name in property content of item', () => {
+        const content = document.createElement('li')
+        content.innerText = 'Description'
+        const incorrectItem = {...itemToAppend, content}
+        expect(() => appendItem(incorrectItem, items)).toThrowError(
+          'content must have a tag name equal to DD'
+        )
+      })
+
+      test('should fail on trying to pass incorrect type in items', () => {
+        items = 1234
+        expect(() => appendItem(itemToAppend, items)).toThrowError(
+          'items must be a array'
+        )
+      })
+    })
+
+    describe('functionality', () => {
+      test('should append item correctly', () => {
+        const newItems = appendItem(itemToAppend, items)
+
+        expect(Array.isArray(newItems)).toBeTruthy()
+        expect(newItems).toHaveLength(items.length + 1)
+        expect(newItems.slice(-1)[0]).toEqual(itemToAppend)
+      })
+
+      test('should not have side effects in items', () => {
+        const clonedItems = [...items]
+        appendItem(itemToAppend, items)
+        expect(clonedItems).toEqual(items)
+      })
+    })
+  })
+
+  describe('prependItem', () => {
+    let ids
+    let items
+    let itemToPrepend
+
+    beforeEach(() => {
+      ids = [0, 1, 2]
+
+      items = ids.map(id => {
+        const header = document.createElement('dt')
+        header.innerText = `Header ${id}`
+        const content = document.createElement('dd')
+        content.innerText = `Description ${id}`
+        return {id, header, content}
+      })
+
+      const id = ids.length
+      const header = document.createElement('dt')
+      header.innerText = `Header ${id}`
+      const content = document.createElement('dd')
+      content.innerText = `Description ${id}`
+      itemToPrepend = {id, header, content}
+    })
+
+    describe('entries', () => {
+      test('should fail on trying to pass a undefined item', () => {
+        expect(() => prependItem()).toThrowError('item is required')
+      })
+
+      test('should fail on trying to pass a undefined items', () => {
+        expect(() => prependItem(itemToPrepend)).toThrowError(
+          'items is required'
+        )
+      })
+
+      test('should fail on trying to pass a undefined in property id of item', () => {
+        const incorrectItem = {...itemToPrepend, id: undefined}
+        expect(() => prependItem(incorrectItem, items)).toThrowError(
+          'id is required'
+        )
+      })
+
+      test('should fail on trying to pass a undefined in property header of item', () => {
+        const incorrectItem = {...itemToPrepend, header: undefined}
+        expect(() => prependItem(incorrectItem, items)).toThrowError(
+          'header is required'
+        )
+      })
+
+      test('should fail on trying to pass a undefined in property content of item', () => {
+        const incorrectItem = {...itemToPrepend, content: undefined}
+        expect(() => prependItem(incorrectItem, items)).toThrowError(
+          'content is required'
+        )
+      })
+
+      test('should fail on trying to pass incorrect type in property id of item', () => {
+        const incorrectItem = {...itemToPrepend, id: '123'}
+        expect(() => prependItem(incorrectItem, items)).toThrowError(
+          'id must be a number'
+        )
+      })
+
+      test('should fail on trying to pass incorrect type in property header of item', () => {
+        const incorrectItem = {...itemToPrepend, header: 'Lorem ipsum'}
+        expect(() => prependItem(incorrectItem, items)).toThrowError(
+          'header must be a HTMLElement'
+        )
+      })
+
+      test('should fail on trying to pass incorrect HTMLElement tag name in property header of item', () => {
+        const header = document.createElement('li')
+        header.innerText = 'Header'
+        const incorrectItem = {...itemToPrepend, header}
+        expect(() => prependItem(incorrectItem, items)).toThrowError(
+          'header must have a tag name equal to DT'
+        )
+      })
+
+      test('should fail on trying to pass incorrect type in property content of item', () => {
+        const incorrectItem = {...itemToPrepend, content: 'Lorem ipsum'}
+        expect(() => prependItem(incorrectItem, items)).toThrowError(
+          'content must be a HTMLElement'
+        )
+      })
+
+      test('should fail on trying to pass incorrect HTMLElement tag name in property content of item', () => {
+        const content = document.createElement('li')
+        content.innerText = 'Description'
+        const incorrectItem = {...itemToPrepend, content}
+        expect(() => prependItem(incorrectItem, items)).toThrowError(
+          'content must have a tag name equal to DD'
+        )
+      })
+
+      test('should fail on trying to pass incorrect type in items', () => {
+        items = 1234
+        expect(() => prependItem(itemToPrepend, items)).toThrowError(
+          'items must be a array'
+        )
+      })
+    })
+
+    describe('functionality', () => {
+      test('should prepend item correctly', () => {
+        const newItems = prependItem(itemToPrepend, items)
+
+        expect(Array.isArray(newItems)).toBeTruthy()
+        expect(newItems).toHaveLength(items.length + 1)
+        expect(newItems.slice(0)[0]).toEqual(itemToPrepend)
+      })
+
+      test('should not have side effects in items', () => {
+        const clonedItems = [...items]
+        prependItem(itemToPrepend, items)
+        expect(clonedItems).toEqual(items)
+      })
+    })
+  })
+
+  describe('appendBeforeItem', () => {
+    let ids
+    let items
+    let itemToAppend
+    let referenceId
+
+    beforeEach(() => {
+      ids = [0, 1, 2]
+
+      items = ids.map(id => {
+        const header = document.createElement('dt')
+        header.innerText = `Header ${id}`
+        const content = document.createElement('dd')
+        content.innerText = `Description ${id}`
+        return {id, header, content}
+      })
+
+      const id = ids.length
+      const header = document.createElement('dt')
+      header.innerText = `Header ${id}`
+      const content = document.createElement('dd')
+      content.innerText = `Description ${id}`
+      itemToAppend = {id, header, content}
+
+      referenceId = 1
+    })
+
+    describe('entries', () => {
+      test('should fail on trying to pass a undefined item', () => {
+        expect(() => appendBeforeItem()).toThrowError('item is required')
+      })
+
+      test('should fail on trying to pass a undefined referenceId', () => {
+        expect(() => appendBeforeItem(itemToAppend)).toThrowError(
+          'referenceId is required'
+        )
+      })
+
+      test('should fail on trying to pass a undefined items', () => {
+        expect(() => appendBeforeItem(itemToAppend, referenceId)).toThrowError(
+          'items is required'
+        )
+      })
+
+      test('should fail on trying to pass a undefined in property id of item', () => {
+        const incorrectItem = {...itemToAppend, id: undefined}
+        expect(() =>
+          appendBeforeItem(incorrectItem, referenceId, items)
+        ).toThrowError('id is required')
+      })
+
+      test('should fail on trying to pass a undefined in property header of item', () => {
+        const incorrectItem = {...itemToAppend, header: undefined}
+        expect(() =>
+          appendBeforeItem(incorrectItem, referenceId, items)
+        ).toThrowError('header is required')
+      })
+
+      test('should fail on trying to pass a undefined in property content of item', () => {
+        const incorrectItem = {...itemToAppend, content: undefined}
+        expect(() =>
+          appendBeforeItem(incorrectItem, referenceId, items)
+        ).toThrowError('content is required')
+      })
+
+      test('should fail on trying to pass incorrect type in property id of item', () => {
+        const incorrectItem = {...itemToAppend, id: '123'}
+        expect(() =>
+          appendBeforeItem(incorrectItem, referenceId, items)
+        ).toThrowError('id must be a number')
+      })
+
+      test('should fail on trying to pass incorrect type in property header of item', () => {
+        const incorrectItem = {...itemToAppend, header: 'Lorem ipsum'}
+        expect(() =>
+          appendBeforeItem(incorrectItem, referenceId, items)
+        ).toThrowError('header must be a HTMLElement')
+      })
+
+      test('should fail on trying to pass incorrect HTMLElement tag name in property header of item', () => {
+        const header = document.createElement('li')
+        header.innerText = 'Header'
+        const incorrectItem = {...itemToAppend, header}
+        expect(() =>
+          appendBeforeItem(incorrectItem, referenceId, items)
+        ).toThrowError('header must have a tag name equal to DT')
+      })
+
+      test('should fail on trying to pass incorrect type in property content of item', () => {
+        const incorrectItem = {...itemToAppend, content: 'Lorem ipsum'}
+        expect(() =>
+          appendBeforeItem(incorrectItem, referenceId, items)
+        ).toThrowError('content must be a HTMLElement')
+      })
+
+      test('should fail on trying to pass incorrect HTMLElement tag name in property content of item', () => {
+        const content = document.createElement('li')
+        content.innerText = 'Description'
+        const incorrectItem = {...itemToAppend, content}
+        expect(() =>
+          appendBeforeItem(incorrectItem, referenceId, items)
+        ).toThrowError('content must have a tag name equal to DD')
+      })
+
+      test('should fail on trying to pass incorrect type in items', () => {
+        items = 1234
+        expect(() =>
+          appendBeforeItem(itemToAppend, referenceId, items)
+        ).toThrowError('items must be a array')
+      })
+
+      test('should fail on trying to pass incorrect type in referenceId', () => {
+        referenceId = '123'
+        expect(() =>
+          appendBeforeItem(itemToAppend, referenceId, items)
+        ).toThrowError('referenceId must be a number')
+      })
+    })
+
+    describe('functionality', () => {
+      test('should append before item correctly', () => {
+        const newItems = appendBeforeItem(itemToAppend, referenceId, items)
+
+        expect(Array.isArray(newItems)).toBeTruthy()
+        expect(newItems).toHaveLength(items.length + 1)
+        expect(newItems.slice(1)[0]).toEqual(itemToAppend)
+      })
+
+      test('should not have side effects in items', () => {
+        const clonedItems = [...items]
+        appendBeforeItem(itemToAppend, referenceId, items)
+        expect(clonedItems).toEqual(items)
+      })
+    })
+  })
+
+  describe('appendAfterItem', () => {
+    let ids
+    let items
+    let itemToAppend
+    let referenceId
+
+    beforeEach(() => {
+      ids = [0, 1, 2]
+
+      items = ids.map(id => {
+        const header = document.createElement('dt')
+        header.innerText = `Header ${id}`
+        const content = document.createElement('dd')
+        content.innerText = `Description ${id}`
+        return {id, header, content}
+      })
+
+      const id = ids.length
+      const header = document.createElement('dt')
+      header.innerText = `Header ${id}`
+      const content = document.createElement('dd')
+      content.innerText = `Description ${id}`
+      itemToAppend = {id, header, content}
+
+      referenceId = 1
+    })
+
+    describe('entries', () => {
+      test('should fail on trying to pass a undefined item', () => {
+        expect(() => appendAfterItem()).toThrowError('item is required')
+      })
+
+      test('should fail on trying to pass a undefined referenceId', () => {
+        expect(() => appendAfterItem(itemToAppend)).toThrowError(
+          'referenceId is required'
+        )
+      })
+
+      test('should fail on trying to pass a undefined items', () => {
+        expect(() => appendAfterItem(itemToAppend, referenceId)).toThrowError(
+          'items is required'
+        )
+      })
+
+      test('should fail on trying to pass a undefined in property id of item', () => {
+        const incorrectItem = {...itemToAppend, id: undefined}
+        expect(() =>
+          appendAfterItem(incorrectItem, referenceId, items)
+        ).toThrowError('id is required')
+      })
+
+      test('should fail on trying to pass a undefined in property header of item', () => {
+        const incorrectItem = {...itemToAppend, header: undefined}
+        expect(() =>
+          appendAfterItem(incorrectItem, referenceId, items)
+        ).toThrowError('header is required')
+      })
+
+      test('should fail on trying to pass a undefined in property content of item', () => {
+        const incorrectItem = {...itemToAppend, content: undefined}
+        expect(() =>
+          appendAfterItem(incorrectItem, referenceId, items)
+        ).toThrowError('content is required')
+      })
+
+      test('should fail on trying to pass incorrect type in property id of item', () => {
+        const incorrectItem = {...itemToAppend, id: '123'}
+        expect(() =>
+          appendAfterItem(incorrectItem, referenceId, items)
+        ).toThrowError('id must be a number')
+      })
+
+      test('should fail on trying to pass incorrect type in property header of item', () => {
+        const incorrectItem = {...itemToAppend, header: 'Lorem ipsum'}
+        expect(() =>
+          appendAfterItem(incorrectItem, referenceId, items)
+        ).toThrowError('header must be a HTMLElement')
+      })
+
+      test('should fail on trying to pass incorrect HTMLElement tag name in property header of item', () => {
+        const header = document.createElement('li')
+        header.innerText = 'Header'
+        const incorrectItem = {...itemToAppend, header}
+        expect(() =>
+          appendAfterItem(incorrectItem, referenceId, items)
+        ).toThrowError('header must have a tag name equal to DT')
+      })
+
+      test('should fail on trying to pass incorrect type in property content of item', () => {
+        const incorrectItem = {...itemToAppend, content: 'Lorem ipsum'}
+        expect(() =>
+          appendAfterItem(incorrectItem, referenceId, items)
+        ).toThrowError('content must be a HTMLElement')
+      })
+
+      test('should fail on trying to pass incorrect HTMLElement tag name in property content of item', () => {
+        const content = document.createElement('li')
+        content.innerText = 'Description'
+        const incorrectItem = {...itemToAppend, content}
+        expect(() =>
+          appendAfterItem(incorrectItem, referenceId, items)
+        ).toThrowError('content must have a tag name equal to DD')
+      })
+
+      test('should fail on trying to pass incorrect type in items', () => {
+        items = 1234
+        expect(() =>
+          appendAfterItem(itemToAppend, referenceId, items)
+        ).toThrowError('items must be a array')
+      })
+
+      test('should fail on trying to pass incorrect type in referenceId', () => {
+        referenceId = '123'
+        expect(() =>
+          appendAfterItem(itemToAppend, referenceId, items)
+        ).toThrowError('referenceId must be a number')
+      })
+    })
+
+    describe('functionality', () => {
+      test('should append after item correctly', () => {
+        const newItems = appendAfterItem(itemToAppend, referenceId, items)
+
+        expect(Array.isArray(newItems)).toBeTruthy()
+        expect(newItems).toHaveLength(items.length + 1)
+        expect(newItems.slice(2)[0]).toEqual(itemToAppend)
+      })
+
+      test('should not have side effects in items', () => {
+        const clonedItems = [...items]
+        appendAfterItem(itemToAppend, referenceId, items)
         expect(clonedItems).toEqual(items)
       })
     })

@@ -51,15 +51,37 @@ export function appendItem(item, items) {
 }
 
 export function prependItem(item, items) {
+  if (isUndefined(item)) throwErrorRequired('item')
+  if (isUndefined(items)) throwErrorRequired('items')
+
+  validateItem(item)
+  if (!isArray(items)) throwErrorType('items', 'array')
+
   return [item, ...items]
 }
 
 export function appendBeforeItem(item, referenceId, items) {
+  if (isUndefined(item)) throwErrorRequired('item')
+  if (isUndefined(referenceId)) throwErrorRequired('referenceId')
+  if (isUndefined(items)) throwErrorRequired('items')
+
+  validateItem(item)
+  if (!isNumber(referenceId)) throwErrorType('referenceId', 'number')
+  if (!isArray(items)) throwErrorType('items', 'array')
+
   const index = items.findIndex(item => item.id === referenceId)
   return [...items.slice(0, index), item, ...items.slice(index)]
 }
 
 export function appendAfterItem(item, referenceId, items) {
+  if (isUndefined(item)) throwErrorRequired('item')
+  if (isUndefined(referenceId)) throwErrorRequired('referenceId')
+  if (isUndefined(items)) throwErrorRequired('items')
+
+  validateItem(item)
+  if (!isNumber(referenceId)) throwErrorType('referenceId', 'number')
+  if (!isArray(items)) throwErrorType('items', 'array')
+
   const index = items.findIndex(item => item.id === referenceId)
   return [...items.slice(0, index + 1), item, ...items.slice(index + 1)]
 }
