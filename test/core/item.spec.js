@@ -24,7 +24,7 @@ describe('item', () => {
       test('should fail on trying to pass incorrect type in property id', () => {
         const id = '1404'
         expect(() => createItem({id, header, content})).toThrowError(
-          'id must be of type number'
+          'id must be a number'
         )
       })
 
@@ -39,7 +39,7 @@ describe('item', () => {
         header = document.createElement('li')
         header.innerText = 'Header'
         expect(() => createItem({header, content})).toThrowError(
-          'header must be a HTMLElement with tag name DT'
+          'header must have a tag name equal to DT'
         )
       })
 
@@ -54,7 +54,7 @@ describe('item', () => {
         content = document.createElement('li')
         content.innerText = 'Description'
         expect(() => createItem({header, content})).toThrowError(
-          'content must be a HTMLElement with tag name DD'
+          'content must have a tag name equal to DD'
         )
       })
     })

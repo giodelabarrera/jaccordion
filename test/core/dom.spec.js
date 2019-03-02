@@ -13,21 +13,21 @@ describe('dom', () => {
         const selector = document.createElement('dl')
         expect(() => {
           getElementBySelector(selector)
-        }).toThrowError('selector must be of type string')
+        }).toThrowError('selector must be a string')
       })
 
       test('should fail on trying to pass a array in selector', () => {
         const selector = ['dl']
         expect(() => {
           getElementBySelector(selector)
-        }).toThrowError('selector must be of type string')
+        }).toThrowError('selector must be a string')
       })
 
       test('should fail on trying to pass a object in selector', () => {
         const selector = {selector: 'dl'}
         expect(() => {
           getElementBySelector(selector)
-        }).toThrowError('selector must be of type string')
+        }).toThrowError('selector must be a string')
       })
     })
 

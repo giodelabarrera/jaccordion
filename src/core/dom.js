@@ -1,7 +1,9 @@
+import {isUndefined, isString} from '../utils/unit'
+import {throwErrorRequired, throwErrorType} from '../utils/throw-error'
+
 export function getElementBySelector(selector) {
-  if (typeof selector === 'undefined') throw new Error('selector is required')
-  if (typeof selector !== 'string')
-    throw new Error('selector must be of type string')
+  if (isUndefined(selector)) throwErrorRequired('selector')
+  if (!isString(selector)) throwErrorType('selector', 'string')
 
   return document.querySelector(selector)
 }

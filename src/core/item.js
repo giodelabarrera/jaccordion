@@ -1,28 +1,26 @@
 import {isTagName} from '../utils/dom'
+import {isUndefined, isNumber, isHTMLElement} from '../utils/unit'
+import {
+  throwErrorRequired,
+  throwErrorType,
+  throwErrorTagName
+} from '../utils/throw-error'
 
 let currentId = 0
 
 export function createItem(item) {
   const {header, content} = item
 
-  if (typeof header === 'undefined') throw new Error('header is required')
-  if (typeof content === 'undefined') throw new Error('content is required')
+  if (isUndefined(header)) throwErrorRequired('header')
+  if (isUndefined(content)) throwErrorRequired('content')
 
-  if (item.id && typeof item.id !== 'number') {
-    throw new Error('id must be of type number')
-  }
+  if (item.id && !isNumber(item.id)) throwErrorType('id', 'number')
 
-  if (!(header instanceof HTMLElement)) {
-    throw new Error('header must be a HTMLElement')
-  } else if (header.tagName !== 'DT') {
-    throw new Error('header must be a HTMLElement with tag name DT')
-  }
+  if (!isHTMLElement(header)) throwErrorType('header', 'HTMLElement')
+  else if (!isTagName('dt')(header)) throwErrorTagName('header', 'dt')
 
-  if (!(content instanceof HTMLElement)) {
-    throw new Error('content must be a HTMLElement')
-  } else if (content.tagName !== 'DD') {
-    throw new Error('content must be a HTMLElement with tag name DD')
-  }
+  if (!isHTMLElement(content)) throwErrorType('content', 'HTMLElement')
+  else if (!isTagName('dd')(content)) throwErrorTagName('content', 'dd')
 
   const id = item.id ? item.id : currentId++
 
