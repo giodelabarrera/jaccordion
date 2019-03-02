@@ -1,27 +1,16 @@
 import {isTagName} from '../utils/dom'
-import {isUndefined, isNumber, isHTMLElement, isArray} from '../utils/unit'
-import {
-  throwErrorRequired,
-  throwErrorType,
-  throwErrorTagName
-} from '../utils/throw-error'
+import {isUndefined, isNumber, isArray} from '../utils/unit'
+import {throwErrorRequired, throwErrorType} from '../utils/throw-error'
+import {validateItem} from '../validator/item'
 
 let currentId = 0
 
 export function createItem(item) {
+  if (isUndefined(item)) throwErrorRequired('item')
+  const toCreate = true
+  validateItem(item, toCreate)
+
   const {header, content} = item
-
-  if (isUndefined(header)) throwErrorRequired('header')
-  if (isUndefined(content)) throwErrorRequired('content')
-
-  if (item.id && !isNumber(item.id)) throwErrorType('id', 'number')
-
-  if (!isHTMLElement(header)) throwErrorType('header', 'HTMLElement')
-  else if (!isTagName('dt')(header)) throwErrorTagName('header', 'dt')
-
-  if (!isHTMLElement(content)) throwErrorType('content', 'HTMLElement')
-  else if (!isTagName('dd')(content)) throwErrorTagName('content', 'dd')
-
   const id = item.id ? item.id : currentId++
 
   return {id, header, content}
@@ -48,6 +37,12 @@ export function findItemById(id, items) {
 }
 
 export function addItem(item, items) {
+  if (isUndefined(item)) throwErrorRequired('item')
+  if (isUndefined(items)) throwErrorRequired('items')
+
+  validateItem(item)
+  if (!isArray(items)) throwErrorType('items', 'array')
+
   return [...items, item]
 }
 
