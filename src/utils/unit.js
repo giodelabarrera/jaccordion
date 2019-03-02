@@ -20,6 +20,10 @@ export function isNumber(value) {
   return typeof value === 'number'
 }
 
+export function isArray(value) {
+  return Array.isArray(value)
+}
+
 /**
  * Indicates if the value is undefined
  *

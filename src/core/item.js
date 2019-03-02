@@ -1,5 +1,5 @@
 import {isTagName} from '../utils/dom'
-import {isUndefined, isNumber, isHTMLElement} from '../utils/unit'
+import {isUndefined, isNumber, isHTMLElement, isArray} from '../utils/unit'
 import {
   throwErrorRequired,
   throwErrorType,
@@ -28,10 +28,22 @@ export function createItem(item) {
 }
 
 export function removeItem(id, items) {
+  if (isUndefined(id)) throwErrorRequired('id')
+  if (isUndefined(items)) throwErrorRequired('items')
+
+  if (!isNumber(id)) throwErrorType('id', 'number')
+  if (!isArray(items)) throwErrorType('items', 'array')
+
   return items.filter(item => item.id !== id)
 }
 
 export function findItemById(id, items) {
+  if (isUndefined(id)) throwErrorRequired('id')
+  if (isUndefined(items)) throwErrorRequired('items')
+
+  if (!isNumber(id)) throwErrorType('id', 'number')
+  if (!isArray(items)) throwErrorType('items', 'array')
+
   return items.find(item => item.id === id)
 }
 
