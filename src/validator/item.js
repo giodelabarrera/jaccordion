@@ -1,10 +1,10 @@
-import {isUndefined, isNumber, isHTMLElement} from '../utils/unit'
+import {isUndefined, isNumber} from '../utils/unit'
 import {
   throwErrorRequired,
   throwErrorType,
   throwErrorTagName
 } from '../utils/throw-error'
-import {isTagName} from '../utils/dom'
+import {isTagName, isHTMLElement} from '../utils/dom'
 
 export function validateItem({id, header, content}, toCreate = false) {
   if (isUndefined(header)) throwErrorRequired('header')
@@ -17,10 +17,10 @@ export function validateItem({id, header, content}, toCreate = false) {
     if (!isNumber(id)) throwErrorType('id', 'number')
   }
 
-  if (!isHTMLElement(header)) throwErrorType('header', 'HTMLElement')
+  if (!isHTMLElement()(header)) throwErrorType('header', 'HTMLElement')
   else if (!isTagName('dt')(header)) throwErrorTagName('header', 'dt')
 
-  if (!isHTMLElement(content)) throwErrorType('content', 'HTMLElement')
+  if (!isHTMLElement()(content)) throwErrorType('content', 'HTMLElement')
   else if (!isTagName('dd')(content)) throwErrorTagName('content', 'dd')
 }
 
@@ -32,10 +32,10 @@ export function validateItem({id, header, content}, toCreate = false) {
 
 //   if (!isNumber(id)) valid = false
 
-//   if (!isHTMLElement(header)) valid = false
+//   if (!isHTMLElement()(header)) valid = false
 //   else if (!isTagName('dt')(header)) valid = false
 
-//   if (!isHTMLElement(content)) valid = false
+//   if (!isHTMLElement()(content)) valid = false
 //   else if (!isTagName('dd')(content)) valid = false
 
 //   return valid

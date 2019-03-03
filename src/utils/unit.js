@@ -34,14 +34,3 @@ export function isArray(value) {
 export function isUndefined(value) {
   return typeof value === 'undefined'
 }
-
-/**
- * Indicates if the value is a instance of HTMLElement
- *
- * @export
- * @param {*} value
- * @returns
- */
-export function isHTMLElement(value) {
-  return value instanceof HTMLElement
-}

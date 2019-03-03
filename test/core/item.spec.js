@@ -6,7 +6,8 @@ import {
   appendItem,
   prependItem,
   appendBeforeItem,
-  appendAfterItem
+  appendAfterItem,
+  getItemsByRoot
 } from '../../src/core/item'
 
 describe('item', () => {
@@ -854,6 +855,63 @@ describe('item', () => {
         const clonedItems = [...items]
         appendAfterItem(itemToAppend, referenceId, items)
         expect(clonedItems).toEqual(items)
+      })
+    })
+  })
+
+  describe('getItemsByRoot', () => {
+    let ids
+    let dlElem
+    let items
+
+    beforeEach(() => {
+      ids = [0, 1, 2]
+
+      dlElem = document.createElement('dl')
+      items = ids.map(id => {
+        const header = document.createElement('dt')
+        header.innerText = `Header ${id}`
+        dlElem.appendChild(header)
+        const content = document.createElement('dd')
+        content.innerText = `Description ${id}`
+        dlElem.appendChild(content)
+        return {id, header, content}
+      })
+    })
+
+    describe('entries', () => {
+      test('should fail on trying to pass a undefined dlElem', () => {
+        expect(() => getItemsByRoot()).toThrowError('dlElem is required')
+      })
+
+      test('should fail on trying to pass incorrect type in dlElem', () => {
+        dlElem = []
+        expect(() => getItemsByRoot(dlElem)).toThrowError(
+          'dlElem must be a HTMLDListElement'
+        )
+      })
+    })
+
+    describe('functionality', () => {
+      test('should get items by dl element correctly', () => {
+        const newItems = getItemsByRoot(dlElem)
+
+        expect(Array.isArray(newItems)).toBeTruthy()
+        expect(newItems).toHaveLength(items.length)
+        newItems.forEach((newItem, index) => {
+          expect(newItem).toHaveProperty('id')
+          expect(newItem.header).toEqual(items[index].header)
+          expect(newItem.content).toEqual(items[index].content)
+        })
+      })
+
+      test('should not have side effects in the children of dl element', () => {
+        const clonedChildren = [...Array.from(dlElem.children)]
+        getItemsByRoot(dlElem)
+        const children = Array.from(dlElem.children)
+
+        expect(clonedChildren.length).toBe(children.length)
+        expect(clonedChildren).toEqual(children)
       })
     })
   })

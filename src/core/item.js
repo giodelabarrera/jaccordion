@@ -1,4 +1,4 @@
-import {isTagName} from '../utils/dom'
+import {isTagName, isHTMLElement} from '../utils/dom'
 import {isUndefined, isNumber, isArray} from '../utils/unit'
 import {throwErrorRequired, throwErrorType} from '../utils/throw-error'
 import {validateItem} from '../validator/item'
@@ -87,6 +87,11 @@ export function appendAfterItem(item, referenceId, items) {
 }
 
 export function getItemsByRoot(dlElem) {
+  if (isUndefined(dlElem)) throwErrorRequired('dlElem')
+
+  if (!isHTMLElement(HTMLDListElement)(dlElem))
+    throwErrorType('dlElem', 'HTMLDListElement')
+
   const children = Array.from(dlElem.children)
   const headers = children.filter(isTagName('dt'))
   return headers.map(header => {
