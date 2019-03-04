@@ -120,6 +120,9 @@ export function createItemByEntry(entry) {
 }
 
 export function getItemsByEntries(entries) {
+  if (isUndefined(entries)) throwErrorRequired('entries')
+  if (!isArray(entries)) throwErrorType('entries', 'array')
+
   return entries.map(createItemByEntry)
 }
 

@@ -8,7 +8,8 @@ import {
   appendBeforeItem,
   appendAfterItem,
   getItemsByRoot,
-  createItemByEntry
+  createItemByEntry,
+  getItemsByEntries
 } from '../../src/core/item'
 
 describe('item', () => {
@@ -990,6 +991,62 @@ describe('item', () => {
         createItemByEntry(entry)
 
         expect(clonedEntry).toEqual(entry)
+      })
+    })
+  })
+
+  describe('getItemsByEntries', () => {
+    let ids
+    let entries
+    let items
+
+    beforeEach(() => {
+      ids = [0, 1, 2]
+
+      entries = ids.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+
+      items = entries.map(entry => {
+        const {id} = entry
+        const header = document.createElement('dt')
+        header.textContent = entry.header
+        const content = document.createElement('dd')
+        content.textContent = entry.content
+        return {id, header, content}
+      })
+    })
+
+    describe('entries', () => {
+      test('should fail on trying to pass a undefined entries', () => {
+        expect(() => getItemsByEntries()).toThrowError('entries is required')
+      })
+
+      test('should fail on trying to pass incorrect type in dlElem', () => {
+        entries = entries[0]
+        expect(() => getItemsByEntries(entries)).toThrowError(
+          'entries must be a array'
+        )
+      })
+    })
+
+    describe('functionality', () => {
+      test('should get items by entries correctly', () => {
+        const newItems = getItemsByEntries(entries)
+
+        expect(Array.isArray(newItems)).toBeTruthy()
+        expect(newItems).toHaveLength(items.length)
+        expect(newItems).toEqual(items)
+      })
+
+      test('should not have side effects in entries', () => {
+        const clonedEntries = [...entries]
+        getItemsByEntries(entries)
+
+        expect(clonedEntries.length).toBe(entries.length)
+        expect(clonedEntries).toEqual(entries)
       })
     })
   })
