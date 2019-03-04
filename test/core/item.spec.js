@@ -7,7 +7,8 @@ import {
   prependItem,
   appendBeforeItem,
   appendAfterItem,
-  getItemsByRoot
+  getItemsByRoot,
+  createItemByEntry
 } from '../../src/core/item'
 
 describe('item', () => {
@@ -17,9 +18,9 @@ describe('item', () => {
 
     beforeEach(() => {
       header = document.createElement('dt')
-      header.innerText = 'Header'
+      header.textContent = 'Header'
       content = document.createElement('dd')
-      content.innerText = 'Description'
+      content.textContent = 'Description'
     })
 
     describe('entries', () => {
@@ -51,7 +52,7 @@ describe('item', () => {
 
       test('should fail on trying to pass incorrect HTMLElement tag name in property header of item', () => {
         header = document.createElement('li')
-        header.innerText = 'Header'
+        header.textContent = 'Header'
         expect(() => createItem({header, content})).toThrowError(
           'header must have a tag name equal to DT'
         )
@@ -66,7 +67,7 @@ describe('item', () => {
 
       test('should fail on trying to pass incorrect HTMLElement tag name in property content of item', () => {
         content = document.createElement('li')
-        content.innerText = 'Description'
+        content.textContent = 'Description'
         expect(() => createItem({header, content})).toThrowError(
           'content must have a tag name equal to DD'
         )
@@ -107,9 +108,9 @@ describe('item', () => {
       ids = [0, 1, 2]
       items = ids.map(id => {
         const header = document.createElement('dt')
-        header.innerText = `Header ${id}`
+        header.textContent = `Header ${id}`
         const content = document.createElement('dd')
-        content.innerText = `Description ${id}`
+        content.textContent = `Description ${id}`
         return {id, header, content}
       })
     })
@@ -173,9 +174,9 @@ describe('item', () => {
       ids = [0, 1, 2]
       items = ids.map(id => {
         const header = document.createElement('dt')
-        header.innerText = `Header ${id}`
+        header.textContent = `Header ${id}`
         const content = document.createElement('dd')
-        content.innerText = `Description ${id}`
+        content.textContent = `Description ${id}`
         return {id, header, content}
       })
     })
@@ -241,17 +242,17 @@ describe('item', () => {
 
       items = ids.map(id => {
         const header = document.createElement('dt')
-        header.innerText = `Header ${id}`
+        header.textContent = `Header ${id}`
         const content = document.createElement('dd')
-        content.innerText = `Description ${id}`
+        content.textContent = `Description ${id}`
         return {id, header, content}
       })
 
       const id = ids.length
       const header = document.createElement('dt')
-      header.innerText = `Header ${id}`
+      header.textContent = `Header ${id}`
       const content = document.createElement('dd')
-      content.innerText = `Description ${id}`
+      content.textContent = `Description ${id}`
       itemToAdd = {id, header, content}
     })
 
@@ -301,7 +302,7 @@ describe('item', () => {
 
       test('should fail on trying to pass incorrect HTMLElement tag name in property header of item', () => {
         const header = document.createElement('li')
-        header.innerText = 'Header'
+        header.textContent = 'Header'
         const incorrectItem = {...itemToAdd, header}
         expect(() => addItem(incorrectItem, items)).toThrowError(
           'header must have a tag name equal to DT'
@@ -317,7 +318,7 @@ describe('item', () => {
 
       test('should fail on trying to pass incorrect HTMLElement tag name in property content of item', () => {
         const content = document.createElement('li')
-        content.innerText = 'Description'
+        content.textContent = 'Description'
         const incorrectItem = {...itemToAdd, content}
         expect(() => addItem(incorrectItem, items)).toThrowError(
           'content must have a tag name equal to DD'
@@ -359,17 +360,17 @@ describe('item', () => {
 
       items = ids.map(id => {
         const header = document.createElement('dt')
-        header.innerText = `Header ${id}`
+        header.textContent = `Header ${id}`
         const content = document.createElement('dd')
-        content.innerText = `Description ${id}`
+        content.textContent = `Description ${id}`
         return {id, header, content}
       })
 
       const id = ids.length
       const header = document.createElement('dt')
-      header.innerText = `Header ${id}`
+      header.textContent = `Header ${id}`
       const content = document.createElement('dd')
-      content.innerText = `Description ${id}`
+      content.textContent = `Description ${id}`
       itemToAppend = {id, header, content}
     })
 
@@ -419,7 +420,7 @@ describe('item', () => {
 
       test('should fail on trying to pass incorrect HTMLElement tag name in property header of item', () => {
         const header = document.createElement('li')
-        header.innerText = 'Header'
+        header.textContent = 'Header'
         const incorrectItem = {...itemToAppend, header}
         expect(() => appendItem(incorrectItem, items)).toThrowError(
           'header must have a tag name equal to DT'
@@ -435,7 +436,7 @@ describe('item', () => {
 
       test('should fail on trying to pass incorrect HTMLElement tag name in property content of item', () => {
         const content = document.createElement('li')
-        content.innerText = 'Description'
+        content.textContent = 'Description'
         const incorrectItem = {...itemToAppend, content}
         expect(() => appendItem(incorrectItem, items)).toThrowError(
           'content must have a tag name equal to DD'
@@ -477,17 +478,17 @@ describe('item', () => {
 
       items = ids.map(id => {
         const header = document.createElement('dt')
-        header.innerText = `Header ${id}`
+        header.textContent = `Header ${id}`
         const content = document.createElement('dd')
-        content.innerText = `Description ${id}`
+        content.textContent = `Description ${id}`
         return {id, header, content}
       })
 
       const id = ids.length
       const header = document.createElement('dt')
-      header.innerText = `Header ${id}`
+      header.textContent = `Header ${id}`
       const content = document.createElement('dd')
-      content.innerText = `Description ${id}`
+      content.textContent = `Description ${id}`
       itemToPrepend = {id, header, content}
     })
 
@@ -539,7 +540,7 @@ describe('item', () => {
 
       test('should fail on trying to pass incorrect HTMLElement tag name in property header of item', () => {
         const header = document.createElement('li')
-        header.innerText = 'Header'
+        header.textContent = 'Header'
         const incorrectItem = {...itemToPrepend, header}
         expect(() => prependItem(incorrectItem, items)).toThrowError(
           'header must have a tag name equal to DT'
@@ -555,7 +556,7 @@ describe('item', () => {
 
       test('should fail on trying to pass incorrect HTMLElement tag name in property content of item', () => {
         const content = document.createElement('li')
-        content.innerText = 'Description'
+        content.textContent = 'Description'
         const incorrectItem = {...itemToPrepend, content}
         expect(() => prependItem(incorrectItem, items)).toThrowError(
           'content must have a tag name equal to DD'
@@ -598,17 +599,17 @@ describe('item', () => {
 
       items = ids.map(id => {
         const header = document.createElement('dt')
-        header.innerText = `Header ${id}`
+        header.textContent = `Header ${id}`
         const content = document.createElement('dd')
-        content.innerText = `Description ${id}`
+        content.textContent = `Description ${id}`
         return {id, header, content}
       })
 
       const id = ids.length
       const header = document.createElement('dt')
-      header.innerText = `Header ${id}`
+      header.textContent = `Header ${id}`
       const content = document.createElement('dd')
-      content.innerText = `Description ${id}`
+      content.textContent = `Description ${id}`
       itemToAppend = {id, header, content}
 
       referenceId = 1
@@ -668,7 +669,7 @@ describe('item', () => {
 
       test('should fail on trying to pass incorrect HTMLElement tag name in property header of item', () => {
         const header = document.createElement('li')
-        header.innerText = 'Header'
+        header.textContent = 'Header'
         const incorrectItem = {...itemToAppend, header}
         expect(() =>
           appendBeforeItem(incorrectItem, referenceId, items)
@@ -684,7 +685,7 @@ describe('item', () => {
 
       test('should fail on trying to pass incorrect HTMLElement tag name in property content of item', () => {
         const content = document.createElement('li')
-        content.innerText = 'Description'
+        content.textContent = 'Description'
         const incorrectItem = {...itemToAppend, content}
         expect(() =>
           appendBeforeItem(incorrectItem, referenceId, items)
@@ -734,17 +735,17 @@ describe('item', () => {
 
       items = ids.map(id => {
         const header = document.createElement('dt')
-        header.innerText = `Header ${id}`
+        header.textContent = `Header ${id}`
         const content = document.createElement('dd')
-        content.innerText = `Description ${id}`
+        content.textContent = `Description ${id}`
         return {id, header, content}
       })
 
       const id = ids.length
       const header = document.createElement('dt')
-      header.innerText = `Header ${id}`
+      header.textContent = `Header ${id}`
       const content = document.createElement('dd')
-      content.innerText = `Description ${id}`
+      content.textContent = `Description ${id}`
       itemToAppend = {id, header, content}
 
       referenceId = 1
@@ -804,7 +805,7 @@ describe('item', () => {
 
       test('should fail on trying to pass incorrect HTMLElement tag name in property header of item', () => {
         const header = document.createElement('li')
-        header.innerText = 'Header'
+        header.textContent = 'Header'
         const incorrectItem = {...itemToAppend, header}
         expect(() =>
           appendAfterItem(incorrectItem, referenceId, items)
@@ -820,7 +821,7 @@ describe('item', () => {
 
       test('should fail on trying to pass incorrect HTMLElement tag name in property content of item', () => {
         const content = document.createElement('li')
-        content.innerText = 'Description'
+        content.textContent = 'Description'
         const incorrectItem = {...itemToAppend, content}
         expect(() =>
           appendAfterItem(incorrectItem, referenceId, items)
@@ -870,10 +871,10 @@ describe('item', () => {
       dlElem = document.createElement('dl')
       items = ids.map(id => {
         const header = document.createElement('dt')
-        header.innerText = `Header ${id}`
+        header.textContent = `Header ${id}`
         dlElem.appendChild(header)
         const content = document.createElement('dd')
-        content.innerText = `Description ${id}`
+        content.textContent = `Description ${id}`
         dlElem.appendChild(content)
         return {id, header, content}
       })
@@ -912,6 +913,83 @@ describe('item', () => {
 
         expect(clonedChildren.length).toBe(children.length)
         expect(clonedChildren).toEqual(children)
+      })
+    })
+  })
+
+  describe('createItemByEntry', () => {
+    let id
+    let header
+    let content
+    let entry
+
+    beforeEach(() => {
+      id = 0
+      header = `Header ${id}`
+      content = `Description ${id}`
+      entry = {id, header, content}
+    })
+
+    describe('entries', () => {
+      test('should fail on trying to pass a undefined entry', () => {
+        expect(() => createItemByEntry()).toThrowError('entry is required')
+      })
+
+      test('should fail on trying to pass a undefined in property id of entry', () => {
+        expect(() => createItemByEntry({header, content})).toThrowError(
+          'id is required'
+        )
+      })
+
+      test('should fail on trying to pass a undefined in property header of entry', () => {
+        expect(() => createItemByEntry({id, content})).toThrowError(
+          'header is required'
+        )
+      })
+
+      test('should fail on trying to pass a undefined in property content of entry', () => {
+        expect(() => createItemByEntry({id, header})).toThrowError(
+          'content is required'
+        )
+      })
+
+      test('should fail on trying to pass incorrect type in property id of entry', () => {
+        id = '123'
+        expect(() => createItemByEntry({id, header, content})).toThrowError(
+          'id must be a number'
+        )
+      })
+
+      test('should fail on trying to pass incorrect type in property header of entry', () => {
+        header = 123
+        expect(() => createItemByEntry({id, header, content})).toThrowError(
+          'header must be a string'
+        )
+      })
+
+      test('should fail on trying to pass incorrect type in property content of entry', () => {
+        content = 123
+        expect(() => createItemByEntry({id, header, content})).toThrowError(
+          'content must be a string'
+        )
+      })
+    })
+
+    describe('functionality', () => {
+      test('should create item by entry correctly', () => {
+        const newItem = createItemByEntry(entry)
+
+        expect(newItem).toBeDefined()
+        expect(newItem.id).toBe(id)
+        expect(newItem.header.textContent).toBe(header)
+        expect(newItem.content.textContent).toBe(content)
+      })
+
+      test('should not have side effects in entry', () => {
+        const clonedEntry = {...entry}
+        createItemByEntry(entry)
+
+        expect(clonedEntry).toEqual(entry)
       })
     })
   })

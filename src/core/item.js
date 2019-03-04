@@ -1,5 +1,5 @@
 import {isTagName, isHTMLElement} from '../utils/dom'
-import {isUndefined, isNumber, isArray} from '../utils/unit'
+import {isUndefined, isNumber, isArray, isString} from '../utils/unit'
 import {throwErrorRequired, throwErrorType} from '../utils/throw-error'
 import {validateItem} from '../validator/item'
 
@@ -11,7 +11,7 @@ export function createItem(item) {
   validateItem(item, toCreate)
 
   const {header, content} = item
-  const id = item.id ? item.id : currentId++
+  const id = isUndefined(item.id) ? currentId++ : item.id
 
   return {id, header, content}
 }
@@ -101,6 +101,16 @@ export function getItemsByRoot(dlElem) {
 }
 
 export function createItemByEntry(entry) {
+  if (isUndefined(entry)) throwErrorRequired('entry')
+
+  if (isUndefined(entry.id)) throwErrorRequired('id')
+  if (isUndefined(entry.header)) throwErrorRequired('header')
+  if (isUndefined(entry.content)) throwErrorRequired('content')
+
+  if (!isNumber(entry.id)) throwErrorType('id', 'number')
+  if (!isString(entry.header)) throwErrorType('header', 'string')
+  if (!isString(entry.content)) throwErrorType('content', 'string')
+
   const {id} = entry
   const header = document.createElement('dt')
   header.innerHTML = entry.header
