@@ -1,15 +1,31 @@
 import {isTagName, isHTMLElement} from '../utils/dom'
+import {isUndefined, isNumber, isArray} from '../utils/unit'
 import {
-  isUndefined,
-  isNumber,
-  isArray,
-  isString,
-  isFunction
-} from '../utils/unit'
-import {throwErrorRequired, throwErrorType} from '../utils/throw-error'
-import {validateItem} from '../validator/item'
+  throwErrorRequired,
+  throwErrorType,
+  throwErrorTagName
+} from '../utils/throw-error'
+import {validateEntry} from './entry'
 
 let currentId = 0
+
+export function validateItem({id, header, content}, toCreate = false) {
+  if (isUndefined(header)) throwErrorRequired('header')
+  if (isUndefined(content)) throwErrorRequired('content')
+
+  if (toCreate) {
+    if (id && !isNumber(id)) throwErrorType('id', 'number')
+  } else {
+    if (isUndefined(id)) throwErrorRequired('id')
+    if (!isNumber(id)) throwErrorType('id', 'number')
+  }
+
+  if (!isHTMLElement()(header)) throwErrorType('header', 'HTMLElement')
+  else if (!isTagName('dt')(header)) throwErrorTagName('header', 'dt')
+
+  if (!isHTMLElement()(content)) throwErrorType('content', 'HTMLElement')
+  else if (!isTagName('dd')(content)) throwErrorTagName('content', 'dd')
+}
 
 export function createItem(item) {
   if (isUndefined(item)) throwErrorRequired('item')
@@ -108,14 +124,7 @@ export function getItemsByRoot(dlElem) {
 
 export function createItemByEntry(entry) {
   if (isUndefined(entry)) throwErrorRequired('entry')
-
-  if (isUndefined(entry.id)) throwErrorRequired('id')
-  if (isUndefined(entry.header)) throwErrorRequired('header')
-  if (isUndefined(entry.content)) throwErrorRequired('content')
-
-  if (!isNumber(entry.id)) throwErrorType('id', 'number')
-  if (!isString(entry.header)) throwErrorType('header', 'string')
-  if (!isString(entry.content)) throwErrorType('content', 'string')
+  validateEntry(entry)
 
   const {id} = entry
   const header = document.createElement('dt')
@@ -128,38 +137,7 @@ export function createItemByEntry(entry) {
 export function getItemsByEntries(entries) {
   if (isUndefined(entries)) throwErrorRequired('entries')
   if (!isArray(entries)) throwErrorType('entries', 'array')
+  entries.forEach(validateEntry)
 
   return entries.map(createItemByEntry)
-}
-
-export async function getEntriesByAjax(ajax) {
-  if (isUndefined(ajax)) throwErrorRequired('ajax')
-
-  const {url, processResults} = ajax
-
-  if (isUndefined(url)) throwErrorRequired('url')
-  if (isUndefined(processResults)) throwErrorRequired('processResults')
-
-  if (!isString(url)) throwErrorType('url', 'string')
-  if (!isFunction(processResults)) throwErrorType('processResults', 'function')
-
-  const response = await fetch(url)
-  const data = await response.json()
-
-  const entries = processResults(data)
-
-  if (isUndefined(entries)) throwErrorRequired('entries')
-  if (!isArray(entries)) throwErrorType('entries', 'array')
-
-  entries.forEach(entry => {
-    if (isUndefined(entry.id)) throwErrorRequired('id')
-    if (isUndefined(entry.header)) throwErrorRequired('header')
-    if (isUndefined(entry.content)) throwErrorRequired('content')
-
-    if (!isNumber(entry.id)) throwErrorType('id', 'number')
-    if (!isString(entry.header)) throwErrorType('header', 'string')
-    if (!isString(entry.content)) throwErrorType('content', 'string')
-  })
-
-  return entries
 }
