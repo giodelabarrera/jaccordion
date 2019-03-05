@@ -15,7 +15,11 @@ import EventBus from './event/event-bus'
 import * as buildView from './view/build'
 import * as itemView from './view/item'
 import {getEntriesByAjax} from './core/entry'
-import {validateElement, validateOptions} from './core/validator'
+import {
+  validateElement,
+  validateOptions,
+  validateEntriesId
+} from './core/validator'
 
 export default class Jaccordion {
   constructor(element, options = {}) {
@@ -38,7 +42,7 @@ export default class Jaccordion {
     this.items = getItemsByRoot(this.root)
 
     if (entries && entries.length > 0) {
-      // @TODO: validateEntriesId(entries, items)
+      validateEntriesId(entries, this.items)
       const itemsByEntries = getItemsByEntries(entries)
       itemView.addItems(itemsByEntries, this.root)
       this.items = [...this.items, ...itemsByEntries]
@@ -51,21 +55,19 @@ export default class Jaccordion {
       this._eventBus.emit('mountAjax.before')
 
       getEntriesByAjax(ajax).then(entriesByAjax => {
-        // @TODO: validateEntriesId(entriesByAjax)
+        validateEntriesId(entriesByAjax, this.items)
+
         const itemsByEntries = getItemsByEntries(entriesByAjax)
         itemView.addItems(itemsByEntries, this.root)
         this.items = [...this.items, ...itemsByEntries]
 
         itemsByEntries.forEach(item => {
           const {id} = item
-
           buildView.addClassItem(item, classes)
-
           this._eventBinders[id] = new EventBinder()
           itemView.bindClickItem(item, this._eventBinders[id], () =>
             this.toggle(id)
           )
-
           if (openAt === id) this.open(id)
         })
 

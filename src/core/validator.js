@@ -9,9 +9,11 @@ import {
 import {
   throwErrorRequired,
   throwErrorType,
-  throwErrorTagName
+  throwErrorTagName,
+  throwError
 } from '../utils/throw-error'
 import {isHTMLElement, isTagName} from '../utils/dom'
+import {getEntriesIdIncludedInItems} from './entry'
 
 export function validateEntry({id, header, content}) {
   if (isUndefined(id)) throwErrorRequired('id')
@@ -76,24 +78,29 @@ export function validateOptions(options) {
     const {openAt} = options
     if (!isNumber(openAt)) throwErrorType('openAt', 'number')
   }
-
   if (options.hasOwnProperty('multiple')) {
     const {multiple} = options
     if (!isBoolean(multiple)) throwErrorType('multiple', 'boolean')
   }
-
   if (options.hasOwnProperty('entries')) {
     const {entries} = options
     if (!isArray(entries)) throwErrorType('entries', 'array')
   }
-
   if (options.hasOwnProperty('ajax')) {
     const {ajax} = options
     validateAjaxOption(ajax)
   }
-
   if (options.hasOwnProperty('classes')) {
     const {classes} = options
     validateClassesOption(classes)
+  }
+}
+
+export function validateEntriesId(entries, items) {
+  const entriesId = getEntriesIdIncludedInItems(entries, items)
+  if (entriesId.length > 0) {
+    throwError(
+      `entries with id [${entriesId.join(', ')}] already exist in items`
+    )
   }
 }

@@ -18,3 +18,11 @@ export async function getEntriesByAjax(ajax) {
 
   return entries
 }
+
+export function getEntriesIdIncludedInItems(entries, items) {
+  if (isUndefined(entries)) throwErrorRequired('entries')
+  if (isUndefined(items)) throwErrorRequired('items')
+
+  const itemsId = items.map(({id}) => id)
+  return entries.filter(entry => itemsId.includes(entry.id)).map(({id}) => id)
+}
