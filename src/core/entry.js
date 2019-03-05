@@ -1,19 +1,13 @@
-import {isUndefined, isString, isFunction, isArray} from '../utils/unit'
+import {isUndefined, isArray} from '../utils/unit'
 import {throwErrorRequired, throwErrorType} from '../utils/throw-error'
 import {callApi} from '../utils/service'
-import {validateEntry} from './validator'
+import {validateEntry, validateAjaxOption} from './validator'
 
 export async function getEntriesByAjax(ajax) {
   if (isUndefined(ajax)) throwErrorRequired('ajax')
+  validateAjaxOption(ajax)
 
   const {url, processResults} = ajax
-
-  if (isUndefined(url)) throwErrorRequired('url')
-  if (isUndefined(processResults)) throwErrorRequired('processResults')
-
-  if (!isString(url)) throwErrorType('url', 'string')
-  if (!isFunction(processResults)) throwErrorType('processResults', 'function')
-
   const data = await callApi(url)
   let entries = processResults(data)
 

@@ -1,6 +1,4 @@
 import defaults from './defaults'
-import {getElementBySelector} from './core/dom'
-import {mergeOptions} from './core/object'
 import {
   getItemsByEntries,
   getItemsByRoot,
@@ -17,13 +15,17 @@ import EventBus from './event/event-bus'
 import * as buildView from './view/build'
 import * as itemView from './view/item'
 import {getEntriesByAjax} from './core/entry'
+import {validateElement, validateOptions} from './core/validator'
 
 export default class Jaccordion {
-  constructor(selector, options = {}) {
-    this._settings = mergeOptions(defaults, options)
+  constructor(element, options = {}) {
+    validateElement(element)
+    validateOptions(options)
+
+    this._settings = {...defaults, ...options}
     this._eventBinders = []
     this._eventBus = new EventBus()
-    this.root = getElementBySelector(selector)
+    this.root = element
     this.enabled = false
     this.items = []
   }
@@ -63,6 +65,8 @@ export default class Jaccordion {
           itemView.bindClickItem(item, this._eventBinders[id], () =>
             this.toggle(id)
           )
+
+          if (openAt === id) this.open(id)
         })
 
         this._eventBus.emit('mountAjax.after')
