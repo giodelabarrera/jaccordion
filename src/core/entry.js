@@ -1,22 +1,7 @@
-import {
-  isUndefined,
-  isNumber,
-  isString,
-  isFunction,
-  isArray
-} from '../utils/unit'
+import {isUndefined, isString, isFunction, isArray} from '../utils/unit'
 import {throwErrorRequired, throwErrorType} from '../utils/throw-error'
 import {callApi} from '../utils/service'
-
-export function validateEntry({id, header, content}) {
-  if (isUndefined(id)) throwErrorRequired('id')
-  if (isUndefined(header)) throwErrorRequired('header')
-  if (isUndefined(content)) throwErrorRequired('content')
-
-  if (!isNumber(id)) throwErrorType('id', 'number')
-  if (!isString(header)) throwErrorType('header', 'string')
-  if (!isString(content)) throwErrorType('content', 'string')
-}
+import {validateEntry} from './validator'
 
 export async function getEntriesByAjax(ajax) {
   if (isUndefined(ajax)) throwErrorRequired('ajax')

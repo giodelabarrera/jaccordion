@@ -4,7 +4,6 @@ import {mergeOptions} from './core/object'
 import {
   getItemsByEntries,
   getItemsByRoot,
-  getEntriesByAjax,
   findItemById,
   removeItem,
   createItem,
@@ -17,6 +16,7 @@ import EventBinder from './event/event-binder'
 import EventBus from './event/event-bus'
 import * as buildView from './view/build'
 import * as itemView from './view/item'
+import {getEntriesByAjax} from './core/entry'
 
 export default class Jaccordion {
   constructor(selector, options = {}) {

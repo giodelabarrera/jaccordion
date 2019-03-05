@@ -1,31 +1,9 @@
 import {isTagName, isHTMLElement} from '../utils/dom'
 import {isUndefined, isNumber, isArray} from '../utils/unit'
-import {
-  throwErrorRequired,
-  throwErrorType,
-  throwErrorTagName
-} from '../utils/throw-error'
-import {validateEntry} from './entry'
+import {throwErrorRequired, throwErrorType} from '../utils/throw-error'
+import {validateItem, validateEntry} from './validator'
 
 let currentId = 0
-
-export function validateItem({id, header, content}, toCreate = false) {
-  if (isUndefined(header)) throwErrorRequired('header')
-  if (isUndefined(content)) throwErrorRequired('content')
-
-  if (toCreate) {
-    if (id && !isNumber(id)) throwErrorType('id', 'number')
-  } else {
-    if (isUndefined(id)) throwErrorRequired('id')
-    if (!isNumber(id)) throwErrorType('id', 'number')
-  }
-
-  if (!isHTMLElement()(header)) throwErrorType('header', 'HTMLElement')
-  else if (!isTagName('dt')(header)) throwErrorTagName('header', 'dt')
-
-  if (!isHTMLElement()(content)) throwErrorType('content', 'HTMLElement')
-  else if (!isTagName('dd')(content)) throwErrorTagName('content', 'dd')
-}
 
 export function createItem(item) {
   if (isUndefined(item)) throwErrorRequired('item')
