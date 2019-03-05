@@ -34,3 +34,14 @@ export function isArray(value) {
 export function isUndefined(value) {
   return typeof value === 'undefined'
 }
+
+/**
+ * Indicates if the value is function
+ *
+ * @export
+ * @param {*} value
+ * @returns
+ */
+export function isFunction(value) {
+  return typeof value === 'function'
+}

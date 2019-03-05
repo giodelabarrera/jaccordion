@@ -1,5 +1,11 @@
 import {isTagName, isHTMLElement} from '../utils/dom'
-import {isUndefined, isNumber, isArray, isString} from '../utils/unit'
+import {
+  isUndefined,
+  isNumber,
+  isArray,
+  isString,
+  isFunction
+} from '../utils/unit'
 import {throwErrorRequired, throwErrorType} from '../utils/throw-error'
 import {validateItem} from '../validator/item'
 
@@ -126,8 +132,34 @@ export function getItemsByEntries(entries) {
   return entries.map(createItemByEntry)
 }
 
-export async function getEntriesByAjax({url, processResults}) {
+export async function getEntriesByAjax(ajax) {
+  if (isUndefined(ajax)) throwErrorRequired('ajax')
+
+  const {url, processResults} = ajax
+
+  if (isUndefined(url)) throwErrorRequired('url')
+  if (isUndefined(processResults)) throwErrorRequired('processResults')
+
+  if (!isString(url)) throwErrorType('url', 'string')
+  if (!isFunction(processResults)) throwErrorType('processResults', 'function')
+
   const response = await fetch(url)
   const data = await response.json()
-  return processResults(data)
+
+  const entries = processResults(data)
+
+  if (isUndefined(entries)) throwErrorRequired('entries')
+  if (!isArray(entries)) throwErrorType('entries', 'array')
+
+  entries.forEach(entry => {
+    if (isUndefined(entry.id)) throwErrorRequired('id')
+    if (isUndefined(entry.header)) throwErrorRequired('header')
+    if (isUndefined(entry.content)) throwErrorRequired('content')
+
+    if (!isNumber(entry.id)) throwErrorType('id', 'number')
+    if (!isString(entry.header)) throwErrorType('header', 'string')
+    if (!isString(entry.content)) throwErrorType('content', 'string')
+  })
+
+  return entries
 }
