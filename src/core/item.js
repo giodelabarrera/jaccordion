@@ -121,5 +121,11 @@ export function getItemsByEntries(entries) {
 }
 
 export function existsIdInItems(id, items) {
+  if (isUndefined(id)) throwErrorRequired('id')
+  if (isUndefined(items)) throwErrorRequired('items')
+
+  if (!isNumber(id)) throwErrorType('id', 'number')
+  if (!isArray(items)) throwErrorType('items', 'array')
+
   return items.map(({id}) => id).includes(id)
 }

@@ -9,7 +9,8 @@ import {
   appendAfterItem,
   getItemsByRoot,
   createItemByEntry,
-  getItemsByEntries
+  getItemsByEntries,
+  existsIdInItems
 } from '../../src/core/item'
 
 describe('item', () => {
@@ -1047,6 +1048,71 @@ describe('item', () => {
 
         expect(clonedEntries.length).toBe(entries.length)
         expect(clonedEntries).toEqual(entries)
+      })
+    })
+  })
+
+  describe('existsIdInItems', () => {
+    let ids
+    let entries
+    let items
+    let id
+
+    beforeEach(() => {
+      ids = [0, 1, 2]
+
+      entries = ids.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+
+      items = entries.map(entry => {
+        const {id} = entry
+        const header = document.createElement('dt')
+        header.textContent = entry.header
+        const content = document.createElement('dd')
+        content.textContent = entry.content
+        return {id, header, content}
+      })
+
+      id = 1
+    })
+
+    describe('entries', () => {
+      test('should fail on trying to pass a undefined id', () => {
+        expect(() => existsIdInItems()).toThrowError('id is required')
+      })
+
+      test('should fail on trying to pass a undefined items', () => {
+        expect(() => existsIdInItems(id)).toThrowError('items is required')
+      })
+
+      test('should fail on trying to pass incorrect type in id', () => {
+        id = '123'
+        expect(() => existsIdInItems(id, items)).toThrowError(
+          'id must be a number'
+        )
+      })
+
+      test('should fail on trying to pass incorrect type in items', () => {
+        items = {}
+        expect(() => existsIdInItems(id, items)).toThrowError(
+          'items must be a array'
+        )
+      })
+    })
+
+    describe('functionality', () => {
+      test('should exists id in items correctly', () => {
+        const included = existsIdInItems(id, items)
+        expect(included).toBeTruthy()
+      })
+
+      test('should not exists id in items correctly', () => {
+        id = 123
+        const included = existsIdInItems(id, items)
+        expect(included).toBeFalsy()
       })
     })
   })
