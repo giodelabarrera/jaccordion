@@ -119,3 +119,7 @@ export function getItemsByEntries(entries) {
 
   return entries.map(createItemByEntry)
 }
+
+export function existsIdInItems(id, items) {
+  return items.map(({id}) => id).includes(id)
+}

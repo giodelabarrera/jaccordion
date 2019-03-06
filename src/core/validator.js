@@ -13,7 +13,7 @@ import {
   throwError
 } from '../utils/throw-error'
 import {isHTMLElement, isTagName} from '../utils/dom'
-import {getEntriesIdIncludedInItems} from './entry'
+import {existsIdInItems} from './item'
 
 export function validateEntry({id, header, content}) {
   if (isUndefined(id)) throwErrorRequired('id')
@@ -96,11 +96,19 @@ export function validateOptions(options) {
   }
 }
 
-export function validateEntriesId(entries, items) {
-  const entriesId = getEntriesIdIncludedInItems(entries, items)
-  if (entriesId.length > 0) {
+export function validateEntriesIdInItems(entries, items) {
+  const entriesIdIncluded = entries
+    .map(({id}) => id)
+    .filter(id => existsIdInItems(id, items))
+
+  if (entriesIdIncluded.length > 0) {
     throwError(
-      `entries with id [${entriesId.join(', ')}] already exist in items`
+      `entries with id [${entriesIdIncluded.join(', ')}] already exist in items`
     )
   }
+}
+
+export function validateIdInItems(id, items) {
+  const included = existsIdInItems(id, items)
+  if (included) throwError(`id ${id}] already exist in items`)
 }
