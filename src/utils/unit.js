@@ -46,10 +46,6 @@ export function isFunction(value) {
   return typeof value === 'function'
 }
 
-export function isNull(value) {
-  return value === null
-}
-
 export function isBoolean(value) {
   return typeof value === 'boolean'
 }
