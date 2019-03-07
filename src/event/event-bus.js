@@ -12,8 +12,10 @@ export default class EventBus {
     const index = this.events[event].length - 1
 
     return {
-      remove() {
-        delete this.events[event][index]
+      remove: () => {
+        this.events[event] = this.events[event].filter(
+          (handlers, currentIndex) => currentIndex !== index
+        )
       }
     }
   }

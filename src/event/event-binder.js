@@ -10,5 +10,6 @@ export default class EventBinder {
 
   off(event, elem) {
     elem.removeEventListener(event, this.listeners[event])
+    delete this.listeners[event]
   }
 }
