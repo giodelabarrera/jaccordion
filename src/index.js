@@ -33,64 +33,22 @@ export default class Jaccordion {
     const {entries} = options
     if (entries && entries.length > 0) validateEntriesId(entries)
 
-    this._settings = {...defaults, ...options}
     this._eventBinders = []
     this._eventBus = new EventBus()
+    this._settings = {...defaults, ...options}
     this.root = element
-    this.enabled = false
     this.items = []
+    this.enabled = false
   }
 
-  mount() {
+  async mount() {
     this._eventBus.emit('mount.before')
 
-    const {openAt, ajax, classes, entries} = this._settings
-
-    this.items = getItemsByRoot(this.root)
-
-    if (entries && entries.length > 0) {
-      validateEntriesIdInItems(entries, this.items)
-
-      const itemsByEntries = getItemsByEntries(entries)
-      itemView.addItems(itemsByEntries, this.root)
-      this.items = [...this.items, ...itemsByEntries]
-    }
-
-    buildView.addClasses({root: this.root, items: this.items, openAt, classes})
-    this._bind()
-
-    if (ajax.url) {
-      this._eventBus.emit('mountAjax.before')
-      ;(async () => {
-        this._eventBus.emit('ajaxEntries.before')
-
-        const entriesByAjax = await getEntriesByAjax(ajax)
-
-        this._eventBus.emit('ajaxEntries.after')
-
-        if (entriesByAjax && entriesByAjax.length > 0) {
-          validateEntriesId(entriesByAjax)
-        }
-        validateEntriesIdInItems(entriesByAjax, this.items)
-
-        const itemsByEntries = getItemsByEntries(entriesByAjax)
-        itemView.addItems(itemsByEntries, this.root)
-        this.items = [...this.items, ...itemsByEntries]
-
-        itemsByEntries.forEach(item => {
-          const {id} = item
-          buildView.addClassItem(item, classes)
-          this._eventBinders[id] = new EventBinder()
-          itemView.bindClickItem(item, this._eventBinders[id], () =>
-            this.toggle(id)
-          )
-          if (openAt === id) this.open(id)
-        })
-
-        this._eventBus.emit('mountAjax.after')
-      })()
-    }
-
+    const {classes, entries, ajax} = this._settings
+    buildView.addClassRoot(this.root, classes)
+    this._mountMarkup()
+    if (entries && entries.length > 0) this._mountEntries()
+    if (ajax.url) await this._mountAjaxEntries()
     this.enabled = true
 
     this._eventBus.emit('mount.after')
@@ -158,13 +116,7 @@ export default class Jaccordion {
 
     this.items = appendItem(item, this.items)
     itemView.appendItem(item, this.root)
-
-    const {classes} = this._settings
-    buildView.addClassItem(item, classes)
-
-    const {id} = item
-    this._eventBinders[id] = new EventBinder()
-    itemView.bindClickItem(item, this._eventBinders[id], () => this.toggle(id))
+    this._mountItem(item)
 
     this._eventBus.emit('append', item)
 
@@ -177,13 +129,7 @@ export default class Jaccordion {
 
     this.items = prependItem(item, this.items)
     itemView.prependItem(item, this.root)
-
-    const {classes} = this._settings
-    buildView.addClassItem(item, classes)
-
-    const {id} = item
-    this._eventBinders[id] = new EventBinder()
-    itemView.bindClickItem(item, this._eventBinders[id], () => this.toggle(id))
+    this._mountItem(item)
 
     this._eventBus.emit('prepend', item)
 
@@ -198,13 +144,7 @@ export default class Jaccordion {
 
     this.items = appendBeforeItem(item, referenceItem.id, this.items)
     itemView.appendBeforeItem(item, referenceItem, this.root)
-
-    const {classes} = this._settings
-    buildView.addClassItem(item, classes)
-
-    const {id} = item
-    this._eventBinders[id] = new EventBinder()
-    itemView.bindClickItem(item, this._eventBinders[id], () => this.toggle(id))
+    this._mountItem(item)
 
     this._eventBus.emit('appendBefore', item)
 
@@ -219,13 +159,7 @@ export default class Jaccordion {
 
     this.items = appendAfterItem(item, referenceItem.id, this.items)
     itemView.appendAfterItem(item, referenceItem, this.root)
-
-    const {classes} = this._settings
-    buildView.addClassItem(item, classes)
-
-    const {id} = item
-    this._eventBinders[id] = new EventBinder()
-    itemView.bindClickItem(item, this._eventBinders[id], () => this.toggle(id))
+    this._mountItem(item)
 
     this._eventBus.emit('appendAfter', item)
 
@@ -257,11 +191,15 @@ export default class Jaccordion {
     return this
   }
 
-  destroy() {
+  unmount() {
     const {classes} = this._settings
 
-    buildView.removeClasses({root: this.root, items: this.items, classes})
-    this._unbind()
+    buildView.removeClassRoot(this.root, classes)
+    this.items.forEach(this._unmountItem.bind(this))
+  }
+
+  destroy() {
+    this.unmount()
 
     delete this.root
     delete this._settings
@@ -273,21 +211,54 @@ export default class Jaccordion {
     delete this._eventBus
   }
 
-  _bind() {
-    this.items.forEach(item => {
-      const {id} = item
-      this._eventBinders[id] = new EventBinder()
-      itemView.bindClickItem(item, this._eventBinders[id], () =>
-        this.toggle(id)
-      )
-    })
+  _mountItem(item) {
+    const {openAt, classes} = this._settings
+    const {id} = item
+    buildView.addClassItem(item, classes)
+    this._eventBinders[id] = new EventBinder()
+    itemView.bindClickItem(item, this._eventBinders[id], () => this.toggle(id))
+    if (openAt === id) this.open(id)
   }
 
-  _unbind() {
-    this.items.forEach(item => {
-      const {id} = item
-      itemView.unbindClickItem(item, this._eventBinders[id])
-    })
-    this._eventBinders = []
+  _mountMarkup() {
+    const items = getItemsByRoot(this.root)
+    this.items = [...items]
+    items.forEach(this._mountItem.bind(this))
+  }
+
+  _mountEntries() {
+    const {entries} = this._settings
+
+    validateEntriesIdInItems(entries, this.items)
+
+    const itemsByEntries = getItemsByEntries(entries)
+    this.items = [...this.items, ...itemsByEntries]
+    itemView.addItems(itemsByEntries, this.root)
+    itemsByEntries.forEach(this._mountItem.bind(this))
+  }
+
+  async _mountAjaxEntries() {
+    const {ajax} = this._settings
+
+    this._eventBus.emit('ajaxEntries.before')
+    const entriesByAjax = await getEntriesByAjax(ajax)
+    this._eventBus.emit('ajaxEntries.success')
+
+    if (entriesByAjax && entriesByAjax.length > 0) {
+      validateEntriesId(entriesByAjax)
+    }
+    validateEntriesIdInItems(entriesByAjax, this.items)
+
+    const itemsByEntries = getItemsByEntries(entriesByAjax)
+    this.items = [...this.items, ...itemsByEntries]
+    itemView.addItems(itemsByEntries, this.root)
+    itemsByEntries.forEach(this._mountItem.bind(this))
+  }
+
+  _unmountItem(item) {
+    const {classes} = this._settings
+    const {id} = item
+    buildView.removeClassItem(item, classes)
+    itemView.unbindClickItem(item, this._eventBinders[id])
   }
 }

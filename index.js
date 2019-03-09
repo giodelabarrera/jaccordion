@@ -45,6 +45,9 @@ const accordion = new Jaccordion(document.getElementById('accordion'), {
   },
   openAt: 10270250
 })
+// accordion.on('ajaxEntries.success', () => {
+//   alert('loaded')
+// })
 accordion.mount()
 window.accordion = accordion
 
