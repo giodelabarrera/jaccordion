@@ -7,9 +7,9 @@ import {
   isFunction
 } from '../utils/unit'
 import {
-  throwErrorRequired,
-  throwErrorType,
-  throwErrorTagName,
+  throwRequiredError,
+  throwTypeError,
+  throwTagNameError,
   throwError
 } from '../utils/throw-error'
 import {isHTMLElement, isTagName} from '../utils/dom'
@@ -17,18 +17,18 @@ import {existsIdInItems} from './item'
 import {getRepeatedValues} from '../utils/array'
 
 export function validateId(id) {
-  if (isUndefined(id)) throwErrorRequired('id')
-  if (!isNumber(id)) throwErrorType('id', 'number')
+  if (isUndefined(id)) throwRequiredError('id')
+  if (!isNumber(id)) throwTypeError('id', 'number')
 }
 
 export function validateEntryHeader(header) {
-  if (isUndefined(header)) throwErrorRequired('header')
-  if (!isString(header)) throwErrorType('header', 'string')
+  if (isUndefined(header)) throwRequiredError('header')
+  if (!isString(header)) throwTypeError('header', 'string')
 }
 
 export function validateEntryContent(content) {
-  if (isUndefined(content)) throwErrorRequired('content')
-  if (!isString(content)) throwErrorType('content', 'string')
+  if (isUndefined(content)) throwRequiredError('content')
+  if (!isString(content)) throwTypeError('content', 'string')
 }
 
 export function validateEntry({id, header, content}) {
@@ -43,65 +43,65 @@ export function validateIdInItems(id, items) {
 }
 
 export function validateItem({id, header, content}, toCreate = false) {
-  if (isUndefined(header)) throwErrorRequired('header')
-  if (isUndefined(content)) throwErrorRequired('content')
+  if (isUndefined(header)) throwRequiredError('header')
+  if (isUndefined(content)) throwRequiredError('content')
 
   if (toCreate) {
-    if (id && !isNumber(id)) throwErrorType('id', 'number')
+    if (id && !isNumber(id)) throwTypeError('id', 'number')
   } else {
-    if (isUndefined(id)) throwErrorRequired('id')
-    if (!isNumber(id)) throwErrorType('id', 'number')
+    if (isUndefined(id)) throwRequiredError('id')
+    if (!isNumber(id)) throwTypeError('id', 'number')
   }
 
-  if (!isHTMLElement()(header)) throwErrorType('header', 'HTMLElement')
-  else if (!isTagName('dt')(header)) throwErrorTagName('header', 'dt')
+  if (!isHTMLElement()(header)) throwTypeError('header', 'HTMLElement')
+  else if (!isTagName('dt')(header)) throwTagNameError('header', 'dt')
 
-  if (!isHTMLElement()(content)) throwErrorType('content', 'HTMLElement')
-  else if (!isTagName('dd')(content)) throwErrorTagName('content', 'dd')
+  if (!isHTMLElement()(content)) throwTypeError('content', 'HTMLElement')
+  else if (!isTagName('dd')(content)) throwTagNameError('content', 'dd')
 }
 
 export function validateElement(element) {
-  if (isUndefined(element)) throwErrorRequired('element')
+  if (isUndefined(element)) throwRequiredError('element')
   if (!isHTMLElement(HTMLDListElement)(element))
-    throwErrorType('element', 'HTMLDListElement')
+    throwTypeError('element', 'HTMLDListElement')
 }
 
 export function validateAjaxOption(ajax) {
   const {url, processResults} = ajax
 
-  if (isUndefined(url)) throwErrorRequired('url')
-  if (isUndefined(processResults)) throwErrorRequired('processResults')
+  if (isUndefined(url)) throwRequiredError('url')
+  if (isUndefined(processResults)) throwRequiredError('processResults')
 
-  if (!isString(url)) throwErrorType('url', 'string')
-  if (!isFunction(processResults)) throwErrorType('processResults', 'function')
+  if (!isString(url)) throwTypeError('url', 'string')
+  if (!isFunction(processResults)) throwTypeError('processResults', 'function')
 }
 
 export function validateClassesOption(classes) {
   const {root, header, opened, content} = classes
 
-  if (isUndefined(root)) throwErrorRequired('root')
-  if (isUndefined(header)) throwErrorRequired('header')
-  if (isUndefined(opened)) throwErrorRequired('opened')
-  if (isUndefined(content)) throwErrorRequired('content')
+  if (isUndefined(root)) throwRequiredError('root')
+  if (isUndefined(header)) throwRequiredError('header')
+  if (isUndefined(opened)) throwRequiredError('opened')
+  if (isUndefined(content)) throwRequiredError('content')
 
-  if (!isString(root)) throwErrorType('root', 'string')
-  if (!isString(header)) throwErrorType('header', 'string')
-  if (!isString(opened)) throwErrorType('opened', 'string')
-  if (!isString(content)) throwErrorType('content', 'string')
+  if (!isString(root)) throwTypeError('root', 'string')
+  if (!isString(header)) throwTypeError('header', 'string')
+  if (!isString(opened)) throwTypeError('opened', 'string')
+  if (!isString(content)) throwTypeError('content', 'string')
 }
 
 export function validateOptions(options) {
   if (options.hasOwnProperty('openAt')) {
     const {openAt} = options
-    if (!isNumber(openAt)) throwErrorType('openAt', 'number')
+    if (!isNumber(openAt)) throwTypeError('openAt', 'number')
   }
   if (options.hasOwnProperty('multiple')) {
     const {multiple} = options
-    if (!isBoolean(multiple)) throwErrorType('multiple', 'boolean')
+    if (!isBoolean(multiple)) throwTypeError('multiple', 'boolean')
   }
   if (options.hasOwnProperty('entries')) {
     const {entries} = options
-    if (!isArray(entries)) throwErrorType('entries', 'array')
+    if (!isArray(entries)) throwTypeError('entries', 'array')
   }
   if (options.hasOwnProperty('ajax')) {
     const {ajax} = options

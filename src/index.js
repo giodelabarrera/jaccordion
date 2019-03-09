@@ -24,8 +24,8 @@ import {
 } from './core/validator'
 import * as view from './core/view'
 import {
-  throwErrorRequired,
-  throwErrorType,
+  throwRequiredError,
+  throwTypeError,
   throwEntityError
 } from './utils/throw-error'
 import {isUndefined, isString, isFunction} from './utils/unit'
@@ -208,11 +208,11 @@ export default class Jaccordion {
   }
 
   on(event, handler) {
-    if (isUndefined(event)) throwErrorRequired('event')
-    if (isUndefined(handler)) throwErrorRequired('handler')
+    if (isUndefined(event)) throwRequiredError('event')
+    if (isUndefined(handler)) throwRequiredError('handler')
 
-    if (!isString(event)) throwErrorType('event', 'string')
-    if (!isFunction(handler)) throwErrorType('handler', 'function')
+    if (!isString(event)) throwTypeError('event', 'string')
+    if (!isFunction(handler)) throwTypeError('handler', 'function')
 
     this._eventBus.on(event, handler)
 

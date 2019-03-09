@@ -1,12 +1,12 @@
 import {isTagName, isHTMLElement} from '../utils/dom'
 import {isUndefined, isNumber, isArray} from '../utils/unit'
-import {throwErrorRequired, throwErrorType} from '../utils/throw-error'
+import {throwRequiredError, throwTypeError} from '../utils/throw-error'
 import {validateItem, validateEntry} from './validator'
 
 let currentId = 0
 
 export function createItem(item) {
-  if (isUndefined(item)) throwErrorRequired('item')
+  if (isUndefined(item)) throwRequiredError('item')
   const toCreate = true
   validateItem(item, toCreate)
 
@@ -17,31 +17,31 @@ export function createItem(item) {
 }
 
 export function removeItem(id, items) {
-  // if (isUndefined(id)) throwErrorRequired('id')
-  // if (isUndefined(items)) throwErrorRequired('items')
+  // if (isUndefined(id)) throwRequiredError('id')
+  // if (isUndefined(items)) throwRequiredError('items')
 
-  // if (!isNumber(id)) throwErrorType('id', 'number')
-  // if (!isArray(items)) throwErrorType('items', 'array')
+  // if (!isNumber(id)) throwTypeError('id', 'number')
+  // if (!isArray(items)) throwTypeError('items', 'array')
 
   return items.filter(item => item.id !== id)
 }
 
 export function findItemById(id, items) {
-  // if (isUndefined(id)) throwErrorRequired('id')
-  // if (isUndefined(items)) throwErrorRequired('items')
+  // if (isUndefined(id)) throwRequiredError('id')
+  // if (isUndefined(items)) throwRequiredError('items')
 
-  // if (!isNumber(id)) throwErrorType('id', 'number')
-  // if (!isArray(items)) throwErrorType('items', 'array')
+  // if (!isNumber(id)) throwTypeError('id', 'number')
+  // if (!isArray(items)) throwTypeError('items', 'array')
 
   return items.find(item => item.id === id)
 }
 
 export function addItem(item, items) {
-  // if (isUndefined(item)) throwErrorRequired('item')
-  // if (isUndefined(items)) throwErrorRequired('items')
+  // if (isUndefined(item)) throwRequiredError('item')
+  // if (isUndefined(items)) throwRequiredError('items')
 
   // validateItem(item)
-  // if (!isArray(items)) throwErrorType('items', 'array')
+  // if (!isArray(items)) throwTypeError('items', 'array')
 
   return [...items, item]
 }
@@ -51,46 +51,46 @@ export function appendItem(item, items) {
 }
 
 export function prependItem(item, items) {
-  // if (isUndefined(item)) throwErrorRequired('item')
-  // if (isUndefined(items)) throwErrorRequired('items')
+  // if (isUndefined(item)) throwRequiredError('item')
+  // if (isUndefined(items)) throwRequiredError('items')
 
   // validateItem(item)
-  // if (!isArray(items)) throwErrorType('items', 'array')
+  // if (!isArray(items)) throwTypeError('items', 'array')
 
   return [item, ...items]
 }
 
 export function appendBeforeItem(item, referenceId, items) {
-  // if (isUndefined(item)) throwErrorRequired('item')
-  // if (isUndefined(referenceId)) throwErrorRequired('referenceId')
-  // if (isUndefined(items)) throwErrorRequired('items')
+  // if (isUndefined(item)) throwRequiredError('item')
+  // if (isUndefined(referenceId)) throwRequiredError('referenceId')
+  // if (isUndefined(items)) throwRequiredError('items')
 
   // validateItem(item)
-  // if (!isNumber(referenceId)) throwErrorType('referenceId', 'number')
-  // if (!isArray(items)) throwErrorType('items', 'array')
+  // if (!isNumber(referenceId)) throwTypeError('referenceId', 'number')
+  // if (!isArray(items)) throwTypeError('items', 'array')
 
   const index = items.findIndex(item => item.id === referenceId)
   return [...items.slice(0, index), item, ...items.slice(index)]
 }
 
 export function appendAfterItem(item, referenceId, items) {
-  // if (isUndefined(item)) throwErrorRequired('item')
-  // if (isUndefined(referenceId)) throwErrorRequired('referenceId')
-  // if (isUndefined(items)) throwErrorRequired('items')
+  // if (isUndefined(item)) throwRequiredError('item')
+  // if (isUndefined(referenceId)) throwRequiredError('referenceId')
+  // if (isUndefined(items)) throwRequiredError('items')
 
   // validateItem(item)
-  // if (!isNumber(referenceId)) throwErrorType('referenceId', 'number')
-  // if (!isArray(items)) throwErrorType('items', 'array')
+  // if (!isNumber(referenceId)) throwTypeError('referenceId', 'number')
+  // if (!isArray(items)) throwTypeError('items', 'array')
 
   const index = items.findIndex(item => item.id === referenceId)
   return [...items.slice(0, index + 1), item, ...items.slice(index + 1)]
 }
 
 export function getItemsByRoot(dlElem) {
-  if (isUndefined(dlElem)) throwErrorRequired('dlElem')
+  if (isUndefined(dlElem)) throwRequiredError('dlElem')
 
   if (!isHTMLElement(HTMLDListElement)(dlElem))
-    throwErrorType('dlElem', 'HTMLDListElement')
+    throwTypeError('dlElem', 'HTMLDListElement')
 
   const children = Array.from(dlElem.children)
   const headers = children.filter(isTagName('dt'))
@@ -101,7 +101,7 @@ export function getItemsByRoot(dlElem) {
 }
 
 export function createItemByEntry(entry) {
-  // if (isUndefined(entry)) throwErrorRequired('entry')
+  // if (isUndefined(entry)) throwRequiredError('entry')
   // validateEntry(entry)
 
   const {id} = entry
@@ -113,19 +113,19 @@ export function createItemByEntry(entry) {
 }
 
 export function getItemsByEntries(entries) {
-  if (isUndefined(entries)) throwErrorRequired('entries')
-  if (!isArray(entries)) throwErrorType('entries', 'array')
+  if (isUndefined(entries)) throwRequiredError('entries')
+  if (!isArray(entries)) throwTypeError('entries', 'array')
   entries.forEach(validateEntry)
 
   return entries.map(createItemByEntry)
 }
 
 export function existsIdInItems(id, items) {
-  if (isUndefined(id)) throwErrorRequired('id')
-  if (isUndefined(items)) throwErrorRequired('items')
+  if (isUndefined(id)) throwRequiredError('id')
+  if (isUndefined(items)) throwRequiredError('items')
 
-  if (!isNumber(id)) throwErrorType('id', 'number')
-  if (!isArray(items)) throwErrorType('items', 'array')
+  if (!isNumber(id)) throwTypeError('id', 'number')
+  if (!isArray(items)) throwTypeError('items', 'array')
 
   return items.map(({id}) => id).includes(id)
 }
