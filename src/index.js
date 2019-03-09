@@ -19,7 +19,8 @@ import {
   validateOptions,
   validateItem,
   validateIdInItems,
-  validateEntriesIdInItems
+  validateEntriesIdInItems,
+  validateEntriesId
 } from './core/validator'
 import {throwErrorRequired, throwErrorType} from './utils/throw-error'
 import {isUndefined, isString, isFunction} from './utils/unit'
@@ -28,6 +29,9 @@ export default class Jaccordion {
   constructor(element, options = {}) {
     validateElement(element)
     validateOptions(options)
+
+    const {entries} = options
+    if (entries && entries.length > 0) validateEntriesId(entries)
 
     this._settings = {...defaults, ...options}
     this._eventBinders = []
@@ -46,6 +50,7 @@ export default class Jaccordion {
 
     if (entries && entries.length > 0) {
       validateEntriesIdInItems(entries, this.items)
+
       const itemsByEntries = getItemsByEntries(entries)
       itemView.addItems(itemsByEntries, this.root)
       this.items = [...this.items, ...itemsByEntries]
@@ -56,8 +61,16 @@ export default class Jaccordion {
 
     if (ajax.url) {
       this._eventBus.emit('mountAjax.before')
+      ;(async () => {
+        this._eventBus.emit('ajaxEntries.before')
 
-      getEntriesByAjax(ajax).then(entriesByAjax => {
+        const entriesByAjax = await getEntriesByAjax(ajax)
+
+        this._eventBus.emit('ajaxEntries.after')
+
+        if (entriesByAjax && entriesByAjax.length > 0) {
+          validateEntriesId(entriesByAjax)
+        }
         validateEntriesIdInItems(entriesByAjax, this.items)
 
         const itemsByEntries = getItemsByEntries(entriesByAjax)
@@ -75,7 +88,7 @@ export default class Jaccordion {
         })
 
         this._eventBus.emit('mountAjax.after')
-      })
+      })()
     }
 
     this.enabled = true

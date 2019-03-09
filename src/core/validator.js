@@ -14,6 +14,7 @@ import {
 } from '../utils/throw-error'
 import {isHTMLElement, isTagName} from '../utils/dom'
 import {existsIdInItems} from './item'
+import {getRepeatedValues} from '../utils/array'
 
 export function validateEntry({id, header, content}) {
   if (isUndefined(id)) throwErrorRequired('id')
@@ -111,4 +112,18 @@ export function validateEntriesIdInItems(entries, items) {
 export function validateIdInItems(id, items) {
   const included = existsIdInItems(id, items)
   if (included) throwError(`id ${id}] already exist in items`)
+}
+
+// @TODO: test
+export function validateEntriesId(entries) {
+  const entriesId = entries.map(({id}) => id)
+  const entriesIdIncluded = getRepeatedValues(entriesId)
+
+  if (entriesIdIncluded.length > 0) {
+    throwError(
+      `entries with id [${entriesIdIncluded.join(
+        ', '
+      )}] already exist in entries`
+    )
+  }
 }

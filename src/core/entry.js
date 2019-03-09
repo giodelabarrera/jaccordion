@@ -9,7 +9,7 @@ export async function getEntriesByAjax(ajax) {
 
   const {url, processResults} = ajax
   const data = await callApi(url)
-  let entries = processResults(data)
+  const entries = processResults(data)
 
   if (isUndefined(entries)) throwErrorRequired('entries')
   if (!isArray(entries)) throwErrorType('entries', 'array')
