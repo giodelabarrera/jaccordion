@@ -17,31 +17,31 @@ export function createItem(item) {
 }
 
 export function removeItem(id, items) {
-  if (isUndefined(id)) throwErrorRequired('id')
-  if (isUndefined(items)) throwErrorRequired('items')
+  // if (isUndefined(id)) throwErrorRequired('id')
+  // if (isUndefined(items)) throwErrorRequired('items')
 
-  if (!isNumber(id)) throwErrorType('id', 'number')
-  if (!isArray(items)) throwErrorType('items', 'array')
+  // if (!isNumber(id)) throwErrorType('id', 'number')
+  // if (!isArray(items)) throwErrorType('items', 'array')
 
   return items.filter(item => item.id !== id)
 }
 
 export function findItemById(id, items) {
-  if (isUndefined(id)) throwErrorRequired('id')
-  if (isUndefined(items)) throwErrorRequired('items')
+  // if (isUndefined(id)) throwErrorRequired('id')
+  // if (isUndefined(items)) throwErrorRequired('items')
 
-  if (!isNumber(id)) throwErrorType('id', 'number')
-  if (!isArray(items)) throwErrorType('items', 'array')
+  // if (!isNumber(id)) throwErrorType('id', 'number')
+  // if (!isArray(items)) throwErrorType('items', 'array')
 
   return items.find(item => item.id === id)
 }
 
 export function addItem(item, items) {
-  if (isUndefined(item)) throwErrorRequired('item')
-  if (isUndefined(items)) throwErrorRequired('items')
+  // if (isUndefined(item)) throwErrorRequired('item')
+  // if (isUndefined(items)) throwErrorRequired('items')
 
-  validateItem(item)
-  if (!isArray(items)) throwErrorType('items', 'array')
+  // validateItem(item)
+  // if (!isArray(items)) throwErrorType('items', 'array')
 
   return [...items, item]
 }
@@ -51,36 +51,36 @@ export function appendItem(item, items) {
 }
 
 export function prependItem(item, items) {
-  if (isUndefined(item)) throwErrorRequired('item')
-  if (isUndefined(items)) throwErrorRequired('items')
+  // if (isUndefined(item)) throwErrorRequired('item')
+  // if (isUndefined(items)) throwErrorRequired('items')
 
-  validateItem(item)
-  if (!isArray(items)) throwErrorType('items', 'array')
+  // validateItem(item)
+  // if (!isArray(items)) throwErrorType('items', 'array')
 
   return [item, ...items]
 }
 
 export function appendBeforeItem(item, referenceId, items) {
-  if (isUndefined(item)) throwErrorRequired('item')
-  if (isUndefined(referenceId)) throwErrorRequired('referenceId')
-  if (isUndefined(items)) throwErrorRequired('items')
+  // if (isUndefined(item)) throwErrorRequired('item')
+  // if (isUndefined(referenceId)) throwErrorRequired('referenceId')
+  // if (isUndefined(items)) throwErrorRequired('items')
 
-  validateItem(item)
-  if (!isNumber(referenceId)) throwErrorType('referenceId', 'number')
-  if (!isArray(items)) throwErrorType('items', 'array')
+  // validateItem(item)
+  // if (!isNumber(referenceId)) throwErrorType('referenceId', 'number')
+  // if (!isArray(items)) throwErrorType('items', 'array')
 
   const index = items.findIndex(item => item.id === referenceId)
   return [...items.slice(0, index), item, ...items.slice(index)]
 }
 
 export function appendAfterItem(item, referenceId, items) {
-  if (isUndefined(item)) throwErrorRequired('item')
-  if (isUndefined(referenceId)) throwErrorRequired('referenceId')
-  if (isUndefined(items)) throwErrorRequired('items')
+  // if (isUndefined(item)) throwErrorRequired('item')
+  // if (isUndefined(referenceId)) throwErrorRequired('referenceId')
+  // if (isUndefined(items)) throwErrorRequired('items')
 
-  validateItem(item)
-  if (!isNumber(referenceId)) throwErrorType('referenceId', 'number')
-  if (!isArray(items)) throwErrorType('items', 'array')
+  // validateItem(item)
+  // if (!isNumber(referenceId)) throwErrorType('referenceId', 'number')
+  // if (!isArray(items)) throwErrorType('items', 'array')
 
   const index = items.findIndex(item => item.id === referenceId)
   return [...items.slice(0, index + 1), item, ...items.slice(index + 1)]
@@ -101,8 +101,8 @@ export function getItemsByRoot(dlElem) {
 }
 
 export function createItemByEntry(entry) {
-  if (isUndefined(entry)) throwErrorRequired('entry')
-  validateEntry(entry)
+  // if (isUndefined(entry)) throwErrorRequired('entry')
+  // validateEntry(entry)
 
   const {id} = entry
   const header = document.createElement('dt')

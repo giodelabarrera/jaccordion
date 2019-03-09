@@ -16,14 +16,30 @@ import {isHTMLElement, isTagName} from '../utils/dom'
 import {existsIdInItems} from './item'
 import {getRepeatedValues} from '../utils/array'
 
-export function validateEntry({id, header, content}) {
+export function validateId(id) {
   if (isUndefined(id)) throwErrorRequired('id')
-  if (isUndefined(header)) throwErrorRequired('header')
-  if (isUndefined(content)) throwErrorRequired('content')
-
   if (!isNumber(id)) throwErrorType('id', 'number')
+}
+
+export function validateEntryHeader(header) {
+  if (isUndefined(header)) throwErrorRequired('header')
   if (!isString(header)) throwErrorType('header', 'string')
+}
+
+export function validateEntryContent(content) {
+  if (isUndefined(content)) throwErrorRequired('content')
   if (!isString(content)) throwErrorType('content', 'string')
+}
+
+export function validateEntry({id, header, content}) {
+  validateId(id)
+  validateEntryHeader(header)
+  validateEntryContent(content)
+}
+
+export function validateIdInItems(id, items) {
+  const included = existsIdInItems(id, items)
+  if (included) throwError(`id ${id} already exist in items`)
 }
 
 export function validateItem({id, header, content}, toCreate = false) {
@@ -107,11 +123,6 @@ export function validateEntriesIdInItems(entries, items) {
       `entries with id [${entriesIdIncluded.join(', ')}] already exist in items`
     )
   }
-}
-
-export function validateIdInItems(id, items) {
-  const included = existsIdInItems(id, items)
-  if (included) throwError(`id ${id}] already exist in items`)
 }
 
 // @TODO: test

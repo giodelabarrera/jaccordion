@@ -7,7 +7,8 @@ import {
   appendBeforeItem,
   appendAfterItem,
   appendItem,
-  prependItem
+  prependItem,
+  createItemByEntry
 } from './core/item'
 import {getEntriesByAjax} from './core/entry'
 import EventBinder from './event/event-binder'
@@ -15,13 +16,18 @@ import EventBus from './event/event-bus'
 import {
   validateElement,
   validateOptions,
-  validateItem,
   validateIdInItems,
   validateEntriesIdInItems,
-  validateEntriesId
+  validateEntriesId,
+  validateId,
+  validateEntry
 } from './core/validator'
 import * as view from './core/view'
-import {throwErrorRequired, throwErrorType} from './utils/throw-error'
+import {
+  throwErrorRequired,
+  throwErrorType,
+  throwEntityError
+} from './utils/throw-error'
 import {isUndefined, isString, isFunction} from './utils/unit'
 
 export default class Jaccordion {
@@ -66,7 +72,7 @@ export default class Jaccordion {
   }
 
   toggle(id) {
-    // @TODO: validateId
+    validateId(id)
 
     if (this.enabled) {
       this.isOpen(id) ? this.close(id) : this.open(id)
@@ -75,18 +81,21 @@ export default class Jaccordion {
   }
 
   isOpen(id) {
-    // @TODO: validateId
+    validateId(id)
 
     const {classes} = this._settings
     const item = findItemById(id, this.items)
+    if (!item) throwEntityError('item', id)
+
     return view.isOpen(item, classes)
   }
 
   open(id) {
-    // @TODO: validateId
+    validateId(id)
 
     if (this.enabled) {
       const item = findItemById(id, this.items)
+      if (!item) throwEntityError('item', id)
 
       this._eventBus.emit('open.before', item)
 
@@ -101,10 +110,11 @@ export default class Jaccordion {
   }
 
   close(id) {
-    // @TODO: validateId
+    validateId(id)
 
     if (this.enabled) {
       const item = findItemById(id, this.items)
+      if (!item) throwEntityError('item', id)
 
       this._eventBus.emit('close.before', item)
 
@@ -117,10 +127,11 @@ export default class Jaccordion {
     return this
   }
 
-  append(item) {
-    validateItem(item)
-    validateIdInItems(item.id, this.items)
+  append(entry) {
+    validateEntry(entry)
+    validateIdInItems(entry.id, this.items)
 
+    const item = createItemByEntry(entry)
     this.items = appendItem(item, this.items)
     view.appendItem(item, this.root)
     this._mountItem(item)
@@ -130,10 +141,11 @@ export default class Jaccordion {
     return this
   }
 
-  prepend(item) {
-    validateItem(item)
-    validateIdInItems(item.id, this.items)
+  prepend(entry) {
+    validateEntry(entry)
+    validateIdInItems(entry.id, this.items)
 
+    const item = createItemByEntry(entry)
     this.items = prependItem(item, this.items)
     view.prependItem(item, this.root)
     this._mountItem(item)
@@ -143,12 +155,15 @@ export default class Jaccordion {
     return this
   }
 
-  appendBefore(item, referenceId) {
-    validateItem(item)
-    validateIdInItems(item.id, this.items)
+  appendBefore(entry, referenceId) {
+    validateEntry(entry)
+    validateIdInItems(entry.id, this.items)
+    validateId(referenceId)
 
     const referenceItem = findItemById(referenceId, this.items)
+    if (!referenceItem) throwEntityError('item', referenceId)
 
+    const item = createItemByEntry(entry)
     this.items = appendBeforeItem(item, referenceItem.id, this.items)
     view.appendBeforeItem(item, referenceItem, this.root)
     this._mountItem(item)
@@ -158,12 +173,15 @@ export default class Jaccordion {
     return this
   }
 
-  appendAfter(item, referenceId) {
-    validateItem(item)
-    validateIdInItems(item.id, this.items)
+  appendAfter(entry, referenceId) {
+    validateEntry(entry)
+    validateIdInItems(entry.id, this.items)
+    validateId(referenceId)
 
     const referenceItem = findItemById(referenceId, this.items)
+    if (!referenceItem) throwEntityError('item', referenceId)
 
+    const item = createItemByEntry(entry)
     this.items = appendAfterItem(item, referenceItem.id, this.items)
     view.appendAfterItem(item, referenceItem, this.root)
     this._mountItem(item)
@@ -174,7 +192,10 @@ export default class Jaccordion {
   }
 
   remove(id) {
+    validateId(id)
+
     const item = findItemById(id, this.items)
+    if (!item) throwEntityError('item', id)
 
     this._eventBus.emit('remove.before', item)
 

@@ -13,3 +13,7 @@ export function throwErrorType(name, type) {
 export function throwErrorTagName(name, tagName) {
   throwError(`${name} must have a tag name equal to ${tagName.toUpperCase()}`)
 }
+
+export function throwEntityError(name, id) {
+  throwError(`No ${name} found with id ${id}`)
+}
