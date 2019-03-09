@@ -9,11 +9,9 @@ import {
   appendItem,
   prependItem
 } from './core/item'
+import {getEntriesByAjax} from './core/entry'
 import EventBinder from './event/event-binder'
 import EventBus from './event/event-bus'
-import * as buildView from './view/build'
-import * as itemView from './view/item'
-import {getEntriesByAjax} from './core/entry'
 import {
   validateElement,
   validateOptions,
@@ -22,6 +20,7 @@ import {
   validateEntriesIdInItems,
   validateEntriesId
 } from './core/validator'
+import * as view from './core/view'
 import {throwErrorRequired, throwErrorType} from './utils/throw-error'
 import {isUndefined, isString, isFunction} from './utils/unit'
 
@@ -31,7 +30,7 @@ export default class Jaccordion {
     validateOptions(options)
 
     const {entries} = options
-    if (entries && entries.length > 0) validateEntriesId(entries)
+    if (entries && entries.length) validateEntriesId(entries)
 
     this._eventBinders = []
     this._eventBus = new EventBus()
@@ -45,9 +44,9 @@ export default class Jaccordion {
     this._eventBus.emit('mount.before')
 
     const {classes, entries, ajax} = this._settings
-    buildView.addClassRoot(this.root, classes)
+    view.addClassRoot(this.root, classes)
     this._mountMarkup()
-    if (entries && entries.length > 0) this._mountEntries()
+    if (entries && entries.length) this._mountEntries()
     if (ajax.url) await this._mountAjaxEntries()
     this.enabled = true
 
@@ -67,6 +66,8 @@ export default class Jaccordion {
   }
 
   toggle(id) {
+    // @TODO: validateId
+
     if (this.enabled) {
       this.isOpen(id) ? this.close(id) : this.open(id)
     }
@@ -74,20 +75,24 @@ export default class Jaccordion {
   }
 
   isOpen(id) {
+    // @TODO: validateId
+
     const {classes} = this._settings
     const item = findItemById(id, this.items)
-    return itemView.isOpen(item, classes)
+    return view.isOpen(item, classes)
   }
 
   open(id) {
+    // @TODO: validateId
+
     if (this.enabled) {
       const item = findItemById(id, this.items)
 
       this._eventBus.emit('open.before', item)
 
       const {multiple, classes} = this._settings
-      if (multiple === false) itemView.closeItems(this.items, classes)
-      itemView.openItem(item, classes)
+      if (multiple === false) view.closeItems(this.items, classes)
+      view.openItem(item, classes)
 
       this._eventBus.emit('open.after', item)
     }
@@ -96,13 +101,15 @@ export default class Jaccordion {
   }
 
   close(id) {
+    // @TODO: validateId
+
     if (this.enabled) {
       const item = findItemById(id, this.items)
 
       this._eventBus.emit('close.before', item)
 
       const {classes} = this._settings
-      itemView.closeItem(item, classes)
+      view.closeItem(item, classes)
 
       this._eventBus.emit('close.after', item)
     }
@@ -115,7 +122,7 @@ export default class Jaccordion {
     validateIdInItems(item.id, this.items)
 
     this.items = appendItem(item, this.items)
-    itemView.appendItem(item, this.root)
+    view.appendItem(item, this.root)
     this._mountItem(item)
 
     this._eventBus.emit('append', item)
@@ -128,7 +135,7 @@ export default class Jaccordion {
     validateIdInItems(item.id, this.items)
 
     this.items = prependItem(item, this.items)
-    itemView.prependItem(item, this.root)
+    view.prependItem(item, this.root)
     this._mountItem(item)
 
     this._eventBus.emit('prepend', item)
@@ -143,7 +150,7 @@ export default class Jaccordion {
     const referenceItem = findItemById(referenceId, this.items)
 
     this.items = appendBeforeItem(item, referenceItem.id, this.items)
-    itemView.appendBeforeItem(item, referenceItem, this.root)
+    view.appendBeforeItem(item, referenceItem, this.root)
     this._mountItem(item)
 
     this._eventBus.emit('appendBefore', item)
@@ -158,7 +165,7 @@ export default class Jaccordion {
     const referenceItem = findItemById(referenceId, this.items)
 
     this.items = appendAfterItem(item, referenceItem.id, this.items)
-    itemView.appendAfterItem(item, referenceItem, this.root)
+    view.appendAfterItem(item, referenceItem, this.root)
     this._mountItem(item)
 
     this._eventBus.emit('appendAfter', item)
@@ -174,7 +181,7 @@ export default class Jaccordion {
     this.items = removeItem(id, this.items)
     const {header} = item
     this._eventBinders[id].off('click', header)
-    itemView.removeItem(item)
+    view.removeItem(item)
 
     this._eventBus.emit('remove.after', id)
   }
@@ -194,7 +201,7 @@ export default class Jaccordion {
   unmount() {
     const {classes} = this._settings
 
-    buildView.removeClassRoot(this.root, classes)
+    view.removeClassRoot(this.root, classes)
     this.items.forEach(this._unmountItem.bind(this))
   }
 
@@ -214,9 +221,9 @@ export default class Jaccordion {
   _mountItem(item) {
     const {openAt, classes} = this._settings
     const {id} = item
-    buildView.addClassItem(item, classes)
+    view.addClassItem(item, classes)
     this._eventBinders[id] = new EventBinder()
-    itemView.bindClickItem(item, this._eventBinders[id], () => this.toggle(id))
+    view.bindClickItem(item, this._eventBinders[id], () => this.toggle(id))
     if (openAt === id) this.open(id)
   }
 
@@ -233,7 +240,7 @@ export default class Jaccordion {
 
     const itemsByEntries = getItemsByEntries(entries)
     this.items = [...this.items, ...itemsByEntries]
-    itemView.addItems(itemsByEntries, this.root)
+    view.addItems(itemsByEntries, this.root)
     itemsByEntries.forEach(this._mountItem.bind(this))
   }
 
@@ -251,14 +258,14 @@ export default class Jaccordion {
 
     const itemsByEntries = getItemsByEntries(entriesByAjax)
     this.items = [...this.items, ...itemsByEntries]
-    itemView.addItems(itemsByEntries, this.root)
+    view.addItems(itemsByEntries, this.root)
     itemsByEntries.forEach(this._mountItem.bind(this))
   }
 
   _unmountItem(item) {
     const {classes} = this._settings
     const {id} = item
-    buildView.removeClassItem(item, classes)
-    itemView.unbindClickItem(item, this._eventBinders[id])
+    view.removeClassItem(item, classes)
+    view.unbindClickItem(item, this._eventBinders[id])
   }
 }

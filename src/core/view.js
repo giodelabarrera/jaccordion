@@ -1,5 +1,26 @@
 import {removeChildren} from '../utils/dom'
 
+export function addClassRoot(root, classes) {
+  root.classList.add(classes.root)
+}
+
+// @TODO: test
+export function removeClassRoot(root, classes) {
+  root.classList.remove(classes.root)
+}
+
+export function addClassItem(item, classes) {
+  const {header, content} = item
+  header.classList.add(classes.header)
+  content.classList.add(classes.content)
+}
+
+export function removeClassItem(item, classes) {
+  const {header, content} = item
+  header.classList.remove(classes.header, classes.opened)
+  content.classList.remove(classes.content)
+}
+
 export function addItem(item, root) {
   root.appendChild(item.header)
   root.appendChild(item.content)
