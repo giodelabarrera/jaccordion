@@ -40,7 +40,7 @@ export function appendAfterItem(item, referenceId, items) {
   return [...items.slice(0, index + 1), item, ...items.slice(index + 1)]
 }
 
-export function getItemsByRoot(dlElem) {
+export function createItemsByRoot(dlElem) {
   const children = Array.from(dlElem.children)
   const headers = children.filter(isTagName('dt'))
   return headers.map(header => {
@@ -58,7 +58,7 @@ export function createItemByEntry(entry) {
   return createItem({id, header, content})
 }
 
-export function getItemsByEntries(entries) {
+export function createItemsByEntries(entries) {
   return entries.map(createItemByEntry)
 }
 

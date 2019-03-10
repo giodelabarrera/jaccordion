@@ -1,7 +1,7 @@
 import defaults from './defaults'
 import {
-  getItemsByEntries,
-  getItemsByRoot,
+  createItemsByEntries,
+  createItemsByRoot,
   findItemById,
   removeItem,
   appendBeforeItem,
@@ -246,8 +246,8 @@ export default class Jaccordion {
   }
 
   _mountMarkup() {
-    const items = getItemsByRoot(this.root)
-    this.items = [...items]
+    const items = createItemsByRoot(this.root)
+    this.items = [...this.items, ...items]
     items.forEach(this._mountItem.bind(this))
   }
 
@@ -256,7 +256,7 @@ export default class Jaccordion {
 
     validateEntriesIdInItems(entries, this.items)
 
-    const itemsByEntries = getItemsByEntries(entries)
+    const itemsByEntries = createItemsByEntries(entries)
     this.items = [...this.items, ...itemsByEntries]
     view.addItems(itemsByEntries, this.root)
     itemsByEntries.forEach(this._mountItem.bind(this))
@@ -272,7 +272,7 @@ export default class Jaccordion {
     if (entriesByAjax && entriesByAjax.length) validateEntriesId(entriesByAjax)
     validateEntriesIdInItems(entriesByAjax, this.items)
 
-    const itemsByEntries = getItemsByEntries(entriesByAjax)
+    const itemsByEntries = createItemsByEntries(entriesByAjax)
     this.items = [...this.items, ...itemsByEntries]
     view.addItems(itemsByEntries, this.root)
     itemsByEntries.forEach(this._mountItem.bind(this))
