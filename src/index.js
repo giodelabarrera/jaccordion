@@ -26,7 +26,7 @@ import * as view from './core/view'
 import {
   throwRequiredError,
   throwTypeError,
-  throwEntityError
+  throwNotFoundError
 } from './utils/throw-error'
 import {isUndefined, isString, isFunction} from './utils/unit'
 
@@ -82,7 +82,7 @@ export default class Jaccordion {
 
     const {classes} = this._settings
     const item = findItemById(id, this.items)
-    if (!item) throwEntityError('item', id)
+    if (!item) throwNotFoundError('item', id)
 
     return view.isOpen(item, classes)
   }
@@ -92,7 +92,7 @@ export default class Jaccordion {
 
     if (this.enabled) {
       const item = findItemById(id, this.items)
-      if (!item) throwEntityError('item', id)
+      if (!item) throwNotFoundError('item', id)
 
       this._eventBus.emit('open.before', item)
 
@@ -111,7 +111,7 @@ export default class Jaccordion {
 
     if (this.enabled) {
       const item = findItemById(id, this.items)
-      if (!item) throwEntityError('item', id)
+      if (!item) throwNotFoundError('item', id)
 
       this._eventBus.emit('close.before', item)
 
@@ -158,7 +158,7 @@ export default class Jaccordion {
     validateId(referenceId)
 
     const referenceItem = findItemById(referenceId, this.items)
-    if (!referenceItem) throwEntityError('item', referenceId)
+    if (!referenceItem) throwNotFoundError('item', referenceId)
 
     const item = createItemByEntry(entry)
     this.items = appendBeforeItem(item, referenceItem.id, this.items)
@@ -176,7 +176,7 @@ export default class Jaccordion {
     validateId(referenceId)
 
     const referenceItem = findItemById(referenceId, this.items)
-    if (!referenceItem) throwEntityError('item', referenceId)
+    if (!referenceItem) throwNotFoundError('item', referenceId)
 
     const item = createItemByEntry(entry)
     this.items = appendAfterItem(item, referenceItem.id, this.items)
@@ -192,7 +192,7 @@ export default class Jaccordion {
     validateId(id)
 
     const item = findItemById(id, this.items)
-    if (!item) throwEntityError('item', id)
+    if (!item) throwNotFoundError('item', id)
 
     this._eventBus.emit('remove.before', item)
 
