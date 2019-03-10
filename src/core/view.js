@@ -4,7 +4,6 @@ export function addClassRoot(root, classes) {
   root.classList.add(classes.root)
 }
 
-// @TODO: test
 export function removeClassRoot(root, classes) {
   root.classList.remove(classes.root)
 }
