@@ -19,31 +19,31 @@ import Jaccordion from './src'
 // window.accordion = accordion
 
 const accordion = new Jaccordion(document.getElementById('accordion'), {
-  entries: [
-    {
-      id: 3,
-      header: 'Section 4',
-      content: 'Description 4'
-    },
-    {
-      id: 4,
-      header: 'Section 5',
-      content: 'Description 5'
-    }
-  ],
-  ajax: {
-    url: 'https://api.github.com/search/repositories?q=react',
-    processResults({items}) {
-      return items
-        .map(item => ({
-          id: item.id,
-          header: item.full_name,
-          content: item.description
-        }))
-        .slice(0, 1)
-    }
-  },
-  openAt: 10270250
+  // entries: [
+  //   {
+  //     id: 3,
+  //     header: 'Section 4',
+  //     content: 'Description 4'
+  //   },
+  //   {
+  //     id: 4,
+  //     header: 'Section 5',
+  //     content: 'Description 5'
+  //   }
+  // ],
+  // ajax: {
+  //   url: 'https://api.github.com/search/repositories?q=react',
+  //   processResults({items}) {
+  //     return items
+  //       .map(item => ({
+  //         id: item.id,
+  //         header: item.full_name,
+  //         content: item.description
+  //       }))
+  //       .slice(0, 1)
+  //   }
+  // },
+  // openAt: 10270250
 })
 // accordion.on('ajaxEntries.success', () => {
 //   alert('loaded')

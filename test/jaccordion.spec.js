@@ -3,78 +3,39 @@ import defaults from '../src/defaults'
 import Jaccordion from '../src'
 import EventBus from '../src/event/event-bus'
 
+const {classes} = defaults
+
 describe('jaccordion', () => {
+  let root
+
+  beforeEach(() => {
+    root = document.createElement('dl')
+  })
+
+  afterEach(() => {
+    root.remove()
+  })
+
   describe('entries', () => {
-    let element
-    let url
-    let processResults
-
-    beforeEach(() => {
-      element = document.createElement('dl')
-      url = 'http://example.com'
-      processResults = data => data
-    })
-
-    test('should fail on trying to pass a undefined element', () => {
-      expect(() => new Jaccordion()).toThrowError('element is required')
-    })
-
-    test('should fail on trying to pass incorrect type in element', () => {
-      element = '.accordion'
-      expect(() => new Jaccordion(element)).toThrowError(
-        'element must be a HTMLDListElement'
-      )
-    })
-
-    test('should fail on trying to pass a undefined in property url of ajax', () => {
-      const ajax = {processResults}
-      expect(() => new Jaccordion(element, {ajax})).toThrowError(
-        'url is required'
-      )
-    })
-
-    test('should fail on trying to pass a undefined in property processResults of ajax', () => {
-      const ajax = {url}
-      expect(() => new Jaccordion(element, {ajax})).toThrowError(
-        'processResults is required'
-      )
-    })
-
-    test('should fail on trying to pass incorrect type in url of ajax', () => {
-      url = 123
-      const ajax = {url, processResults}
-      expect(() => new Jaccordion(element, {ajax})).toThrowError(
-        'url must be a string'
-      )
-    })
-
-    test('should fail on trying to pass incorrect type in processResults of ajax', () => {
-      processResults = 123
-      const ajax = {url, processResults}
-      expect(() => new Jaccordion(element, {ajax})).toThrowError(
-        'processResults must be a function'
-      )
-    })
-
-    test('should fail on trying to pass incorrect entries with repeated id in options', () => {
-      const ids = [0, 1, 1, 2]
-      const entries = ids.map(id => ({
+    test('should fail on trying to pass entries option with repeated id', () => {
+      const entriesId = [3, 4, 4, 5]
+      const entries = entriesId.map(id => ({
         id,
         header: `Header ${id}`,
         content: `Description ${id}`
       }))
-      expect(() => new Jaccordion(element, {entries})).toThrowError(
-        `entries with id [1] already exist in entries`
+      const options = {entries}
+
+      expect(() => new Jaccordion(root, options)).toThrowError(
+        `entries with id [4] already exist in entries`
       )
     })
   })
 
   describe('initial', () => {
-    let root
     let jaccordion
 
     beforeEach(() => {
-      root = document.createElement('dl')
       jaccordion = new Jaccordion(root)
     })
 
@@ -122,168 +83,501 @@ describe('jaccordion', () => {
   })
 
   describe('mount', () => {
-    describe('markup without sections when you start', () => {
-      let root
-      let classes
-      let entries
-      let items
-      let url
-      let processResults
-      let posts
-      let postItems
+    describe('markup', () => {
+      let markupIds
+      let markupEntries
 
       beforeEach(() => {
-        classes = defaults.classes
+        markupIds = [0, 1, 2]
+        markupEntries = markupIds.map(id => ({
+          id,
+          header: `Header ${id}`,
+          content: `Description ${id}`
+        }))
+        const sections = markupEntries.reduce((sections, entry) => {
+          return (
+            sections +
+            `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+          )
+        }, '')
+        root.innerHTML = sections
+      })
 
-        const ids = [0, 1, 2]
+      test('should mount correctly', () => {
+        const jaccordion = new Jaccordion(root)
+        jaccordion.mount()
 
-        entries = ids.map(id => ({
+        expect(jaccordion.enabled).toBeTruthy()
+        expect(jaccordion.root.classList.contains(classes.root)).toBeTruthy()
+        expect(jaccordion.items).toHaveLength(markupEntries.length)
+        jaccordion.items.forEach(({id, header, content}, index) => {
+          const entry = markupEntries[index]
+          expect(id).toBeDefined()
+          expect(header).toBeDefined()
+          expect(content).toBeDefined()
+          expect(id).toBe(entry.id)
+          expect(parseInt(header.dataset.id)).toBe(entry.id)
+          expect(header.classList.contains(classes.header)).toBeTruthy()
+          expect(content.classList.contains(classes.content)).toBeTruthy()
+          expect(header.textContent).toBe(`${entry.header}`)
+          expect(content.textContent).toBe(`${entry.content}`)
+        })
+      })
+    })
+
+    describe('entries', () => {
+      let entriesId
+      let entries
+
+      beforeEach(() => {
+        entriesId = [3, 4, 5]
+        entries = entriesId.map(id => ({
+          id,
+          header: `Header ${id}`,
+          content: `Description ${id}`
+        }))
+      })
+
+      test('should mount correctly with entries option', () => {
+        const options = {entries}
+        const jaccordion = new Jaccordion(root, options)
+        jaccordion.mount()
+
+        expect(jaccordion.enabled).toBeTruthy()
+        expect(jaccordion.root.classList.contains(classes.root)).toBeTruthy()
+        expect(jaccordion.items).toHaveLength(entries.length)
+        jaccordion.items.forEach(({id, header, content}, index) => {
+          const entry = entries[index]
+          expect(id).toBeDefined()
+          expect(header).toBeDefined()
+          expect(content).toBeDefined()
+          expect(id).toBe(entry.id)
+          expect(parseInt(header.dataset.id)).toBe(entry.id)
+          expect(header.classList.contains(classes.header)).toBeTruthy()
+          expect(content.classList.contains(classes.content)).toBeTruthy()
+          expect(header.textContent).toBe(`${entry.header}`)
+          expect(content.textContent).toBe(`${entry.content}`)
+        })
+      })
+    })
+
+    describe('ajax', () => {
+      let entriesId
+      let entries
+      let ajax
+
+      beforeEach(() => {
+        entriesId = [111, 112, 113]
+        entries = entriesId.map(id => ({
           id,
           header: `Header ${id}`,
           content: `Description ${id}`
         }))
 
-        root = document.createElement('dl')
-        root.classList.add(classes.root)
+        ajax = {
+          url: 'http://example.com',
+          processResults: data => data
+        }
 
-        const {openAt} = defaults
-        items = entries.map(entry => {
-          const {id} = entry
-
-          const header = document.createElement('dt')
-          header.textContent = entry.header
-          header.classList.add(classes.header)
-          if (openAt === id) header.classList.add(classes.opened)
-
-          const content = document.createElement('dd')
-          content.classList.add(classes.content)
-          content.textContent = entry.content
-
-          return {id, header, content}
-        })
-
-        url = 'http://example.com'
-        processResults = data => data
-
-        posts = [
-          {
-            id: 11,
-            header: 'Post 11',
-            content: 'Lorem ipsum'
-          },
-          {
-            id: 12,
-            header: 'Post 12',
-            content: 'Lorem ipsum'
-          },
-          {
-            id: 13,
-            header: 'Post 13',
-            content: 'Lorem ipsum'
-          }
-        ]
-        postItems = posts.map(post => {
-          const {id} = post
-
-          const header = document.createElement('dt')
-          header.textContent = post.header
-          header.classList.add(classes.header)
-          if (openAt === id) header.classList.add(classes.opened)
-
-          const content = document.createElement('dd')
-          content.classList.add(classes.content)
-          content.textContent = post.content
-
-          return {id, header, content}
-        })
-        fetchMock.get('*', posts)
+        fetchMock.get('*', entries)
       })
 
       afterEach(() => {
-        // Unmock
         fetchMock.reset()
       })
 
-      test('should mount correctly with empty items', () => {
-        const jaccordion = new Jaccordion(root).mount()
-
-        expect(jaccordion.enabled).toBeTruthy()
-        expect(jaccordion.root).toEqual(root)
-        expect(jaccordion.items).toEqual([])
-      })
-
-      test('should mount correctly with property entries in options', () => {
-        const options = {entries}
-        const jaccordion = new Jaccordion(root, options).mount()
-
-        expect(jaccordion.enabled).toBeTruthy()
-        expect(jaccordion.root).toEqual(root)
-        expect(jaccordion.items).toEqual(items)
-        jaccordion.items.forEach((currentItem, currentIndex) => {
-          const item = items[currentIndex]
-          expect(item.id).toBeDefined()
-          expect(item.header).toBeDefined()
-          expect(item.content).toBeDefined()
-          expect(item.id).toBe(currentItem.id)
-          expect(item.header.textContent).toBe(currentItem.header.textContent)
-          expect(item.content.textContent).toBe(currentItem.content.textContent)
-        })
-      })
-
-      test('should mount correctly with property entries in options', () => {
-        const options = {entries}
-        const jaccordion = new Jaccordion(root, options).mount()
-
-        expect(jaccordion.enabled).toBeTruthy()
-        expect(jaccordion.root).toEqual(root)
-        expect(jaccordion.items).toEqual(items)
-        jaccordion.items.forEach((currentItem, currentIndex) => {
-          const item = items[currentIndex]
-          expect(item.id).toBeDefined()
-          expect(item.header).toBeDefined()
-          expect(item.content).toBeDefined()
-          expect(item.id).toBe(currentItem.id)
-          expect(item.header.textContent).toBe(currentItem.header.textContent)
-          expect(item.content.textContent).toBe(currentItem.content.textContent)
-        })
-      })
-
-      test('should mount correctly with property ajax in options', done => {
-        const options = {ajax: {url, processResults}}
+      test('should mount correctly with ajax option', async () => {
+        const options = {ajax}
         const jaccordion = new Jaccordion(root, options)
-        jaccordion.on('mountAjax.after', () => {
-          jaccordion.items.forEach((currentItem, currentIndex) => {
-            const postItem = postItems[currentIndex]
-            expect(postItem.id).toBeDefined()
-            expect(postItem.header).toBeDefined()
-            expect(postItem.content).toBeDefined()
-            expect(postItem.id).toBe(currentItem.id)
-            expect(postItem.header.textContent).toBe(
-              currentItem.header.textContent
-            )
-            expect(postItem.content.textContent).toBe(
-              currentItem.content.textContent
-            )
-          })
-          done()
+        await jaccordion.mount()
+
+        expect(jaccordion.enabled).toBeTruthy()
+        expect(jaccordion.root.classList.contains(classes.root)).toBeTruthy()
+        expect(jaccordion.items).toHaveLength(entries.length)
+        jaccordion.items.forEach(({id, header, content}, index) => {
+          const entry = entries[index]
+          expect(id).toBeDefined()
+          expect(header).toBeDefined()
+          expect(content).toBeDefined()
+          expect(id).toBe(entry.id)
+          expect(parseInt(header.dataset.id)).toBe(entry.id)
+          expect(header.classList.contains(classes.header)).toBeTruthy()
+          expect(content.classList.contains(classes.content)).toBeTruthy()
+          expect(header.textContent).toBe(`${entry.header}`)
+          expect(content.textContent).toBe(`${entry.content}`)
         })
-        jaccordion.mount()
       })
 
-      // test('should mount correctly with property ajax in options when your entries have repeated id', done => {
-      //   fetchMock.reset()
-      //   posts = [
-      //     ...posts,
-      //     {id: 11, header: 'Header 11', content: 'Description 11'}
-      //   ]
-      //   fetchMock.get('*', posts)
+      test('should fail on trying to pass entries of processed results of ajax with repeated id', async () => {
+        entriesId = [111, 112, 112, 113, 113]
+        entries = entriesId.map(id => ({
+          id,
+          header: `Header ${id}`,
+          content: `Description ${id}`
+        }))
+        fetchMock.reset()
+        fetchMock.get('*', entries)
 
-      //   const options = {ajax: {url, processResults}}
-      //   const jaccordion = new Jaccordion(root, options)
-      // })
+        const options = {ajax}
+        const jaccordion = new Jaccordion(root, options)
+
+        await expect(jaccordion.mount()).rejects.toThrow(
+          `entries with id [112, 113] already exist in entries`
+        )
+      })
     })
 
-    describe('markup with sections when you start', () => {})
+    describe('markup, entries, ajax', () => {
+      let markupIds
+      let markupEntries
+      let entriesId
+      let entries
+      let ajaxEntriesId
+      let ajaxEntries
+      let ajax
+      let fullEntries
+
+      beforeEach(() => {
+        // markup
+        markupIds = [0, 1, 2]
+        markupEntries = markupIds.map(id => ({
+          id,
+          header: `Header ${id}`,
+          content: `Description ${id}`
+        }))
+        const sections = markupEntries.reduce((sections, entry) => {
+          return (
+            sections +
+            `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+          )
+        }, '')
+        root.innerHTML = sections
+
+        // entries
+        entriesId = [3, 4, 5]
+        entries = entriesId.map(id => ({
+          id,
+          header: `Header ${id}`,
+          content: `Description ${id}`
+        }))
+
+        // ajax
+        ajaxEntriesId = [111, 112, 113]
+        ajaxEntries = ajaxEntriesId.map(id => ({
+          id,
+          header: `Header ${id}`,
+          content: `Description ${id}`
+        }))
+        ajax = {
+          url: 'http://example.com',
+          processResults: data => data
+        }
+        fetchMock.get('*', ajaxEntries)
+
+        fullEntries = [...markupEntries, ...entries, ...ajaxEntries]
+      })
+
+      afterEach(() => {
+        fetchMock.reset()
+      })
+
+      test('should mount correctly with markup, entries option and ajax option', async () => {
+        const options = {entries, ajax}
+        const jaccordion = new Jaccordion(root, options)
+        await jaccordion.mount()
+
+        expect(jaccordion.enabled).toBeTruthy()
+        expect(jaccordion.root.classList.contains(classes.root)).toBeTruthy()
+        expect(jaccordion.items).toHaveLength(fullEntries.length)
+        jaccordion.items.forEach(({id, header, content}, index) => {
+          const entry = fullEntries[index]
+          expect(id).toBeDefined()
+          expect(header).toBeDefined()
+          expect(content).toBeDefined()
+          expect(id).toBe(entry.id)
+          expect(parseInt(header.dataset.id)).toBe(entry.id)
+          expect(header.classList.contains(classes.header)).toBeTruthy()
+          expect(content.classList.contains(classes.content)).toBeTruthy()
+          expect(header.textContent).toBe(`${entry.header}`)
+          expect(content.textContent).toBe(`${entry.content}`)
+        })
+      })
+
+      test('should fail on trying to pass entries where your id is already in items', async () => {
+        entriesId = [3, 4, 5, 1, 2]
+        entries = entriesId.map(id => ({
+          id,
+          header: `Header ${id}`,
+          content: `Description ${id}`
+        }))
+        const options = {entries, ajax}
+        const jaccordion = new Jaccordion(root, options)
+        await expect(jaccordion.mount()).rejects.toThrow(
+          `entries with id [1, 2] already exist in items`
+        )
+      })
+
+      test('should fail on trying to pass entries of processed results of ajax where your id is already in items', async () => {
+        ajaxEntriesId = [111, 1, 112, 113, 4]
+        ajaxEntries = ajaxEntriesId.map(id => ({
+          id,
+          header: `Header ${id}`,
+          content: `Description ${id}`
+        }))
+        fetchMock.reset()
+        fetchMock.get('*', ajaxEntries)
+
+        const options = {entries, ajax}
+        const jaccordion = new Jaccordion(root, options)
+        await expect(jaccordion.mount()).rejects.toThrow(
+          `entries with id [1, 4] already exist in items`
+        )
+      })
+    })
+
+    describe('events', () => {
+      let markupIds
+      let markupEntries
+
+      beforeEach(() => {
+        markupIds = [0, 1, 2]
+        markupEntries = markupIds.map(id => ({
+          id,
+          header: `Header ${id}`,
+          content: `Description ${id}`
+        }))
+        const sections = markupEntries.reduce((sections, entry) => {
+          return (
+            sections +
+            `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+          )
+        }, '')
+        root.innerHTML = sections
+      })
+
+      test('should emit event mount.before correctly', () => {
+        const spy = jest.fn()
+        const jaccordion = new Jaccordion(root)
+        jaccordion.on('mount.before', spy)
+        jaccordion.mount()
+
+        expect(spy.mock.calls.length).toBe(1)
+      })
+
+      test('should emit event mount.after correctly', () => {
+        const spy = jest.fn()
+        const jaccordion = new Jaccordion(root)
+        jaccordion.on('mount.after', spy)
+        jaccordion.mount()
+
+        expect(spy.mock.calls.length).toBe(1)
+      })
+    })
+
+    describe('ajax entries events', () => {
+      let entriesId
+      let entries
+      let ajax
+
+      beforeEach(() => {
+        entriesId = [111, 112, 113]
+        entries = entriesId.map(id => ({
+          id,
+          header: `Header ${id}`,
+          content: `Description ${id}`
+        }))
+
+        ajax = {
+          url: 'http://example.com',
+          processResults: data => data
+        }
+
+        fetchMock.get('*', entries)
+      })
+
+      afterEach(() => {
+        fetchMock.reset()
+      })
+
+      test('should mount correctly with ajax option', async () => {
+        const options = {ajax}
+        const jaccordion = new Jaccordion(root, options)
+        await jaccordion.mount()
+
+        expect(jaccordion.enabled).toBeTruthy()
+        expect(jaccordion.root.classList.contains(classes.root)).toBeTruthy()
+        expect(jaccordion.items).toHaveLength(entries.length)
+        jaccordion.items.forEach(({id, header, content}, index) => {
+          const entry = entries[index]
+          expect(id).toBeDefined()
+          expect(header).toBeDefined()
+          expect(content).toBeDefined()
+          expect(id).toBe(entry.id)
+          expect(parseInt(header.dataset.id)).toBe(entry.id)
+          expect(header.classList.contains(classes.header)).toBeTruthy()
+          expect(content.classList.contains(classes.content)).toBeTruthy()
+          expect(header.textContent).toBe(`${entry.header}`)
+          expect(content.textContent).toBe(`${entry.content}`)
+        })
+      })
+
+      test('should emit event ajaxEntries.before correctly', async () => {
+        const spy = jest.fn()
+        const options = {ajax}
+        const jaccordion = new Jaccordion(root, options)
+        jaccordion.on('ajaxEntries.before', spy)
+        await jaccordion.mount()
+
+        expect(spy.mock.calls.length).toBe(1)
+      })
+
+      test('should emit event ajaxEntries.success correctly', async () => {
+        const spy = jest.fn()
+        const options = {ajax}
+        const jaccordion = new Jaccordion(root, options)
+        jaccordion.on('ajaxEntries.success', spy)
+        await jaccordion.mount()
+
+        expect(spy.mock.calls.length).toBe(1)
+      })
+    })
+  })
+
+  describe('disable', () => {
+    let markupIds
+    let markupEntries
+
+    beforeEach(() => {
+      markupIds = [0, 1, 2]
+      markupEntries = markupIds.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+      const sections = markupEntries.reduce((sections, entry) => {
+        return (
+          sections +
+          `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+        )
+      }, '')
+      root.innerHTML = sections
+    })
+
+    test('should disable correctly', () => {
+      const jaccordion = new Jaccordion(root)
+      jaccordion.mount()
+      jaccordion.disable()
+
+      expect(jaccordion.enabled).toBeFalsy()
+    })
+  })
+
+  describe('enable', () => {
+    let markupIds
+    let markupEntries
+
+    beforeEach(() => {
+      markupIds = [0, 1, 2]
+      markupEntries = markupIds.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+      const sections = markupEntries.reduce((sections, entry) => {
+        return (
+          sections +
+          `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+        )
+      }, '')
+      root.innerHTML = sections
+    })
+
+    test('should enable correctly', () => {
+      const jaccordion = new Jaccordion(root)
+      jaccordion.mount()
+      jaccordion.disable()
+      jaccordion.enable()
+
+      expect(jaccordion.enabled).toBeTruthy()
+    })
+  })
+
+  describe('toggle', () => {
+    let markupIds
+    let markupEntries
+
+    beforeEach(() => {
+      markupIds = [0, 1, 2]
+      markupEntries = markupIds.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+      const sections = markupEntries.reduce((sections, entry) => {
+        return (
+          sections +
+          `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+        )
+      }, '')
+      root.innerHTML = sections
+    })
+
+    test('should toggle item correctly', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      jaccordion.toggle(1)
+      const items = jaccordion.items
+
+      expect(items[0].header.classList.contains(classes.opened)).toBeFalsy()
+      expect(items[1].header.classList.contains(classes.opened)).toBeTruthy()
+      expect(items[2].header.classList.contains(classes.opened)).toBeFalsy()
+    })
+
+    test('should not do anything if accordion is disabled', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      jaccordion.disable()
+      jaccordion.toggle(1)
+      const items = jaccordion.items
+
+      expect(items[0].header.classList.contains(classes.opened)).toBeTruthy()
+      expect(items[1].header.classList.contains(classes.opened)).toBeFalsy()
+      expect(items[2].header.classList.contains(classes.opened)).toBeFalsy()
+    })
+  })
+
+  describe('is open', () => {
+    let markupIds
+    let markupEntries
+
+    beforeEach(() => {
+      markupIds = [0, 1, 2]
+      markupEntries = markupIds.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+      const sections = markupEntries.reduce((sections, entry) => {
+        return (
+          sections +
+          `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+        )
+      }, '')
+      root.innerHTML = sections
+    })
+
+    test('should check if is open item correctly', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      expect(jaccordion.isOpen(0)).toBeTruthy()
+    })
   })
 })
 
@@ -297,14 +591,6 @@ describe('jaccordion', () => {
 // comprobar propiedades de inicializacion
 
 // mount
-// marcado sin secciones
-// comprobar mount
-// comprobar mount con entries
-// comprobar mount con ajax
-// comprobar mount con ajax donde sus id de entries estan repetidos
-// comprobar mount con entries y con ajax
-// comprobar mount con ajax donde sus id de entries ya esta en items
-// marcado con secciones
 // comprobar mount
 // comprobar mount con entries
 // comprobar mount con entries repetidos

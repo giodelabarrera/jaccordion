@@ -242,7 +242,7 @@ export default class Jaccordion {
     view.addClassItem(item, classes)
     this._eventBinders[id] = new EventBinder()
     view.bindClickItem(item, this._eventBinders[id], () => this.toggle(id))
-    if (openAt === id) this.open(id)
+    if (openAt === id) view.openItem(item, classes)
   }
 
   _mountMarkup() {

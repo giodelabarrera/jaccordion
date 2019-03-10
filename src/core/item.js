@@ -1,12 +1,8 @@
 import {isTagName} from '../utils/dom'
-import {isUndefined} from '../utils/unit'
-
-let currentId = 0
 
 export function createItem(item) {
-  const {header, content} = item
-  const id = isUndefined(item.id) ? currentId++ : item.id
-
+  const {id, header, content} = item
+  header.dataset.id = id
   return {id, header, content}
 }
 
@@ -43,9 +39,9 @@ export function appendAfterItem(item, referenceId, items) {
 export function createItemsByRoot(dlElem) {
   const children = Array.from(dlElem.children)
   const headers = children.filter(isTagName('dt'))
-  return headers.map(header => {
+  return headers.map((header, index) => {
     const content = header.nextElementSibling
-    return createItem({header, content})
+    return createItem({id: index, header, content})
   })
 }
 
