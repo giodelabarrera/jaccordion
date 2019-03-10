@@ -14,13 +14,13 @@ import {getEntriesByAjax} from './core/entry'
 import EventBinder from './event/event-binder'
 import EventBus from './event/event-bus'
 import {
-  validateElement,
   validateOptions,
   validateIdInItems,
   validateEntriesIdInItems,
   validateEntriesId,
   validateId,
-  validateEntry
+  validateEntry,
+  validateRootElement
 } from './core/validator'
 import * as view from './core/view'
 import {
@@ -32,11 +32,8 @@ import {isUndefined, isString, isFunction} from './utils/unit'
 
 export default class Jaccordion {
   constructor(element, options = {}) {
-    validateElement(element)
+    validateRootElement(element)
     validateOptions(options)
-
-    const {entries} = options
-    if (entries && entries.length) validateEntriesId(entries)
 
     this._eventBinders = []
     this._eventBus = new EventBus()
@@ -272,9 +269,7 @@ export default class Jaccordion {
     const entriesByAjax = await getEntriesByAjax(ajax)
     this._eventBus.emit('ajaxEntries.success')
 
-    if (entriesByAjax && entriesByAjax.length > 0) {
-      validateEntriesId(entriesByAjax)
-    }
+    if (entriesByAjax && entriesByAjax.length) validateEntriesId(entriesByAjax)
     validateEntriesIdInItems(entriesByAjax, this.items)
 
     const itemsByEntries = getItemsByEntries(entriesByAjax)

@@ -9,10 +9,9 @@ import {
 import {
   throwRequiredError,
   throwTypeError,
-  throwTagNameError,
   throwError
 } from '../utils/throw-error'
-import {isHTMLElement, isTagName} from '../utils/dom'
+import {isHTMLElement} from '../utils/dom'
 import {existsIdInItems} from './item'
 import {getRepeatedValues} from '../utils/array'
 
@@ -42,31 +41,15 @@ export function validateIdInItems(id, items) {
   if (included) throwError(`id ${id} already exist in items`)
 }
 
-export function validateItem({id, header, content}, toCreate = false) {
-  if (isUndefined(header)) throwRequiredError('header')
-  if (isUndefined(content)) throwRequiredError('content')
-
-  if (toCreate) {
-    if (id && !isNumber(id)) throwTypeError('id', 'number')
-  } else {
-    if (isUndefined(id)) throwRequiredError('id')
-    if (!isNumber(id)) throwTypeError('id', 'number')
-  }
-
-  if (!isHTMLElement()(header)) throwTypeError('header', 'HTMLElement')
-  else if (!isTagName('dt')(header)) throwTagNameError('header', 'dt')
-
-  if (!isHTMLElement()(content)) throwTypeError('content', 'HTMLElement')
-  else if (!isTagName('dd')(content)) throwTagNameError('content', 'dd')
-}
-
-export function validateElement(element) {
+export function validateRootElement(element) {
   if (isUndefined(element)) throwRequiredError('element')
   if (!isHTMLElement(HTMLDListElement)(element))
     throwTypeError('element', 'HTMLDListElement')
 }
 
 export function validateAjaxOption(ajax) {
+  if (isUndefined(ajax)) throwRequiredError('ajax')
+
   const {url, processResults} = ajax
 
   if (isUndefined(url)) throwRequiredError('url')
@@ -77,6 +60,8 @@ export function validateAjaxOption(ajax) {
 }
 
 export function validateClassesOption(classes) {
+  if (isUndefined(classes)) throwRequiredError('classes')
+
   const {root, header, opened, content} = classes
 
   if (isUndefined(root)) throwRequiredError('root')
@@ -88,6 +73,20 @@ export function validateClassesOption(classes) {
   if (!isString(header)) throwTypeError('header', 'string')
   if (!isString(opened)) throwTypeError('opened', 'string')
   if (!isString(content)) throwTypeError('content', 'string')
+}
+
+// @TODO: test
+export function validateEntriesId(entries) {
+  const entriesId = entries.map(({id}) => id)
+  const entriesIdIncluded = getRepeatedValues(entriesId)
+
+  if (entriesIdIncluded.length > 0) {
+    throwError(
+      `entries with id [${entriesIdIncluded.join(
+        ', '
+      )}] already exist in entries`
+    )
+  }
 }
 
 export function validateOptions(options) {
@@ -102,6 +101,8 @@ export function validateOptions(options) {
   if (options.hasOwnProperty('entries')) {
     const {entries} = options
     if (!isArray(entries)) throwTypeError('entries', 'array')
+
+    if (entries && entries.length) validateEntriesId(entries)
   }
   if (options.hasOwnProperty('ajax')) {
     const {ajax} = options
@@ -121,20 +122,6 @@ export function validateEntriesIdInItems(entries, items) {
   if (entriesIdIncluded.length > 0) {
     throwError(
       `entries with id [${entriesIdIncluded.join(', ')}] already exist in items`
-    )
-  }
-}
-
-// @TODO: test
-export function validateEntriesId(entries) {
-  const entriesId = entries.map(({id}) => id)
-  const entriesIdIncluded = getRepeatedValues(entriesId)
-
-  if (entriesIdIncluded.length > 0) {
-    throwError(
-      `entries with id [${entriesIdIncluded.join(
-        ', '
-      )}] already exist in entries`
     )
   }
 }
