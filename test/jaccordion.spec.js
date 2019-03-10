@@ -552,7 +552,7 @@ describe('jaccordion', () => {
     })
   })
 
-  describe('is open', () => {
+  describe('isOpen', () => {
     let markupIds
     let markupEntries
 
@@ -579,106 +579,551 @@ describe('jaccordion', () => {
       expect(jaccordion.isOpen(0)).toBeTruthy()
     })
   })
+
+  describe('open', () => {
+    let markupIds
+    let markupEntries
+
+    beforeEach(() => {
+      markupIds = [0, 1, 2]
+      markupEntries = markupIds.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+      const sections = markupEntries.reduce((sections, entry) => {
+        return (
+          sections +
+          `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+        )
+      }, '')
+      root.innerHTML = sections
+    })
+
+    test('should open item correctly', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      jaccordion.open(1)
+      const items = jaccordion.items
+
+      expect(items[0].header.classList.contains(classes.opened)).toBeFalsy()
+      expect(items[1].header.classList.contains(classes.opened)).toBeTruthy()
+      expect(items[2].header.classList.contains(classes.opened)).toBeFalsy()
+    })
+
+    test('should open more than one article if multiple option is enabled', () => {
+      const options = {multiple: true}
+      const jaccordion = new Jaccordion(root, options) // default openAt 0
+      jaccordion.mount()
+      jaccordion.open(1)
+      const items = jaccordion.items
+
+      expect(items[0].header.classList.contains(classes.opened)).toBeTruthy()
+      expect(items[1].header.classList.contains(classes.opened)).toBeTruthy()
+      expect(items[2].header.classList.contains(classes.opened)).toBeFalsy()
+    })
+
+    test('should emit event open.before correctly', () => {
+      const spy = jest.fn(item => {})
+      const jaccordion = new Jaccordion(root)
+      jaccordion.on('open.before', spy)
+      jaccordion.mount()
+      jaccordion.open(1)
+
+      expect(spy.mock.calls.length).toBe(1)
+      expect(spy.mock.calls[0][0]).toBeDefined()
+    })
+
+    test('should emit event open.after correctly', () => {
+      const spy = jest.fn(item => {})
+      const jaccordion = new Jaccordion(root)
+      jaccordion.on('open.after', spy)
+      jaccordion.mount()
+      jaccordion.open(1)
+
+      expect(spy.mock.calls.length).toBe(1)
+      expect(spy.mock.calls[0][0]).toBeDefined()
+    })
+  })
+
+  describe('close', () => {
+    let markupIds
+    let markupEntries
+
+    beforeEach(() => {
+      markupIds = [0, 1, 2]
+      markupEntries = markupIds.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+      const sections = markupEntries.reduce((sections, entry) => {
+        return (
+          sections +
+          `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+        )
+      }, '')
+      root.innerHTML = sections
+    })
+
+    test('should close item correctly', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      jaccordion.close(0)
+      const items = jaccordion.items
+
+      expect(items[0].header.classList.contains(classes.opened)).toBeFalsy()
+      expect(items[1].header.classList.contains(classes.opened)).toBeFalsy()
+      expect(items[2].header.classList.contains(classes.opened)).toBeFalsy()
+    })
+
+    test('should emit event close.before correctly', () => {
+      const spy = jest.fn(item => {})
+      const jaccordion = new Jaccordion(root)
+      jaccordion.on('close.before', spy)
+      jaccordion.mount()
+      jaccordion.close(1)
+
+      expect(spy.mock.calls.length).toBe(1)
+      expect(spy.mock.calls[0][0]).toBeDefined()
+    })
+
+    test('should emit event close.after correctly', () => {
+      const spy = jest.fn(item => {})
+      const jaccordion = new Jaccordion(root)
+      jaccordion.on('close.after', spy)
+      jaccordion.mount()
+      jaccordion.close(1)
+
+      expect(spy.mock.calls.length).toBe(1)
+      expect(spy.mock.calls[0][0]).toBeDefined()
+    })
+  })
+
+  describe('append', () => {
+    let markupIds
+    let markupEntries
+    let entryId
+    let entry
+
+    beforeEach(() => {
+      markupIds = [0, 1, 2]
+      markupEntries = markupIds.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+      const sections = markupEntries.reduce((sections, entry) => {
+        return (
+          sections +
+          `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+        )
+      }, '')
+      root.innerHTML = sections
+
+      entryId = 4
+      entry = {
+        id: entryId,
+        header: `Header ${entryId}`,
+        content: `Description ${entryId}`
+      }
+    })
+
+    test('should append item correctly', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      jaccordion.append(entry)
+      const items = jaccordion.items
+
+      expect(items).toHaveLength(4)
+      const {id, header, content} = items[3]
+      expect(id).toBeDefined()
+      expect(header).toBeDefined()
+      expect(content).toBeDefined()
+      expect(id).toBe(entry.id)
+      expect(parseInt(header.dataset.id)).toBe(entry.id)
+      expect(header.classList.contains(classes.header)).toBeTruthy()
+      expect(content.classList.contains(classes.content)).toBeTruthy()
+      expect(header.textContent).toBe(`${entry.header}`)
+      expect(content.textContent).toBe(`${entry.content}`)
+    })
+
+    test('should emit event append correctly', () => {
+      const spy = jest.fn(item => {})
+      const jaccordion = new Jaccordion(root)
+      jaccordion.on('append', spy)
+      jaccordion.mount()
+      jaccordion.append(entry)
+
+      expect(spy.mock.calls.length).toBe(1)
+      expect(spy.mock.calls[0][0]).toBeDefined()
+    })
+  })
+
+  describe('prepend', () => {
+    let markupIds
+    let markupEntries
+    let entryId
+    let entry
+
+    beforeEach(() => {
+      markupIds = [0, 1, 2]
+      markupEntries = markupIds.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+      const sections = markupEntries.reduce((sections, entry) => {
+        return (
+          sections +
+          `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+        )
+      }, '')
+      root.innerHTML = sections
+
+      entryId = 4
+      entry = {
+        id: entryId,
+        header: `Header ${entryId}`,
+        content: `Description ${entryId}`
+      }
+    })
+
+    test('should prepend item correctly', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      jaccordion.prepend(entry)
+      const items = jaccordion.items
+
+      expect(items).toHaveLength(4)
+      const {id, header, content} = items[0]
+      expect(id).toBeDefined()
+      expect(header).toBeDefined()
+      expect(content).toBeDefined()
+      expect(id).toBe(entry.id)
+      expect(parseInt(header.dataset.id)).toBe(entry.id)
+      expect(header.classList.contains(classes.header)).toBeTruthy()
+      expect(content.classList.contains(classes.content)).toBeTruthy()
+      expect(header.textContent).toBe(`${entry.header}`)
+      expect(content.textContent).toBe(`${entry.content}`)
+    })
+
+    test('should emit event prepend correctly', () => {
+      const spy = jest.fn(item => {})
+      const jaccordion = new Jaccordion(root)
+      jaccordion.on('prepend', spy)
+      jaccordion.mount()
+      jaccordion.prepend(entry)
+
+      expect(spy.mock.calls.length).toBe(1)
+      expect(spy.mock.calls[0][0]).toBeDefined()
+    })
+  })
+
+  describe('appendBefore', () => {
+    let markupIds
+    let markupEntries
+    let entryId
+    let entry
+
+    beforeEach(() => {
+      markupIds = [0, 1, 2]
+      markupEntries = markupIds.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+      const sections = markupEntries.reduce((sections, entry) => {
+        return (
+          sections +
+          `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+        )
+      }, '')
+      root.innerHTML = sections
+
+      entryId = 4
+      entry = {
+        id: entryId,
+        header: `Header ${entryId}`,
+        content: `Description ${entryId}`
+      }
+    })
+
+    test('should appendBefore item correctly', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      jaccordion.appendBefore(entry, 2)
+      const items = jaccordion.items
+
+      expect(items).toHaveLength(4)
+      const {id, header, content} = items[2]
+      expect(id).toBeDefined()
+      expect(header).toBeDefined()
+      expect(content).toBeDefined()
+      expect(id).toBe(entry.id)
+      expect(parseInt(header.dataset.id)).toBe(entry.id)
+      expect(header.classList.contains(classes.header)).toBeTruthy()
+      expect(content.classList.contains(classes.content)).toBeTruthy()
+      expect(header.textContent).toBe(`${entry.header}`)
+      expect(content.textContent).toBe(`${entry.content}`)
+    })
+
+    test('should emit event appendBefore correctly', () => {
+      const spy = jest.fn(item => {})
+      const jaccordion = new Jaccordion(root)
+      jaccordion.on('appendBefore', spy)
+      jaccordion.mount()
+      jaccordion.appendBefore(entry, 2)
+
+      expect(spy.mock.calls.length).toBe(1)
+      expect(spy.mock.calls[0][0]).toBeDefined()
+    })
+  })
+
+  describe('appendAfter', () => {
+    let markupIds
+    let markupEntries
+    let entryId
+    let entry
+
+    beforeEach(() => {
+      markupIds = [0, 1, 2]
+      markupEntries = markupIds.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+      const sections = markupEntries.reduce((sections, entry) => {
+        return (
+          sections +
+          `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+        )
+      }, '')
+      root.innerHTML = sections
+
+      entryId = 4
+      entry = {
+        id: entryId,
+        header: `Header ${entryId}`,
+        content: `Description ${entryId}`
+      }
+    })
+
+    test('should appendAfter item correctly', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      jaccordion.appendAfter(entry, 1)
+      const items = jaccordion.items
+
+      expect(items).toHaveLength(4)
+      const {id, header, content} = items[2]
+      expect(id).toBeDefined()
+      expect(header).toBeDefined()
+      expect(content).toBeDefined()
+      expect(id).toBe(entry.id)
+      expect(parseInt(header.dataset.id)).toBe(entry.id)
+      expect(header.classList.contains(classes.header)).toBeTruthy()
+      expect(content.classList.contains(classes.content)).toBeTruthy()
+      expect(header.textContent).toBe(`${entry.header}`)
+      expect(content.textContent).toBe(`${entry.content}`)
+    })
+
+    test('should emit event appendAfter correctly', () => {
+      const spy = jest.fn(item => {})
+      const jaccordion = new Jaccordion(root)
+      jaccordion.on('appendAfter', spy)
+      jaccordion.mount()
+      jaccordion.appendAfter(entry, 1)
+
+      expect(spy.mock.calls.length).toBe(1)
+      expect(spy.mock.calls[0][0]).toBeDefined()
+    })
+  })
+
+  describe('remove', () => {
+    let markupIds
+    let markupEntries
+
+    beforeEach(() => {
+      markupIds = [0, 1, 2]
+      markupEntries = markupIds.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+      const sections = markupEntries.reduce((sections, entry) => {
+        return (
+          sections +
+          `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+        )
+      }, '')
+      root.innerHTML = sections
+    })
+
+    test('should remove item correctly', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      jaccordion.remove(1)
+      expect(jaccordion.items).toHaveLength(2)
+    })
+
+    test('should emit event remove.before correctly', () => {
+      const spy = jest.fn(item => {})
+      const jaccordion = new Jaccordion(root)
+      jaccordion.on('remove.before', spy)
+      jaccordion.mount()
+      const idToRemove = 1
+      jaccordion.remove(idToRemove)
+
+      expect(spy.mock.calls.length).toBe(1)
+      expect(spy.mock.calls[0][0].id).toBe(idToRemove)
+    })
+
+    test('should emit event remove.after correctly', () => {
+      const spy = jest.fn(item => {})
+      const jaccordion = new Jaccordion(root)
+      jaccordion.on('remove.after', spy)
+      jaccordion.mount()
+      const idToRemove = 1
+      jaccordion.remove(idToRemove)
+
+      expect(spy.mock.calls.length).toBe(1)
+      expect(spy.mock.calls[0][0]).toBe(idToRemove)
+    })
+  })
+
+  describe('on', () => {
+    let markupIds
+    let markupEntries
+
+    beforeEach(() => {
+      markupIds = [0, 1, 2]
+      markupEntries = markupIds.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+      const sections = markupEntries.reduce((sections, entry) => {
+        return (
+          sections +
+          `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+        )
+      }, '')
+      root.innerHTML = sections
+    })
+
+    test('should subscribe to an event correctly', () => {
+      const spy = jest.fn()
+      const jaccordion = new Jaccordion(root)
+      jaccordion.on('mount.after', spy)
+      jaccordion.mount()
+
+      expect(spy.mock.calls.length).toBe(1)
+    })
+  })
+
+  describe('unmount', () => {
+    let markupIds
+    let markupEntries
+
+    beforeEach(() => {
+      markupIds = [0, 1, 2]
+      markupEntries = markupIds.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+      const sections = markupEntries.reduce((sections, entry) => {
+        return (
+          sections +
+          `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+        )
+      }, '')
+      root.innerHTML = sections
+    })
+
+    test('should unmount correctly', () => {
+      const jaccordion = new Jaccordion(root)
+      jaccordion.mount()
+      jaccordion.unmount()
+
+      expect(jaccordion.root.classList.contains(classes.root)).toBeFalsy()
+      expect(jaccordion.enabled).toBeFalsy()
+      expect(jaccordion.items).toHaveLength(0)
+      const children = Array.from(jaccordion.root.children)
+      const headers = children.filter(child => child.tagName === 'DT')
+      headers.forEach(header => {
+        expect(header.classList.contains(classes.header)).toBeFalsy()
+        expect(header.classList.contains(classes.opened)).toBeFalsy()
+        const content = header.nextElementSibling
+        expect(content.classList.contains(classes.content)).toBeFalsy()
+      })
+      expect(jaccordion._eventBinders).toHaveLength(0)
+    })
+
+    test('should be able to mount after unmount', () => {
+      const jaccordion = new Jaccordion(root)
+      jaccordion.mount()
+      jaccordion.unmount()
+      jaccordion.mount()
+
+      expect(jaccordion.enabled).toBeTruthy()
+      expect(jaccordion.root.classList.contains(classes.root)).toBeTruthy()
+      expect(jaccordion.items).toHaveLength(markupEntries.length)
+      jaccordion.items.forEach(({id, header, content}, index) => {
+        const entry = markupEntries[index]
+        expect(id).toBeDefined()
+        expect(header).toBeDefined()
+        expect(content).toBeDefined()
+        expect(id).toBe(entry.id)
+        expect(parseInt(header.dataset.id)).toBe(entry.id)
+        expect(header.classList.contains(classes.header)).toBeTruthy()
+        expect(content.classList.contains(classes.content)).toBeTruthy()
+        expect(header.textContent).toBe(`${entry.header}`)
+        expect(content.textContent).toBe(`${entry.content}`)
+      })
+    })
+  })
+
+  describe('openAt option', () => {
+    let markupIds
+    let markupEntries
+
+    beforeEach(() => {
+      markupIds = [0, 1, 2]
+      markupEntries = markupIds.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+      const sections = markupEntries.reduce((sections, entry) => {
+        return (
+          sections +
+          `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+        )
+      }, '')
+      root.innerHTML = sections
+    })
+
+    test('should mount with openAt option correctly', () => {
+      const options = {openAt: 1}
+      const jaccordion = new Jaccordion(root, options)
+      jaccordion.mount()
+      const items = jaccordion.items
+
+      expect(items[0].header.classList.contains(classes.opened)).toBeFalsy()
+      expect(items[1].header.classList.contains(classes.opened)).toBeTruthy()
+      expect(items[2].header.classList.contains(classes.opened)).toBeFalsy()
+    })
+  })
 })
-
-// construct
-// comprobar entrada element requerida
-// comprobar tipo element
-// comprobar tipos para options
-// comprobar entries con id repetidos
-
-// initial
-// comprobar propiedades de inicializacion
-
-// mount
-// comprobar mount
-// comprobar mount con entries
-// comprobar mount con entries repetidos
-// comprobar mount con entries donde sus id ya esta en items
-// comprobar mount con ajax
-// comprobar mount con ajax donde sus id de entries estan repetidos
-// comprobar mount con entries y con ajax
-// comprobar mount con ajax donde sus id de entries ya esta en items
-// comprobar evento mount.before
-// comprobar evento mount.after
-// comprobar evento mountAjax.before
-// comprobar evento mountAjax.after
-
-// disable
-// comprobar disable correcto
-
-// enable
-// comprobar disable correcto
-
-// toggle
-// comprobar id debe de ser requerido
-// comprobar id debe de ser numerico
-// comprobar toggle con acordion desabilitado
-// comprobar toggle con acordion habilitado
-// comprobar toggle para abrir
-// comprobar toggle para cerrar
-
-// isOpen
-// comprobar id debe de ser requerido
-// comprobar id debe de ser numerico
-
-// open
-// comprobar id debe de ser requerido
-// comprobar id debe de ser numerico
-// comprobar evento open.before
-// comprobar evento open.after
-
-// close
-// comprobar id debe de ser requerido
-// comprobar id debe de ser numerico
-// comprobar evento close.before
-// comprobar evento close.after
-
-// append
-// comprobar item debe de ser requerido
-// comprobar item tipo
-// comprobar evento append
-
-// prepend
-// comprobar item debe de ser requerido
-// comprobar item tipo
-// comprobar evento append
-
-// appendBefore
-// comprobar item debe de ser requerido
-// comprobar item tipo
-// comprobar evento appendBefore
-
-// appendAfter
-// comprobar item debe de ser requerido
-// comprobar item tipo
-// comprobar evento appendAfter
-
-// remove
-// comprobar item debe de ser requerido
-// comprobar item tipo
-// comprobar evento remove.before
-// comprobar evento remove.after
-
-// on
-// comprobar parametros
-
-// destroy
-// comprobar destroy correcto
-
-// _bind
-// comprobar _bind correcto
-
-// _unbind
-// comprobar _unbind correcto
-
-// opciones
-// comprobar acordion con openAt por defecto a 0
-// comprobar acordion con openAt modificado
-// comprobar acordion multiple false por defecto
-// comprobar acordion multiple true
-// comprobar acordion con clases por defecto
-// comprobar acordion con clase root modificado
-// comprobar acordion con clase header modificado
-// comprobar acordion con clase opened modificado
-// comprobar acordion con clase content modificado

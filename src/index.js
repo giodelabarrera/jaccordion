@@ -221,28 +221,11 @@ export default class Jaccordion {
 
     view.removeClassRoot(this.root, classes)
     this.items.forEach(this._unmountItem.bind(this))
-  }
+    this.enabled = false
+    this.items = []
+    this._eventBinders = []
 
-  destroy() {
-    this.unmount()
-
-    delete this.root
-    delete this._settings
-    delete this.enabled
-    delete this.items
-    delete this._eventBinders
-
-    this._eventBus.emit('destroy')
-    delete this._eventBus
-  }
-
-  _mountItem(item) {
-    const {openAt, classes} = this._settings
-    const {id} = item
-    view.addClassItem(item, classes)
-    this._eventBinders[id] = new EventBinder()
-    view.bindClickItem(item, this._eventBinders[id], () => this.toggle(id))
-    if (openAt === id) view.openItem(item, classes)
+    this._eventBus.emit('unmount')
   }
 
   _mountMarkup() {
@@ -276,6 +259,15 @@ export default class Jaccordion {
     this.items = [...this.items, ...itemsByEntries]
     view.addItems(itemsByEntries, this.root)
     itemsByEntries.forEach(this._mountItem.bind(this))
+  }
+
+  _mountItem(item) {
+    const {openAt, classes} = this._settings
+    const {id} = item
+    view.addClassItem(item, classes)
+    this._eventBinders[id] = new EventBinder()
+    view.bindClickItem(item, this._eventBinders[id], () => this.toggle(id))
+    if (openAt === id) view.openItem(item, classes)
   }
 
   _unmountItem(item) {
