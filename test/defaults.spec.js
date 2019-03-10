@@ -2,6 +2,7 @@ import defaults from '../src/defaults'
 
 describe('defaults', () => {
   let options
+
   beforeEach(() => {
     options = {
       openAt: 0,
@@ -21,6 +22,7 @@ describe('defaults', () => {
       }
     }
   })
+
   test('should be the default configuration', () => {
     const {openAt, multiple, entries, ajax, classes} = defaults
 

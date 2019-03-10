@@ -1,23 +1,8 @@
 import defaults from '../../src/defaults'
 import EventBinder from '../../src/event/event-binder'
-import {
-  addItem,
-  removeItems,
-  addItems,
-  closeItems,
-  isOpen,
-  openItem,
-  closeItem,
-  appendItem,
-  prependItem,
-  removeItem,
-  appendBeforeItem,
-  appendAfterItem,
-  bindClickItem,
-  unbindClickItem
-} from '../../src/view/item'
+import * as view from '../../src/core/view'
 
-describe('item', () => {
+describe('view', () => {
   let classes
   let root
   let items
@@ -44,7 +29,7 @@ describe('item', () => {
   describe('without items in root', () => {
     test('should add item to root correctly', () => {
       const item = items[0]
-      addItem(item, root)
+      view.addItem(item, root)
 
       const children = Array.from(root.children)
 
@@ -57,7 +42,7 @@ describe('item', () => {
     })
 
     test('should add items to root correctly', () => {
-      addItems(items, root)
+      view.addItems(items, root)
       const headers = Array.from(root.children).filter(
         child => child.tagName === 'DT'
       )
@@ -83,7 +68,7 @@ describe('item', () => {
       content.textContent = 'Description 3'
       const item = {id, header, content}
 
-      prependItem(item, root)
+      view.prependItem(item, root)
       const children = Array.from(root.children).slice(0, 2)
 
       expect(children[0]).toBeDefined()
@@ -103,7 +88,7 @@ describe('item', () => {
       const item = {id, header, content}
 
       const referenceItem = items[1]
-      appendAfterItem(item, referenceItem, root)
+      view.appendAfterItem(item, referenceItem, root)
 
       const children = Array.from(root.children).slice(0, 2)
 
@@ -124,15 +109,41 @@ describe('item', () => {
       })
     })
 
+    test('should add class to root element correctly', () => {
+      view.addClassRoot(root, classes)
+      expect(root.classList.contains(classes.root)).toBeTruthy()
+    })
+
+    test('should remove class of root element correctly', () => {
+      view.removeClassRoot(root, classes)
+      expect(root.classList.contains(classes.root)).toBeFalsy()
+    })
+
+    test('should add class to item element correctly', () => {
+      const item = items[0]
+      view.addClassItem(item, classes)
+      const {header, content} = item
+      expect(header.classList.contains(classes.header)).toBeTruthy()
+      expect(content.classList.contains(classes.content)).toBeTruthy()
+    })
+
+    test('should remove class of item element correctly', () => {
+      const item = items[0]
+      view.removeClassItem(item, classes)
+      const {header, content} = item
+      expect(header.classList.contains(classes.header)).toBeFalsy()
+      expect(content.classList.contains(classes.content)).toBeFalsy()
+    })
+
     test('should remove items of root correctly', () => {
-      removeItems(root)
+      view.removeItems(root)
       expect(root.children).toHaveLength(0)
     })
 
     test('should close items correctly', () => {
       const item = items[0]
       item.header.classList.add(classes.opened)
-      closeItems(items, classes)
+      view.closeItems(items, classes)
 
       const someOpened = items.some(({header}) =>
         header.classList.contains(classes.opened)
@@ -144,18 +155,18 @@ describe('item', () => {
     test('should returns if is open correctly', () => {
       const item = items[0]
       item.header.classList.add(classes.opened)
-      expect(isOpen(item, classes)).toBeTruthy()
+      expect(view.isOpen(item, classes)).toBeTruthy()
     })
 
     test('should open item correctly', () => {
       const item = items[0]
-      openItem(item, classes)
+      view.openItem(item, classes)
       expect(item.header.classList.contains(classes.opened)).toBeTruthy()
     })
 
     test('should close item correctly', () => {
       const item = items[0]
-      closeItem(item, classes)
+      view.closeItem(item, classes)
       expect(item.header.classList.contains(classes.opened)).toBeFalsy()
     })
 
@@ -167,7 +178,7 @@ describe('item', () => {
       content.textContent = 'Description 3'
       const item = {id, header, content}
 
-      appendItem(item, root)
+      view.appendItem(item, root)
       const children = Array.from(root.children).slice(-2)
 
       expect(children[0]).toBeDefined()
@@ -186,7 +197,7 @@ describe('item', () => {
       content.textContent = 'Description 3'
       const item = {id, header, content}
 
-      prependItem(item, root)
+      view.prependItem(item, root)
       const children = Array.from(root.children).slice(0, 2)
 
       expect(children[0]).toBeDefined()
@@ -199,7 +210,7 @@ describe('item', () => {
 
     test('should remove item correctly', () => {
       const item = items[1]
-      removeItem(item, root)
+      view.removeItem(item, root)
 
       const children = Array.from(root.children)
       expect(children).toHaveLength(4)
@@ -223,7 +234,7 @@ describe('item', () => {
       const item = {id, header, content}
 
       const referenceItem = items[1]
-      appendBeforeItem(item, referenceItem, root)
+      view.appendBeforeItem(item, referenceItem, root)
 
       const children = Array.from(root.children).slice(2, 4)
 
@@ -244,7 +255,7 @@ describe('item', () => {
       const item = {id, header, content}
 
       const referenceItem = items[1]
-      appendAfterItem(item, referenceItem, root)
+      view.appendAfterItem(item, referenceItem, root)
 
       const children = Array.from(root.children).slice(4, 6)
 
@@ -263,7 +274,7 @@ describe('item', () => {
 
       const eventBinder = new EventBinder()
       const handler = jest.fn(() => {})
-      bindClickItem(item, eventBinder, handler)
+      view.bindClickItem(item, eventBinder, handler)
 
       expect(addEventListenerMock.mock.calls.length).toBe(1)
       expect(addEventListenerMock.mock.calls[0][0]).toBe('click')
@@ -277,8 +288,8 @@ describe('item', () => {
 
       const eventBinder = new EventBinder()
       const handler = jest.fn(() => {})
-      bindClickItem(item, eventBinder, handler)
-      unbindClickItem(item, eventBinder, handler)
+      view.bindClickItem(item, eventBinder, handler)
+      view.unbindClickItem(item, eventBinder, handler)
 
       expect(removeEventListenerMock.mock.calls.length).toBe(1)
       expect(removeEventListenerMock.mock.calls[0][0]).toBe('click')

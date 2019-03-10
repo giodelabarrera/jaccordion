@@ -17,7 +17,7 @@ import {
   validateOptions,
   validateIdInItems,
   validateEntriesIdInItems,
-  validateEntriesId,
+  validateEntriesWithRepeatedId,
   validateId,
   validateEntry,
   validateRootElement
@@ -252,7 +252,8 @@ export default class Jaccordion {
     const entriesByAjax = await getEntriesByAjax(ajax)
     this._eventBus.emit('ajaxEntries.success')
 
-    if (entriesByAjax && entriesByAjax.length) validateEntriesId(entriesByAjax)
+    if (entriesByAjax && entriesByAjax.length)
+      validateEntriesWithRepeatedId(entriesByAjax)
     validateEntriesIdInItems(entriesByAjax, this.items)
 
     const itemsByEntries = createItemsByEntries(entriesByAjax)

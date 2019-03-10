@@ -36,9 +36,24 @@ export function validateEntry({id, header, content}) {
   validateEntryContent(content)
 }
 
-export function validateIdInItems(id, items) {
-  const included = existsIdInItems(id, items)
-  if (included) throwError(`id ${id} already exist in items`)
+export function validateEntriesWithRepeatedId(entries) {
+  const entriesId = entries.map(({id}) => id)
+  const entriesIdIncluded = getRepeatedValues(entriesId)
+
+  if (entriesIdIncluded.length > 0) {
+    throwError(
+      `entries with id [${entriesIdIncluded.join(
+        ', '
+      )}] already exist in entries`
+    )
+  }
+}
+
+export function validateEntries(entries) {
+  if (isUndefined(entries)) throwRequiredError('entries')
+  if (!isArray(entries)) throwTypeError('entries', 'array')
+  entries.forEach(validateEntry)
+  validateEntriesWithRepeatedId(entries)
 }
 
 export function validateRootElement(element) {
@@ -75,20 +90,6 @@ export function validateClassesOption(classes) {
   if (!isString(content)) throwTypeError('content', 'string')
 }
 
-// @TODO: test
-export function validateEntriesId(entries) {
-  const entriesId = entries.map(({id}) => id)
-  const entriesIdIncluded = getRepeatedValues(entriesId)
-
-  if (entriesIdIncluded.length > 0) {
-    throwError(
-      `entries with id [${entriesIdIncluded.join(
-        ', '
-      )}] already exist in entries`
-    )
-  }
-}
-
 export function validateOptions(options) {
   if (options.hasOwnProperty('openAt')) {
     const {openAt} = options
@@ -100,9 +101,7 @@ export function validateOptions(options) {
   }
   if (options.hasOwnProperty('entries')) {
     const {entries} = options
-    if (!isArray(entries)) throwTypeError('entries', 'array')
-
-    if (entries && entries.length) validateEntriesId(entries)
+    validateEntries(entries)
   }
   if (options.hasOwnProperty('ajax')) {
     const {ajax} = options
@@ -112,6 +111,11 @@ export function validateOptions(options) {
     const {classes} = options
     validateClassesOption(classes)
   }
+}
+
+export function validateIdInItems(id, items) {
+  const included = existsIdInItems(id, items)
+  if (included) throwError(`id ${id} already exist in items`)
 }
 
 export function validateEntriesIdInItems(entries, items) {

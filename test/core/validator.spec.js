@@ -1,15 +1,74 @@
 import {
   validateEntry,
-  validateItem,
-  validateElement,
   validateAjaxOption,
   validateClassesOption,
   validateOptions,
   validateEntriesIdInItems,
-  validateIdInItems
+  validateIdInItems,
+  validateId,
+  validateEntryHeader,
+  validateEntryContent,
+  validateEntriesWithRepeatedId,
+  validateEntries,
+  validateRootElement
 } from '../../src/core/validator'
 
 describe('validator', () => {
+  describe('validateId', () => {
+    let id
+
+    beforeEach(() => {
+      id = 0
+    })
+
+    test('should fail on trying to pass a undefined id', () => {
+      expect(() => validateId()).toThrowError('id is required')
+    })
+
+    test('should fail on trying to pass incorrect type in id', () => {
+      id = '123'
+      expect(() => validateId(id)).toThrowError('id must be a number')
+    })
+  })
+
+  describe('validateEntryHeader', () => {
+    let header
+
+    beforeEach(() => {
+      header = `Header 0`
+    })
+
+    test('should fail on trying to pass a undefined header', () => {
+      expect(() => validateEntryHeader()).toThrowError('header is required')
+    })
+
+    test('should fail on trying to pass incorrect type in header', () => {
+      header = 123
+      expect(() => validateEntryHeader(header)).toThrowError(
+        'header must be a string'
+      )
+    })
+  })
+
+  describe('validateEntryContent', () => {
+    let content
+
+    beforeEach(() => {
+      content = `Description 0`
+    })
+
+    test('should fail on trying to pass a undefined content', () => {
+      expect(() => validateEntryContent()).toThrowError('content is required')
+    })
+
+    test('should fail on trying to pass incorrect type in content', () => {
+      content = 123
+      expect(() => validateEntryContent(content)).toThrowError(
+        'content must be a string'
+      )
+    })
+  })
+
   describe('validateEntry', () => {
     let id
     let header
@@ -61,73 +120,47 @@ describe('validator', () => {
     })
   })
 
-  describe('validateItem', () => {
-    let id
-    let header
-    let content
+  describe('validateEntriesWithRepeatedId', () => {
+    let ids
+    let entries
 
     beforeEach(() => {
-      id = 0
-      header = document.createElement('dt')
-      header.textContent = 'Header'
-      content = document.createElement('dd')
-      content.textContent = 'Description'
+      ids = [0, 1, 2, 2]
+      entries = ids.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
     })
 
-    test('should fail on trying to pass a undefined in property header of item', () => {
-      expect(() => validateItem({content})).toThrowError('header is required')
-    })
-
-    test('should fail on trying to pass a undefined in property content of item', () => {
-      expect(() => validateItem({header})).toThrowError('content is required')
-    })
-
-    test('should fail on trying to pass incorrect type in property id of item', () => {
-      const id = '123'
-      expect(() => validateItem({id, header, content})).toThrowError(
-        'id must be a number'
-      )
-    })
-
-    test('should fail on trying to pass incorrect type in property header of item', () => {
-      header = 'Lorem ipsum'
-      expect(() => validateItem({id, header, content})).toThrowError(
-        'header must be a HTMLElement'
-      )
-    })
-
-    test('should fail on trying to pass incorrect HTMLElement tag name in property header of item', () => {
-      header = document.createElement('li')
-      header.textContent = 'Header'
-      expect(() => validateItem({id, header, content})).toThrowError(
-        'header must have a tag name equal to DT'
-      )
-    })
-
-    test('should fail on trying to pass incorrect type in property content of item', () => {
-      content = 'Lorem ipsum'
-      expect(() => validateItem({id, header, content})).toThrowError(
-        'content must be a HTMLElement'
-      )
-    })
-
-    test('should fail on trying to pass incorrect HTMLElement tag name in property content of item', () => {
-      content = document.createElement('li')
-      content.textContent = 'Description'
-      expect(() => validateItem({id, header, content})).toThrowError(
-        'content must have a tag name equal to DD'
+    test('should fail on trying to pass entries with repeated ids', () => {
+      expect(() => validateEntriesWithRepeatedId(entries)).toThrowError(
+        `entries with id [2] already exist in entries`
       )
     })
   })
 
-  describe('validateElement', () => {
+  describe('validateEntries', () => {
+    test('should fail on trying to pass a undefined entries', () => {
+      expect(() => validateEntries()).toThrowError('entries is required')
+    })
+
+    test('should fail on trying to pass incorrect type in entries', () => {
+      const entries = '123'
+      expect(() => validateEntries(entries)).toThrowError(
+        'entries must be a array'
+      )
+    })
+  })
+
+  describe('validateRootElement', () => {
     test('should fail on trying to pass a undefined element', () => {
-      expect(() => validateElement()).toThrowError('element is required')
+      expect(() => validateRootElement()).toThrowError('element is required')
     })
 
     test('should fail on trying to pass incorrect type in property id of item', () => {
       const element = '.accordion'
-      expect(() => validateElement(element)).toThrowError(
+      expect(() => validateRootElement(element)).toThrowError(
         'element must be a HTMLDListElement'
       )
     })
@@ -318,6 +351,36 @@ describe('validator', () => {
     })
   })
 
+  describe('validateIdInItems', () => {
+    let ids
+    let items
+    let id
+
+    beforeEach(() => {
+      ids = [0, 1, 2]
+      const entries = ids.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+      items = entries.map(entry => {
+        const {id} = entry
+        const header = document.createElement('dt')
+        header.textContent = entry.header
+        const content = document.createElement('dd')
+        content.textContent = entry.content
+        return {id, header, content}
+      })
+      id = 0
+    })
+
+    test('should fail on trying to pass incorrect id in items', () => {
+      expect(() => validateIdInItems(id, items)).toThrowError(
+        `id ${id} already exist in items`
+      )
+    })
+  })
+
   describe('validateEntriesIdInItems', () => {
     let ids
     let entries
@@ -345,36 +408,6 @@ describe('validator', () => {
     test('should fail on trying to pass incorrect entries id in items', () => {
       expect(() => validateEntriesIdInItems(entries, items)).toThrowError(
         `entries with id [${ids.join(', ')}] already exist in items`
-      )
-    })
-  })
-
-  describe('validateIdInItems', () => {
-    let ids
-    let items
-    let id
-
-    beforeEach(() => {
-      ids = [0, 1, 2]
-      const entries = ids.map(id => ({
-        id,
-        header: `Header ${id}`,
-        content: `Description ${id}`
-      }))
-      items = entries.map(entry => {
-        const {id} = entry
-        const header = document.createElement('dt')
-        header.textContent = entry.header
-        const content = document.createElement('dd')
-        content.textContent = entry.content
-        return {id, header, content}
-      })
-      id = 0
-    })
-
-    test('should fail on trying to pass incorrect id in items', () => {
-      expect(() => validateIdInItems(id, items)).toThrowError(
-        `id ${id}] already exist in items`
       )
     })
   })
