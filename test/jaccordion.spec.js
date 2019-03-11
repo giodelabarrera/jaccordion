@@ -528,7 +528,7 @@ describe('jaccordion', () => {
       root.innerHTML = sections
     })
 
-    test('should toggle item correctly', () => {
+    test('should open item correctly', () => {
       const jaccordion = new Jaccordion(root) // default openAt 0
       jaccordion.mount()
       jaccordion.toggle(1)
@@ -536,6 +536,17 @@ describe('jaccordion', () => {
 
       expect(items[0].header.classList.contains(classes.opened)).toBeFalsy()
       expect(items[1].header.classList.contains(classes.opened)).toBeTruthy()
+      expect(items[2].header.classList.contains(classes.opened)).toBeFalsy()
+    })
+
+    test('should close item correctly', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      jaccordion.toggle(0)
+      const items = jaccordion.items
+
+      expect(items[0].header.classList.contains(classes.opened)).toBeFalsy()
+      expect(items[1].header.classList.contains(classes.opened)).toBeFalsy()
       expect(items[2].header.classList.contains(classes.opened)).toBeFalsy()
     })
 
@@ -573,6 +584,15 @@ describe('jaccordion', () => {
       root.innerHTML = sections
     })
 
+    test('should fail on trying to pass an id not found in items', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      const id = 999
+      expect(() => jaccordion.isOpen(id)).toThrowError(
+        `No item found with id ${id}`
+      )
+    })
+
     test('should check if is open item correctly', () => {
       const jaccordion = new Jaccordion(root) // default openAt 0
       jaccordion.mount()
@@ -599,6 +619,15 @@ describe('jaccordion', () => {
         )
       }, '')
       root.innerHTML = sections
+    })
+
+    test('should fail on trying to pass an id not found in items', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      const id = 999
+      expect(() => jaccordion.open(id)).toThrowError(
+        `No item found with id ${id}`
+      )
     })
 
     test('should open item correctly', () => {
@@ -666,6 +695,15 @@ describe('jaccordion', () => {
         )
       }, '')
       root.innerHTML = sections
+    })
+
+    test('should fail on trying to pass an id not found in items', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      const id = 999
+      expect(() => jaccordion.close(id)).toThrowError(
+        `No item found with id ${id}`
+      )
     })
 
     test('should close item correctly', () => {
@@ -854,6 +892,15 @@ describe('jaccordion', () => {
       }
     })
 
+    test('should fail on trying to pass an id not found in items', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      const id = 999
+      expect(() => jaccordion.appendBefore(entry, id)).toThrowError(
+        `No item found with id ${id}`
+      )
+    })
+
     test('should appendBefore item correctly', () => {
       const jaccordion = new Jaccordion(root) // default openAt 0
       jaccordion.mount()
@@ -915,6 +962,15 @@ describe('jaccordion', () => {
       }
     })
 
+    test('should fail on trying to pass an id not found in items', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      const id = 999
+      expect(() => jaccordion.appendAfter(entry, id)).toThrowError(
+        `No item found with id ${id}`
+      )
+    })
+
     test('should appendAfter item correctly', () => {
       const jaccordion = new Jaccordion(root) // default openAt 0
       jaccordion.mount()
@@ -965,6 +1021,15 @@ describe('jaccordion', () => {
         )
       }, '')
       root.innerHTML = sections
+    })
+
+    test('should fail on trying to pass an id not found in items', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      jaccordion.mount()
+      const id = 999
+      expect(() => jaccordion.remove(id)).toThrowError(
+        `No item found with id ${id}`
+      )
     })
 
     test('should remove item correctly', () => {
@@ -1018,6 +1083,35 @@ describe('jaccordion', () => {
         )
       }, '')
       root.innerHTML = sections
+    })
+
+    test('should fail on trying to pass a undefined event', () => {
+      const jaccordion = new Jaccordion(root)
+      expect(() => jaccordion.on()).toThrowError('event is required')
+    })
+
+    test('should fail on trying to pass a undefined handler', () => {
+      const jaccordion = new Jaccordion(root)
+      expect(() => jaccordion.on('mount.after')).toThrowError(
+        'handler is required'
+      )
+    })
+
+    test('should fail on trying to pass incorrect type in event', () => {
+      const spy = jest.fn()
+      const jaccordion = new Jaccordion(root)
+      const event = 123
+      expect(() => jaccordion.on(event, spy)).toThrowError(
+        'event must be a string'
+      )
+    })
+
+    test('should fail on trying to pass incorrect type in handler', () => {
+      const jaccordion = new Jaccordion(root)
+      const spy = 123
+      expect(() => jaccordion.on('mount.after', spy)).toThrowError(
+        'handler must be a function'
+      )
     })
 
     test('should subscribe to an event correctly', () => {
@@ -1124,6 +1218,38 @@ describe('jaccordion', () => {
       expect(items[0].header.classList.contains(classes.opened)).toBeFalsy()
       expect(items[1].header.classList.contains(classes.opened)).toBeTruthy()
       expect(items[2].header.classList.contains(classes.opened)).toBeFalsy()
+    })
+  })
+
+  describe('mount item', () => {
+    let markupIds
+    let markupEntries
+
+    beforeEach(() => {
+      markupIds = [0, 1, 2]
+      markupEntries = markupIds.map(id => ({
+        id,
+        header: `Header ${id}`,
+        content: `Description ${id}`
+      }))
+      const sections = markupEntries.reduce((sections, entry) => {
+        return (
+          sections +
+          `<dt>${entry.header}</dt>
+            <dd>${entry.content}</dd>`
+        )
+      }, '')
+      root.innerHTML = sections
+    })
+
+    test('should mount item correctly', () => {
+      const jaccordion = new Jaccordion(root) // default openAt 0
+      const spy = jest.fn()
+      jaccordion.toggle = spy
+      jaccordion.mount()
+
+      jaccordion.items[0].header.dispatchEvent(new Event('click'))
+      expect(spy.mock.calls.length).toBe(1)
     })
   })
 })

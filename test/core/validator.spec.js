@@ -175,6 +175,10 @@ describe('validator', () => {
       processResults = data => data
     })
 
+    test('should fail on trying to pass a undefined ajax', () => {
+      expect(() => validateAjaxOption()).toThrowError('ajax is required')
+    })
+
     test('should fail on trying to pass a undefined in property url of ajax', () => {
       expect(() => validateAjaxOption({processResults})).toThrowError(
         'url is required'
@@ -213,6 +217,10 @@ describe('validator', () => {
       header = 'jaccordion__header'
       opened = 'jaccordion__header--opened'
       content = 'jaccordion__content'
+    })
+
+    test('should fail on trying to pass a undefined classes', () => {
+      expect(() => validateClassesOption()).toThrowError('classes is required')
     })
 
     test('should fail on trying to pass a undefined in property root of classes', () => {
