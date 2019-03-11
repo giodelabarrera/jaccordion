@@ -1,6 +1,22 @@
-import {isTagName, removeChildren} from '../../src/utils/dom'
+import {isTagName, removeChildren, isHTMLElement} from '../../src/utils/dom'
 
 describe('dom', () => {
+  describe('isHTMLElement', () => {
+    test('should return a function', () => {
+      expect(isHTMLElement()).toBeInstanceOf(Function)
+    })
+
+    test('should check if is a instance of HTMLElement correctly', () => {
+      const ulElem = document.createElement('ul')
+      expect(isHTMLElement()(ulElem)).toBeTruthy()
+    })
+
+    test('should check if is a instance of class than extends of HTMLElement correctly', () => {
+      const ulElem = document.createElement('ul')
+      expect(isHTMLElement(HTMLUListElement)(ulElem)).toBeTruthy()
+    })
+  })
+
   describe('isTagName', () => {
     describe('with tag name parameter', () => {
       test('should return an instance of Function', () => {
