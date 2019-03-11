@@ -7,7 +7,6 @@
   "scripts": {
     "lint:js": "eslint {src,test}/**/*.js",
     "test": "jest",
-    "debug:test": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "coverage": "jest --coverage"
   },
   "dependencies": {
@@ -31,7 +30,6 @@
     "jest": "^24.1.0",
     "lint-staged": "^8.1.4",
     "node-fetch": "^2.3.0",
-    "parcel-bundler": "^1.11.0",
     "prettier": "^1.16.4"
   },
   "lint-staged": {
