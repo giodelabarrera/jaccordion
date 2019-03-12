@@ -1,16 +1,31 @@
 {
   "name": "jaccordion",
   "version": "1.0.0",
-  "main": "index.js",
   "author": "Giorgio de la Barrera <giodelabarrera@gmail.com>",
   "license": "MIT",
+  "main": "dist/jaccordion.js",
+  "unpkg": "dist/jaccordion.js",
+  "module": "es/jaccordion.js",
+  "files": [
+    "dist",
+    "es",
+    "src"
+  ],
   "scripts": {
+    "clean": "rimraf dist es coverage",
+    "build": "rollup -c",
     "lint:js": "eslint {src,test}/**/*.js",
     "test": "jest",
-    "coverage": "jest --coverage"
+    "test:coverage": "jest --coverage"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.3.4"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.3.4",
+    "@babel/plugin-transform-async-to-generator": "^7.3.4",
+    "@babel/plugin-transform-runtime": "^7.3.4",
     "@babel/preset-env": "^7.3.1",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.1.0",
@@ -27,7 +42,13 @@
     "jest": "^24.1.0",
     "lint-staged": "^8.1.4",
     "node-fetch": "^2.3.0",
-    "prettier": "^1.16.4"
+    "prettier": "^1.16.4",
+    "rimraf": "^2.6.3",
+    "rollup": "^1.6.0",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-commonjs": "^9.2.1",
+    "rollup-plugin-node-resolve": "^4.0.1",
+    "rollup-plugin-terser": "^4.0.4"
   },
   "lint-staged": {
     "*.js": [
