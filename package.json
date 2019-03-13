@@ -5,15 +5,17 @@
   "license": "MIT",
   "main": "dist/jaccordion.js",
   "unpkg": "dist/jaccordion.js",
-  "module": "es/jaccordion.js",
+  "module": "dist/jaccordion.esm.js",
   "files": [
     "dist",
     "es",
     "src"
   ],
   "scripts": {
-    "clean": "rimraf dist es coverage",
-    "build": "rollup -c",
+    "clean": "rimraf dist coverage",
+    "build:css": "node-sass src/assets/sass/jaccordion.scss dist/css/jaccordion.css && node-sass src/assets/sass/jaccordion.scss dist/css/jaccordion.min.css --output-style=compressed",
+    "build:js": "rollup -c",
+    "build": "npm run build:js && npm run build:css",
     "lint:js": "eslint {src,test}/**/*.js",
     "test": "jest",
     "test:coverage": "jest --coverage"
@@ -42,6 +44,7 @@
     "jest": "^24.1.0",
     "lint-staged": "^8.1.4",
     "node-fetch": "^2.3.0",
+    "node-sass": "^4.11.0",
     "prettier": "^1.16.4",
     "rimraf": "^2.6.3",
     "rollup": "^1.6.0",

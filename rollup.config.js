@@ -9,7 +9,7 @@ export default [
   // ES
   {
     input: 'src/index.js',
-    output: {file: 'es/jaccordion.js', format: 'es', indent: false},
+    output: {file: 'dist/jaccordion.esm.js', format: 'es', indent: false},
     external: [
       ...Object.keys(pkg.dependencies || {}),
       ...Object.keys(pkg.peerDependencies || {})
@@ -24,7 +24,7 @@ export default [
   // ES for Browsers
   {
     input: 'src/index.js',
-    output: {file: 'es/jaccordion.mjs', format: 'es', indent: false},
+    output: {file: 'dist/jaccordion.mjs', format: 'es', indent: false},
     plugins: [
       nodeResolve({
         jsnext: true
