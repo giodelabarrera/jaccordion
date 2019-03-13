@@ -39,7 +39,7 @@ export default class EventBus {
   /**
    * Emit the event
    * @param {String} event
-   * @param {*} [context] - The value you will receive the handler function subscribed
+   * @param {*} [context={}] - The value you will receive the handler function subscribed
    * @memberof EventBus
    */
   emit(event, context = {}) {
