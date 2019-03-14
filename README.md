@@ -63,6 +63,8 @@ npm install --save jaccordion
 **Using `<script>`**
 
 ```html
+<script src="node_modules/jaccordion/dist/jaccordion.min.js"></script>
+
 <script>
   new Jaccordion(document.querySelector('dl')).mount()
 </script>
