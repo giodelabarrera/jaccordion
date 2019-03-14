@@ -13,7 +13,7 @@ Visit [jaccordion.com](http://jaccordion.com) for view the demo.
 Install the stable version.
 
 ```sh
-npm install --save jaccordion
+npm install --save @giodelabarrera/jaccordion
 ```
 
 ## Builds
@@ -30,13 +30,13 @@ npm install --save jaccordion
 **Using `<link>`**
 
 ```html
-<link rel="stylesheet" href="node_modules/jaccordion/dist/css/jaccordion.min.css">
+<link rel="stylesheet" href="node_modules/@giodelabarrera/jaccordion/dist/css/jaccordion.min.css">
 ```
 
 **Using SASS `@import`**
 
 ```scss
-@import 'node_modules/jaccordion/dist/sass/jaccordion'
+@import 'node_modules/@giodelabarrera/jaccordion/dist/sass/jaccordion'
 ```
 
 ### Structure
@@ -63,7 +63,7 @@ npm install --save jaccordion
 **Using `<script>`**
 
 ```html
-<script src="node_modules/jaccordion/dist/jaccordion.min.js"></script>
+<script src="node_modules/@giodelabarrera/jaccordion/dist/jaccordion.min.js"></script>
 
 <script>
   new Jaccordion(document.querySelector('dl')).mount()
@@ -74,7 +74,7 @@ npm install --save jaccordion
 
 
 ```js
-import Jaccordion from 'jaccordion'
+import Jaccordion from '@giodelabarrera/jaccordion'
 
 new Jaccordion(document.querySelector('dl')).mount()
 ```

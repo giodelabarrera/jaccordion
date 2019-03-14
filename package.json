@@ -1,5 +1,5 @@
 {
-  "name": "jaccordion",
+  "name": "@giodelabarrera/jaccordion",
   "version": "0.1.0",
   "author": "Giorgio de la Barrera <giodelabarrera@gmail.com>",
   "description": "Vanilla Javascript ES6 library with a simple API",
