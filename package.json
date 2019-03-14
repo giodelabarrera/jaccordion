@@ -1,6 +1,6 @@
 {
   "name": "jaccordion",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "author": "Giorgio de la Barrera <giodelabarrera@gmail.com>",
   "license": "MIT",
   "main": "dist/jaccordion.js",
