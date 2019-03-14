@@ -1,0 +1,74 @@
+// core
+$jaccordion: 'jaccordion';
+$jaccordion-header: 'header';
+$jaccordion-opened: 'opened';
+$jaccordion-content: 'content';
+$jaccordion-header-class: '#{$jaccordion}__#{$jaccordion-header}';
+$jaccordion-content-class: '#{$jaccordion}__#{$jaccordion-content}';
+
+// theme
+$jaccordion-border-radius: 4px;
+$jaccordion-border-width: 1px;
+$jaccordion-border-style: solid;
+$jaccordion-border-color: #d9d9d9;
+$jaccordion-padding: 1rem;
+$jaccordion-font-size: 1rem;
+$jaccordion-header-background-color: #4a4a4a;
+$jaccordion-header-color: #fff;
+$jaccordion-content-background-color: #f5f5f5;
+$jaccordion-content-color: #4a4a4a;
+
+.#{$jaccordion} {
+  border-width: $jaccordion-border-width;
+  border-style: $jaccordion-border-style;
+  border-color: $jaccordion-border-color;
+  border-radius: $jaccordion-border-radius;
+  font-size: $jaccordion-font-size;
+
+  &__#{$jaccordion-header} {
+    background-color: $jaccordion-header-background-color;
+    color: $jaccordion-header-color;
+    font-weight: 700;
+    padding: $jaccordion-padding;
+    border-radius: 0;
+    border-top-width: $jaccordion-border-width;
+    border-top-style: $jaccordion-border-style;
+    border-top-color: $jaccordion-border-color;
+    cursor: pointer;
+
+    &:first-of-type {
+      border-top-left-radius: $jaccordion-border-radius;
+      border-top-right-radius: $jaccordion-border-radius;
+      border-top-width: 0;
+    }
+
+    &:last-of-type {
+      border-bottom-left-radius: $jaccordion-border-radius;
+      border-bottom-right-radius: $jaccordion-border-radius;
+    }
+
+    &.#{$jaccordion-header-class}--#{$jaccordion-opened} {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border-bottom-width: $jaccordion-border-width;
+      border-bottom-style: $jaccordion-border-style;
+      border-bottom-color: $jaccordion-border-color;
+    }
+
+    &:not(.#{$jaccordion-header-class}--#{$jaccordion-opened}) + .#{$jaccordion-content-class} {
+      height: 0;
+      overflow: hidden;
+      padding: 0;
+    }
+  }
+  
+  &__#{$jaccordion-content} {
+    margin: 0;
+    color: $jaccordion-content-color;
+    padding: $jaccordion-padding;
+    background-color: $jaccordion-content-background-color;
+    height: auto;
+    transition: height .3s ease, padding .3s ease;
+    line-height: 1.25;
+  }
+}
