@@ -36,7 +36,7 @@ npm install --save jaccordion
 **Using SASS `@import`**
 
 ```scss
-@import 'node_modules/jaccordion/src/assets/scss/jaccordion'
+@import 'node_modules/jaccordion/dist/sass/jaccordion'
 ```
 
 ### Structure
