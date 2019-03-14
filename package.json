@@ -16,7 +16,7 @@
     "build:css": "node-sass src/assets/sass/jaccordion.scss dist/css/jaccordion.css && node-sass src/assets/sass/jaccordion.scss dist/css/jaccordion.min.css --output-style=compressed",
     "build:js": "rollup -c",
     "build": "npm run build:js && npm run build:css",
-    "lint:js": "eslint {src,test}/**/*.js",
+    "lint": "eslint {src,test}/**/*.js",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
@@ -55,7 +55,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "npm run lint:js -- --fix",
+      "npm run lint -- --fix",
       "git add"
     ]
   },
