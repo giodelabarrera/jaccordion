@@ -2,13 +2,16 @@
   "name": "jaccordion",
   "version": "0.1.0",
   "author": "Giorgio de la Barrera <giodelabarrera@gmail.com>",
+  "description": "Vanilla Javascript ES6 library with a simple API",
   "license": "MIT",
+  "keywords": [
+    "accordion"
+  ],
   "main": "dist/jaccordion.js",
   "unpkg": "dist/jaccordion.js",
   "module": "dist/jaccordion.esm.js",
   "files": [
     "dist",
-    "es",
     "src"
   ],
   "scripts": {

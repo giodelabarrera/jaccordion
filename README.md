@@ -1,6 +1,6 @@
 # Jaccordion
 
-Jaccordion is a library vanilla Javascript ES6 with a simple API.
+Jaccordion is a vanilla Javascript ES6 library with a simple API.
 
 > Jacordion comes from the name, Jacob 👶 plus accordion
 
