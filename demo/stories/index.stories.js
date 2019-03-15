@@ -10,14 +10,14 @@
 
 import {document} from 'global'
 import {storiesOf} from '@storybook/html'
-// import {action} from '@storybook/addon-actions'
-// import {withLinks} from '@storybook/addon-links'
+import {action} from '@storybook/addon-actions'
+import {withLinks} from '@storybook/addon-links'
 
 import './welcome.css'
 import welcome from './welcome.html'
 
 storiesOf('Welcome', module)
-  // .addDecorator(withLinks)
+  .addDecorator(withLinks)
   .add('Welcome', () => welcome)
 
 storiesOf('Demo', module)
@@ -30,6 +30,6 @@ storiesOf('Demo', module)
   .add('button', () => {
     const button = document.createElement('button')
     button.innerHTML = 'Hello Button'
-    // button.addEventListener('click', action('Click'))
+    button.addEventListener('click', action('Click'))
     return button
   })
