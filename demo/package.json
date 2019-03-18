@@ -1,0 +1,19 @@
+{
+  "name": "jaccordion-demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "start-storybook",
+    "build": "build-storybook -c .storybook -o .out"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@storybook/addon-notes": "^5.0.3",
+    "@storybook/html": "^5.0.3",
+    "babel-loader": "^8.0.5"
+  },
+  "dependencies": {
+    "@giodelabarrera/jaccordion": "^0.1.0"
+  }
+}

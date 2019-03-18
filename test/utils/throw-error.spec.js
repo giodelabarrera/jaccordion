@@ -2,7 +2,8 @@ import {
   throwError,
   throwRequiredError,
   throwTypeError,
-  throwNotFoundError
+  throwNotFoundError,
+  throwEmptyError
 } from '../../src/utils/throw-error'
 
 describe('throw-error', () => {
@@ -29,5 +30,10 @@ describe('throw-error', () => {
     expect(() => throwNotFoundError(name, id)).toThrow(
       `No ${name} found with id ${id}`
     )
+  })
+
+  test('should throw empty error correctly', () => {
+    const name = 'item'
+    expect(() => throwEmptyError(name)).toThrow(`${name} can not be empty`)
   })
 })

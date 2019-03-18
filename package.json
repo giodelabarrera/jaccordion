@@ -22,7 +22,7 @@
     "build": "npm run clean && npm run build:js && npm run build:css && npm run build:sass",
     "lint": "eslint {src,test}/**/*.js",
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "coverage": "jest --coverage"
   },
   "dependencies": {
     "@babel/runtime": "^7.3.4"
