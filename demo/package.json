@@ -14,6 +14,6 @@
     "babel-loader": "^8.0.5"
   },
   "dependencies": {
-    "@giodelabarrera/jaccordion": "^0.1.0"
+    "@giodelabarrera/jaccordion": "^0.1.1"
   }
 }
