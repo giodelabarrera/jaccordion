@@ -10,8 +10,6 @@ Visit [jaccordion.com](http://jaccordion.com) for view the demo.
 
 ## Installation
 
-Install the stable version.
-
 ```sh
 npm install --save @giodelabarrera/jaccordion
 ```
