@@ -9,7 +9,8 @@ import {
 import {
   throwRequiredError,
   throwTypeError,
-  throwError
+  throwError,
+  throwEmptyError
 } from '../utils/throw-error'
 import {isHTMLElement} from '../utils/dom'
 import {existsIdInItems} from './item'
@@ -21,10 +22,12 @@ import {getRepeatedValues} from '../utils/array'
  * @param {Number} id - Identifier
  * @throws {Error} Undefined argument
  * @throws {Error} Incorrect type argument
+ * @throws {Error} Argument less than zero
  */
 export function validateId(id) {
   if (isUndefined(id)) throwRequiredError('id')
-  if (!isNumber(id)) throwTypeError('id', 'number')
+  if (!isNumber(id) || isNaN(id)) throwTypeError('id', 'number')
+  if (id < 0) throwError(`id must be greater than zero`)
 }
 
 /**
@@ -33,10 +36,12 @@ export function validateId(id) {
  * @param {String} header
  * @throws {Error} Undefined argument
  * @throws {Error} Incorrect type argument
+ * @throws {Error} Empty argument
  */
 export function validateEntryHeader(header) {
   if (isUndefined(header)) throwRequiredError('header')
   if (!isString(header)) throwTypeError('header', 'string')
+  if (header.length === 0) throwEmptyError('header')
 }
 
 /**
@@ -45,10 +50,12 @@ export function validateEntryHeader(header) {
  * @param {String} content
  * @throws {Error} Undefined argument
  * @throws {Error} Incorrect type argument
+ * @throws {Error} Empty argument
  */
 export function validateEntryContent(content) {
   if (isUndefined(content)) throwRequiredError('content')
   if (!isString(content)) throwTypeError('content', 'string')
+  if (content.length === 0) throwEmptyError('content')
 }
 
 /**

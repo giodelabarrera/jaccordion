@@ -88,7 +88,7 @@ Identifier of the item that appears open by default
 
 ### `multiple`
 
-* @default: `true`
+* @default: `false`
 * @type: `Boolean` 
 
 Determines if there may be more than one item open
