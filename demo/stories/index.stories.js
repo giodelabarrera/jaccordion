@@ -8,6 +8,7 @@ import markup from './content/markup.html'
 import defaultNotes from './content/default/notes.md'
 import entriesNotes from './content/entries/notes.md'
 import ajaxEntriesNotes from './content/ajax-entries/notes.md'
+import combinedNotes from './content/combined/notes.md'
 import openAtNotes from './content/open-at/notes.md'
 import multipleOpenNotes from './content/multiple-open/notes.md'
 import enableDisableForm from './content/enable-disable/form.html'
@@ -16,6 +17,9 @@ import toggleActions from './content/toggle/actions.html'
 import toggleNotes from './content/toggle/notes.md'
 import insertForm from './content/insert/form.html'
 import insertNotes from './content/insert/notes.md'
+import removeForm from './content/remove/form.html'
+import removeNotes from './content/remove/notes.md'
+import subscribeNotes from './content/subscribe/notes.md'
 
 const stories = storiesOf('Jaccordion', module)
 
@@ -106,6 +110,39 @@ stories.add(
   {
     notes: ajaxEntriesNotes
   }
+)
+
+stories.add(
+  'combined',
+  () => {
+    const container = document.createElement('div')
+    container.innerHTML = markup
+
+    const options = {
+      entries: [
+        {id: 3, header: 'Entry 4', content: 'Entry 4 Content...'},
+        {id: 4, header: 'Entry 5', content: 'Entry 5 Content...'},
+        {id: 5, header: 'Entry 6', content: 'Entry 6 Content...'}
+      ],
+      ajax: {
+        url: 'https://api.github.com/repos/storybooks/storybook',
+        processResults: ({id, full_name: header, description: content}) => [
+          {
+            id,
+            header,
+            content
+          }
+        ]
+      }
+    }
+    const jaccordion = new Jaccordion(container.querySelector('dl'), options)
+    ;(async () => {
+      await jaccordion.mount()
+    })()
+
+    return container
+  },
+  {notes: combinedNotes}
 )
 
 stories.add(
@@ -242,7 +279,49 @@ stories.add(
   }
 )
 
-// combined
-// remove
-// on
-// styles
+stories.add(
+  'remove',
+  () => {
+    const container = document.createElement('div')
+    container.innerHTML = markup + removeForm
+
+    const jaccordion = new Jaccordion(container.querySelector('dl'))
+    jaccordion.mount()
+
+    const form = container.querySelector('form')
+    const sectionElem = form.children[0]
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault()
+      const id = parseInt(sectionElem.value)
+      jaccordion.remove(id)
+    })
+
+    return container
+  },
+  {
+    notes: removeNotes
+  }
+)
+
+stories.add(
+  'subscribe',
+  () => {
+    const container = document.createElement('div')
+    container.innerHTML = markup
+
+    const jaccordion = new Jaccordion(container.querySelector('dl'))
+    jaccordion.on('mount.after', () => {
+      alert('Mount correctly!')
+    })
+    jaccordion.mount()
+    jaccordion.on('open.after', item => {
+      alert(`Section clicked with id: ${item.id}`)
+    })
+
+    return container
+  },
+  {
+    notes: subscribeNotes
+  }
+)
