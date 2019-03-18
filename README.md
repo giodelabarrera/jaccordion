@@ -8,6 +8,15 @@ Jaccordion is a vanilla Javascript ES6 library with a simple API.
 
 Visit [jaccordion.com](http://jaccordion.com) for view the demo.
 
+## Available Scripts
+
+Using NPM scripts
+
+- `start` - Run storybook
+- `test` - Run test
+- `coverage` - Run test coverage
+- `build` - Build library
+
 ## Installation
 
 ```sh
