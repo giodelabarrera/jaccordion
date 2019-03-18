@@ -37,3 +37,13 @@ export function throwTypeError(name, type) {
 export function throwNotFoundError(name, id) {
   throwError(`No ${name} found with id ${id}`)
 }
+
+/**
+ * Throw a error with message customized for a element is empty
+ * @export
+ * @param {string} message
+ * @throws {Error} The error message
+ */
+export function throwEmptyError(name) {
+  throwError(`${name} can not be empty`)
+}

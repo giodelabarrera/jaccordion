@@ -29,6 +29,15 @@ describe('validator', () => {
       id = '123'
       expect(() => validateId(id)).toThrowError('id must be a number')
     })
+
+    test('should fail on trying to pass a NaN id', () => {
+      expect(() => validateId(NaN)).toThrowError('id must be a number')
+    })
+
+    test('should fail on trying to pass an id less than zero', () => {
+      id = -1
+      expect(() => validateId(id)).toThrowError('id must be greater than zero')
+    })
   })
 
   describe('validateEntryHeader', () => {
@@ -48,6 +57,13 @@ describe('validator', () => {
         'header must be a string'
       )
     })
+
+    test('should fail on trying to pass empty in header', () => {
+      header = ''
+      expect(() => validateEntryHeader(header)).toThrowError(
+        'header can not be empty'
+      )
+    })
   })
 
   describe('validateEntryContent', () => {
@@ -65,6 +81,13 @@ describe('validator', () => {
       content = 123
       expect(() => validateEntryContent(content)).toThrowError(
         'content must be a string'
+      )
+    })
+
+    test('should fail on trying to pass empty in content', () => {
+      content = ''
+      expect(() => validateEntryContent(content)).toThrowError(
+        'content can not be empty'
       )
     })
   })

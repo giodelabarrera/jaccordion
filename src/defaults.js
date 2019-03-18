@@ -19,7 +19,7 @@ export default {
 
   /**
    * Object for make items by request
-   * @type {Object[]}
+   * @type {Object}
    */
   ajax: {
     url: '',
