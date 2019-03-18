@@ -9,6 +9,9 @@ HTML
 Javascript
 
 ```js
+import Jaccordion from '@giodelabarrera/jaccordion'
+import '@giodelabarrera/jaccordion/dist/css/jaccordion.css'
+
 const options = {
   entries: [
     {id: 0, header: 'Entry 1', content: 'Entry 1 Content...'},

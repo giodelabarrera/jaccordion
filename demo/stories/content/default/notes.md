@@ -22,6 +22,9 @@ HTML
 Javascript
 
 ```js
+import Jaccordion from '@giodelabarrera/jaccordion'
+import '@giodelabarrera/jaccordion/dist/css/jaccordion.css'
+
 const jaccordion = new Jaccordion(document.querySelector('dl'))
 jaccordion.mount()
 ```

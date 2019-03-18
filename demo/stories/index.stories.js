@@ -23,27 +23,6 @@ import subscribeNotes from './content/subscribe/notes.md'
 
 const stories = storiesOf('Jaccordion', module)
 
-// stories.add('default', () => {
-//   const element = createMarkupElement()
-//   const options = {
-//     ajax: {
-//       url: 'https://api.github.com/repos/storybooks/storybook',
-//       processResults: ({id, full_name: header, description: content}) => [
-//         {
-//           id,
-//           header,
-//           content
-//         }
-//       ]
-//     }
-//   }
-//   const jaccordion = new Jaccordion(element, options)
-//   ;(async () => {
-//     await jaccordion.mount()
-//   })()
-//   return jaccordion.root
-// })
-
 stories.add(
   'default',
   () => {

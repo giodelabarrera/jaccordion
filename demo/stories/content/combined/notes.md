@@ -22,6 +22,9 @@ HTML
 Javascript
 
 ```js
+import Jaccordion from '@giodelabarrera/jaccordion'
+import '@giodelabarrera/jaccordion/dist/css/jaccordion.css'
+
 const options = {
   entries: [
     {id: 3, header: 'Entry 4', content: 'Entry 4 Content...'},

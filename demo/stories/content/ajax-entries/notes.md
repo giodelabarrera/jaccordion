@@ -9,6 +9,9 @@ HTML
 Javascript
 
 ```js
+import Jaccordion from '@giodelabarrera/jaccordion'
+import '@giodelabarrera/jaccordion/dist/css/jaccordion.css'
+
 const options = {
   ajax: {
     url: 'https://api.github.com/search/repositories?q=javascript+language:javascript&sort=stars&order=desc',
