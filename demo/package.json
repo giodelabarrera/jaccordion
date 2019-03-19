@@ -3,15 +3,18 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "homepage": "https://giodelabarrera.github.io/jaccordion",
   "scripts": {
     "start": "start-storybook",
-    "build": "build-storybook -c .storybook -o .out"
+    "build": "build-storybook -c .storybook -o build",
+    "deploy": "gh-pages -d build"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@storybook/addon-notes": "^5.0.3",
     "@storybook/html": "^5.0.3",
-    "babel-loader": "^8.0.5"
+    "babel-loader": "^8.0.5",
+    "gh-pages": "^2.0.1"
   },
   "dependencies": {
     "@giodelabarrera/jaccordion": "^0.1.1"
