@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "homepage": "https://giodelabarrera.github.io/jaccordion",
+  "homepage": "https://giodelabarrera.github.io/jaccordion/",
   "scripts": {
     "start": "start-storybook",
     "build": "build-storybook -c .storybook -o build",
