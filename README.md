@@ -6,7 +6,7 @@ Jaccordion is a vanilla Javascript ES6 library with a simple API.
 
 ## Demo
 
-Visit [jaccordion.com](http://jaccordion.com) for view the demo.
+Visit [https://giodelabarrera.github.io/jaccordion/](https://giodelabarrera.github.io/jaccordion/) for view the storybook demo.
 
 ## Available Scripts
 
